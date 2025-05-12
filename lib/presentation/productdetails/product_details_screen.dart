@@ -1,0 +1,1450 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:selorgweb_main/model/category/similar_product_response_model.dart';
+import 'package:selorgweb_main/presentation/productdetails/product_details_bloc.dart';
+import 'package:selorgweb_main/presentation/productdetails/product_details_event.dart';
+import 'package:selorgweb_main/presentation/productdetails/product_details_state.dart';
+import 'package:selorgweb_main/utils/constant.dart';
+import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/model/cart/cart_model.dart' as cart;
+import 'package:selorgweb_main/model/category/product_detail_model.dart' as pdm;
+import 'package:selorgweb_main/model/category/similar_product_detail_response_model.dart'
+    as spd;
+
+class ProductDetailsScreen extends StatelessWidget {
+  final String productId;
+  const ProductDetailsScreen({required this.productId, super.key});
+
+  static pdm.ProductDetailResponse productDetailResponse =
+      pdm.ProductDetailResponse();
+  static String errorMsg = '';
+  static SimilarProductResponse similarProductResponse =
+      SimilarProductResponse();
+  static spd.SimilarProductDetailResponse similarProductDetailResponse =
+      spd.SimilarProductDetailResponse();
+  static bool addButtonClicked = false;
+  static int varientIndex = 0;
+  static int similarvarientIndex = 0;
+  static cart.CartResponse cartResponse = cart.CartResponse();
+  static int cartCount = 0;
+  static int totalAmount = 0;
+  static dynamic selectedVariant;
+  static dynamic selectedsimilarVariant;
+  static int similarIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ProductDetailBloc(),
+      child: BlocConsumer<ProductDetailBloc, ProductDetailState>(
+        listener: (context, state) {
+          if (state is ProductDetailSuccessState) {
+            productDetailResponse = state.productDetailResponse;
+            debugPrint(productDetailResponse.data!.product!.skuName);
+            similarProductResponse = SimilarProductResponse();
+            context.read<ProductDetailBloc>().add(
+              GetSimilarProductEvent(
+                productId: productDetailResponse.data!.product!.id ?? "",
+              ),
+            );
+            selectedVariant = productDetailResponse.data!.product!.variants!
+                .firstWhere(
+                  (variant) => (variant.cartQuantity ?? 0) > 0,
+                  orElse:
+                      () => productDetailResponse.data!.product!.variants![0],
+                );
+          } else if (state is UpdateSimilarProductIndexState) {
+            similarvarientIndex = state.similarIndex;
+          } else if (state is SimilarProductSuccessState) {
+            similarProductResponse = state.similarProductResponse;
+            // similarProductResponse.data![similarIndex].variants!
+            //         .firstWhere(
+            //           (variant) => (variant.cartQuantity ?? 0) > 0,
+            //           orElse: () => similarProductResponse
+            //               .data![similarIndex].variants![0],
+            //         )
+            //         .label ??
+            // "";
+            selectedsimilarVariant = similarProductResponse
+                .data![similarIndex]
+                .variants!
+                .firstWhere(
+                  (variant) => (variant.cartQuantity ?? 0) > 0,
+                  orElse:
+                      () =>
+                          similarProductResponse
+                              .data![similarIndex]
+                              .variants![0],
+                );
+          } else if (state is SimilarProductDetailSuccessState) {
+            similarProductDetailResponse = state.similarProductDetailResponse;
+          } else if (state is LabelChangedState) {
+            // varientIndex = state.varientIndex;
+            // debugPrint(productDetailResponse
+            //     .data!.product!.variants![state.varientIndex].label);
+            varientIndex = state.varientIndex;
+            similarvarientIndex = state.varientIndex;
+            selectedVariant =
+                productDetailResponse.data!.product!.variants![varientIndex];
+            selectedsimilarVariant =
+                similarProductResponse
+                    .data![similarIndex]
+                    .variants![similarvarientIndex];
+            debugPrint(
+              productDetailResponse
+                  .data!
+                  .product!
+                  .variants![state.varientIndex]
+                  .label,
+            );
+          } else if (state is AddButtonClickedState) {
+            addButtonClicked = state.isSelected;
+            varientIndex = state.selectedIndexes;
+            similarvarientIndex = state.selectedIndexes;
+            if (state.type == "screen") {
+              productDetailResponse
+                  .data!
+                  .product!
+                  .variants![varientIndex]
+                  .cartQuantity = (productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .cartQuantity ??
+                      0) +
+                  1;
+              selectedVariant =
+                  productDetailResponse.data!.product!.variants![varientIndex];
+
+              context.read<ProductDetailBloc>().add(
+                AddItemInCartApiEvent(
+                  userId: userId,
+                  productId: productDetailResponse.data!.product!.id ?? "",
+                  quantity: 1,
+                  variantLabel:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  imageUrl:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .imageUrl ??
+                      "",
+                  price:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .price ??
+                      0,
+                  discountPrice:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .discountPrice ??
+                      0,
+                  deliveryInstructions: "",
+                  addNotes: "",
+                ),
+              );
+            } else if (state.type == "dialog") {
+              productDetailResponse
+                  .data!
+                  .product!
+                  .variants![varientIndex]
+                  .cartQuantity = (productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .cartQuantity ??
+                      0) +
+                  1;
+              debugPrint(
+                productDetailResponse
+                    .data!
+                    .product!
+                    .variants![varientIndex]
+                    .label
+                    .toString(),
+              );
+              selectedVariant =
+                  productDetailResponse.data!.product!.variants![varientIndex];
+              context.read<ProductDetailBloc>().add(
+                AddItemInCartApiEvent(
+                  userId: userId,
+                  productId: productDetailResponse.data!.product!.id ?? "",
+                  quantity: 1,
+                  variantLabel:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  imageUrl:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .imageUrl ??
+                      "",
+                  price:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .price ??
+                      0,
+                  discountPrice:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .discountPrice ??
+                      0,
+                  deliveryInstructions: "",
+                  addNotes: "",
+                ),
+              );
+            } else if (state.type == "similar") {
+              similarProductResponse
+                  .data![state.similarIndex]
+                  .variants![similarvarientIndex]
+                  .cartQuantity = (similarProductResponse
+                          .data![state.selectedIndexes]
+                          .variants![similarvarientIndex]
+                          .cartQuantity ??
+                      0) +
+                  1;
+              selectedsimilarVariant =
+                  similarProductResponse
+                      .data![similarIndex]
+                      .variants![similarvarientIndex];
+              context.read<ProductDetailBloc>().add(
+                AddItemInCartApiEvent(
+                  userId: userId,
+                  productId:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .similarProductId ??
+                      "",
+                  quantity: 1,
+                  variantLabel:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  imageUrl:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .imageUrl ??
+                      "",
+                  price:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .price ??
+                      0,
+                  discountPrice:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .discountPrice ??
+                      0,
+                  deliveryInstructions: "",
+                  addNotes: "",
+                ),
+              );
+            } else if (state.type == "similar_dialog") {
+              similarProductResponse
+                  .data![state.similarIndex]
+                  .variants![similarvarientIndex]
+                  .cartQuantity = (similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![similarvarientIndex]
+                          .cartQuantity ??
+                      0) +
+                  1;
+              selectedsimilarVariant =
+                  similarProductResponse
+                      .data![similarIndex]
+                      .variants![similarvarientIndex];
+              context.read<ProductDetailBloc>().add(
+                AddItemInCartApiEvent(
+                  userId: userId,
+                  productId:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .similarProductId ??
+                      "",
+                  quantity: 1,
+                  variantLabel:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  imageUrl:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .imageUrl ??
+                      "",
+                  price:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .price ??
+                      0,
+                  discountPrice:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .discountPrice ??
+                      0,
+                  deliveryInstructions: "",
+                  addNotes: "",
+                ),
+              );
+            }
+            // itemCount.add(1);
+          } else if (state is ItemAddedToCartState) {
+            context.read<ProductDetailBloc>().add(
+              GetSimilarProductEvent(
+                productId: productDetailResponse.data!.product!.id ?? "",
+              ),
+            );
+            context.read<ProductDetailBloc>().add(
+              GetCartCountLengthEvent(userId: userId),
+            );
+          } else if (state is RemoveButtonClickedState) {
+            varientIndex = state.selectedIndexes;
+            similarvarientIndex = state.selectedIndexes;
+            if (state.type == "screen") {
+              productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .cartQuantity ==
+                      0
+                  ? null
+                  : productDetailResponse
+                      .data!
+                      .product!
+                      .variants![varientIndex]
+                      .cartQuantity = (productDetailResponse
+                              .data!
+                              .product!
+                              .variants![varientIndex]
+                              .cartQuantity ??
+                          0) -
+                      1;
+              selectedVariant =
+                  productDetailResponse.data!.product!.variants![varientIndex];
+              context.read<ProductDetailBloc>().add(
+                RemoveItemInCartApiEvent(
+                  userId: userId,
+                  productId: productDetailResponse.data!.product!.id ?? "",
+                  variantLabel:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  quantity: 1,
+                  deliveryTip: 0,
+                  handlingcharges: 0,
+                ),
+              );
+            } else if (state.type == "dialog") {
+              productDetailResponse
+                  .data!
+                  .product!
+                  .variants![varientIndex]
+                  .cartQuantity = (productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .cartQuantity ??
+                      0) -
+                  1;
+              debugPrint(
+                productDetailResponse
+                    .data!
+                    .product!
+                    .variants![varientIndex]
+                    .label
+                    .toString(),
+              );
+              selectedVariant =
+                  productDetailResponse.data!.product!.variants![varientIndex];
+              context.read<ProductDetailBloc>().add(
+                RemoveItemInCartApiEvent(
+                  userId: userId,
+                  productId: productDetailResponse.data!.product!.id ?? "",
+                  variantLabel:
+                      productDetailResponse
+                          .data!
+                          .product!
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  quantity: 1,
+                  deliveryTip: 0,
+                  handlingcharges: 0,
+                ),
+              );
+            } else if (state.type == "similar") {
+              similarProductResponse
+                  .data![state.similarIndex]
+                  .variants![similarvarientIndex]
+                  .cartQuantity = (similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![similarvarientIndex]
+                          .cartQuantity ??
+                      0) -
+                  1;
+              selectedsimilarVariant =
+                  similarProductResponse
+                      .data![state.similarIndex]
+                      .variants![similarvarientIndex];
+              context.read<ProductDetailBloc>().add(
+                RemoveItemInCartApiEvent(
+                  userId: userId,
+                  productId:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .similarProductId ??
+                      "",
+                  variantLabel:
+                      similarProductResponse
+                          .data![state.selectedIndexes]
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  quantity: 1,
+                  deliveryTip: 0,
+                  handlingcharges: 0,
+                ),
+              );
+            } else if (state.type == "similar_dialog") {
+              similarProductResponse
+                  .data![state.similarIndex]
+                  .variants![similarvarientIndex]
+                  .cartQuantity = (similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![similarvarientIndex]
+                          .cartQuantity ??
+                      0) -
+                  1;
+              selectedsimilarVariant =
+                  similarProductResponse
+                      .data![state.similarIndex]
+                      .variants![similarvarientIndex];
+              context.read<ProductDetailBloc>().add(
+                RemoveItemInCartApiEvent(
+                  userId: userId,
+                  productId:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .similarProductId ??
+                      "",
+                  variantLabel:
+                      similarProductResponse
+                          .data![state.similarIndex]
+                          .variants![varientIndex]
+                          .label ??
+                      "",
+                  quantity: 1,
+                  deliveryTip: 0,
+                  handlingcharges: 0,
+                ),
+              );
+            }
+          } else if (state is ItemRemovedToCartState) {
+            context.read<ProductDetailBloc>().add(
+              GetSimilarProductEvent(
+                productId: productDetailResponse.data!.product!.id ?? "",
+              ),
+            );
+            context.read<ProductDetailBloc>().add(
+              GetCartCountLengthEvent(userId: userId),
+            );
+          } else if (state is CartCountLengthSuccessState) {
+            cartResponse = state.cartResponse;
+            cartCount = 0;
+            if (state.cartResponse.items != null) {
+              for (var i = 0; i < state.cartResponse.items!.length; i++) {
+                cartCount =
+                    cartCount + (state.cartResponse.items![i].quantity ?? 0);
+              }
+            }
+            totalAmount = state.cartResponse.billSummary!.itemTotal ?? 0;
+          } else if (state is ProductDetailErrorState) {
+            errorMsg = state.errorMsg;
+            debugPrint(state.errorMsg);
+          }
+        },
+        builder: (context, state) {
+          if (state is ProductDetailInitialState) {
+            varientIndex = 0;
+            similarvarientIndex = 0;
+            productDetailResponse = pdm.ProductDetailResponse();
+            context.read<ProductDetailBloc>().add(
+              GetProductDetailEvent(
+                mobileNo: phoneNumber,
+                productId: productId,
+              ),
+            );
+            context.read<ProductDetailBloc>().add(
+              GetCartCountLengthEvent(userId: userId),
+            );
+          }
+          return Scaffold(
+            body: SingleChildScrollView(
+              child:
+                  productDetailResponse.data != null
+                      ? Column(
+                        spacing: 20,
+                        children: [
+                          HeaderWidget(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 150,
+                            ),
+                            child: Container(
+                              // color: redColor,
+                              width: double.infinity,
+                              height: 420,
+                              child: Row(
+                                spacing: 20,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      //   color: greenColor,
+                                      width: 200,
+                                      height: 400,
+                                      child: ImageNetworkWidget(
+                                        url:
+                                            productDetailResponse
+                                                .data!
+                                                .product!
+                                                .variants![0]
+                                                .imageUrl ??
+                                            "",
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      //  color: whiteColor,
+                                      width: 200,
+                                      height: 400,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            productDetailResponse
+                                                    .data!
+                                                    .product!
+                                                    .skuName ??
+                                                "",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: blackColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              //  color: greenColor,
+                                              width: double.infinity,
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount:
+                                                    productDetailResponse
+                                                        .data!
+                                                        .product!
+                                                        .variants!
+                                                        .length,
+                                                itemBuilder: (context, i) {
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      // varientIndex =
+                                                      //     i; // Update the selected variant index
+                                                      // selectedVariant = productDetailResponse
+                                                      //     .data!.product!.variants![i];
+
+                                                      Navigator.pop(context);
+                                                      context
+                                                          .read<
+                                                            ProductDetailBloc
+                                                          >()
+                                                          .add(
+                                                            LabelVarientItemEvent(
+                                                              productIndex: 0,
+                                                              varientIndex: i,
+                                                            ),
+                                                          );
+                                                    },
+                                                    child: Container(
+                                                      margin:
+                                                          const EdgeInsets.symmetric(
+                                                            vertical: 6,
+                                                          ),
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 12,
+                                                            vertical: 10,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: whiteColor,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              3,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: Colors.green,
+                                                          width: 0.5,
+                                                        ),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                productDetailResponse
+                                                                        .data!
+                                                                        .product!
+                                                                        .variants![i]
+                                                                        .label ??
+                                                                    "",
+                                                                style:
+                                                                    Theme.of(
+                                                                          context,
+                                                                        )
+                                                                        .textTheme
+                                                                        .bodySmall,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  RichText(
+                                                                    text: TextSpan(
+                                                                      text:
+                                                                          '₹ ',
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        color:
+                                                                            Colors.black,
+                                                                      ),
+                                                                      children: <
+                                                                        TextSpan
+                                                                      >[
+                                                                        TextSpan(
+                                                                          text:
+                                                                              productDetailResponse.data!.product!.variants![i].discountPrice.toString(),
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                '`Poppins`',
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 6,
+                                                                  ),
+                                                                  RichText(
+                                                                    text: TextSpan(
+                                                                      text:
+                                                                          '₹ ',
+                                                                      style: TextStyle(
+                                                                        decoration:
+                                                                            TextDecoration.lineThrough,
+                                                                        fontSize:
+                                                                            12,
+                                                                        color:
+                                                                            Colors.grey,
+                                                                      ),
+                                                                      children: <
+                                                                        TextSpan
+                                                                      >[
+                                                                        TextSpan(
+                                                                          text:
+                                                                              productDetailResponse.data!.product!.variants![i].price.toString(),
+                                                                          style: TextStyle(
+                                                                            decoration:
+                                                                                TextDecoration.lineThrough,
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.grey,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          productDetailResponse
+                                                                      .data!
+                                                                      .product!
+                                                                      .variants![i]
+                                                                      .cartQuantity ==
+                                                                  0
+                                                              ? SizedBox(
+                                                                width: 100,
+                                                                height: 30,
+                                                                child: ElevatedButton(
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    backgroundColor:
+                                                                        whiteColor,
+                                                                    shape: RoundedRectangleBorder(
+                                                                      side: BorderSide(
+                                                                        color:
+                                                                            appColor,
+                                                                      ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            20,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    context
+                                                                        .read<
+                                                                          ProductDetailBloc
+                                                                        >()
+                                                                        .add(
+                                                                          AddButtonClikedEvent(
+                                                                            type:
+                                                                                "dialog",
+                                                                            index:
+                                                                                i,
+                                                                            similarIndex:
+                                                                                similarIndex,
+                                                                            isButtonPressed:
+                                                                                true,
+                                                                          ),
+                                                                        );
+                                                                  },
+                                                                  child: Text(
+                                                                    "Add",
+                                                                    // style:
+                                                                    //     GoogleFonts.poppins(
+                                                                    //   color: appColor,
+                                                                    //   fontSize: 14,
+                                                                    // ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                              : Container(
+                                                                width: 100,
+                                                                height: 30,
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          1,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFF326A32,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        20,
+                                                                      ),
+                                                                  border: Border.all(
+                                                                    color:
+                                                                        appColor,
+                                                                  ),
+                                                                ),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          context
+                                                                              .read<
+                                                                                ProductDetailBloc
+                                                                              >()
+                                                                              .add(
+                                                                                RemoveItemButtonClikedEvent(
+                                                                                  type:
+                                                                                      "dialog",
+                                                                                  index:
+                                                                                      i,
+                                                                                  similarIndex:
+                                                                                      similarIndex,
+                                                                                  isButtonPressed:
+                                                                                      true,
+                                                                                ),
+                                                                              );
+                                                                        },
+                                                                        child: SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                          child: const Icon(
+                                                                            Icons.remove,
+                                                                            color:
+                                                                                Colors.white,
+                                                                            size:
+                                                                                16,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      height:
+                                                                          35,
+                                                                      width: 35,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                      child: Center(
+                                                                        child: Text(
+                                                                          productDetailResponse
+                                                                              .data!
+                                                                              .product!
+                                                                              .variants![i]
+                                                                              .cartQuantity
+                                                                              .toString(),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          // style: GoogleFonts
+                                                                          //     .poppins(
+                                                                          //   color: const Color(
+                                                                          //       0xFF326A32),
+                                                                          //   fontSize: 14,
+                                                                          //   fontWeight:
+                                                                          //       FontWeight
+                                                                          //           .w500,
+                                                                          // ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          context
+                                                                              .read<
+                                                                                ProductDetailBloc
+                                                                              >()
+                                                                              .add(
+                                                                                AddButtonClikedEvent(
+                                                                                  type:
+                                                                                      "dialog",
+                                                                                  index:
+                                                                                      i,
+                                                                                  similarIndex:
+                                                                                      similarIndex,
+                                                                                  isButtonPressed:
+                                                                                      true,
+                                                                                ),
+                                                                              );
+                                                                        },
+                                                                        child: SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                          child: Center(
+                                                                            child: const Icon(
+                                                                              Icons.add,
+                                                                              color:
+                                                                                  Colors.white,
+                                                                              size:
+                                                                                  16,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 150,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: ExpansionTile(
+                                backgroundColor: whiteColor,
+                                collapsedBackgroundColor: whiteColor,
+                                shape: Border.all(color: whiteColor),
+                                iconColor: appColor,
+                                collapsedIconColor: appColor,
+                                title: Text(
+                                  'Product Information',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                children: <Widget>[
+                                  Column(
+                                    spacing: 10,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "     •     ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              'About - ${productDetailResponse.data!.product!.description!.about}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "     •     ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              'Health Benefits - ${productDetailResponse.data!.product!.description!.healthBenefits}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "     •     ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              'Nutrition - ${productDetailResponse.data!.product!.description!.nutrition}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "     •     ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              'Origin of Place - ${productDetailResponse.data!.product!.description!.origin}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 150,
+                            ),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 20,
+                                children: [
+                                  if (similarProductResponse.data != null)
+                                    Text("Similar Products"),
+                                  if (similarProductResponse.data != null)
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        spacing: 10,
+                                        children: [
+                                          for (
+                                            int i = 0;
+                                            i <
+                                                similarProductResponse
+                                                    .data!
+                                                    .length;
+                                            i++
+                                          )
+                                            InkWell(
+                                              onTap: () {
+                                                // Navigator.push(context,
+                                                //     MaterialPageRoute(
+                                                //   builder: (context) {
+                                                //     return ProductDetailsScreen(
+                                                //         productId: freshFruitsresponse
+                                                //                 .data![i].productId ??
+                                                //             "");
+                                                //   },
+                                                // )).then(
+                                                //   (value) {
+                                                //     if (!context.mounted) return;
+                                                //     context.read<HomeBloc>().add(
+                                                //         GetOrganicFruitsEvent(
+                                                //             mainCatId:
+                                                //                 "676431a2edae32578ae6d220",
+                                                //             subCatId:
+                                                //                 "676ad87c756fa03a5d0d0616",
+                                                //             mobileNo: phoneNumber));
+                                                //   },
+                                                // );
+                                              },
+                                              child: Container(
+                                                height: 300,
+                                                width: 200,
+                                                decoration: BoxDecoration(
+                                                  color: whiteColor,
+
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Stack(
+                                                      children: [
+                                                        Center(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets.only(
+                                                                  top: 12.0,
+                                                                ),
+                                                            child: ImageNetworkWidget(
+                                                              url:
+                                                                  similarProductResponse
+                                                                      .data![i]
+                                                                      .variants![0]
+                                                                      .imageUrl ??
+                                                                  "",
+                                                              height: 100,
+                                                              width:
+                                                                  double
+                                                                      .infinity,
+                                                              fit:
+                                                                  BoxFit
+                                                                      .contain,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          top: 0,
+                                                          left: 0,
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets.symmetric(
+                                                                  horizontal: 8,
+                                                                  vertical: 4,
+                                                                ),
+                                                            decoration: const BoxDecoration(
+                                                              color: Color(
+                                                                0xFF034703,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius.only(
+                                                                    topLeft:
+                                                                        Radius.circular(
+                                                                          20,
+                                                                        ),
+                                                                    bottomRight:
+                                                                        Radius.circular(
+                                                                          20,
+                                                                        ),
+                                                                  ),
+                                                            ),
+                                                            child: Text(
+                                                              similarProductResponse
+                                                                      .data![i]
+                                                                      .variants![0]
+                                                                      .offer ??
+                                                                  "",
+                                                              style: const TextStyle(
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(
+                                                              10,
+                                                            ),
+                                                        child: Column(
+                                                          //spacing: 2,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Text(
+                                                              similarProductResponse
+                                                                      .data![i]
+                                                                      .skuName ??
+                                                                  "",
+                                                              style: const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Colors
+                                                                        .black,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              similarProductResponse
+                                                                      .data![i]
+                                                                      .variants![0]
+                                                                      .label ??
+                                                                  "",
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Colors
+                                                                        .black54,
+                                                              ),
+                                                            ),
+                                                            Row(
+                                                              spacing: 10,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    RichText(
+                                                                      text: TextSpan(
+                                                                        text:
+                                                                            '₹ ',
+                                                                        style: const TextStyle(
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                        children: <
+                                                                          TextSpan
+                                                                        >[
+                                                                          TextSpan(
+                                                                            text:
+                                                                                similarProductResponse.data![i].variants![0].discountPrice.toString(),
+                                                                            style: const TextStyle(
+                                                                              fontSize:
+                                                                                  16,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold,
+                                                                              color:
+                                                                                  Colors.black,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 6,
+                                                                    ),
+                                                                    Text(
+                                                                      similarProductResponse
+                                                                          .data![i]
+                                                                          .variants![0]
+                                                                          .price
+                                                                          .toString(),
+                                                                      style: const TextStyle(
+                                                                        decoration:
+                                                                            TextDecoration.lineThrough,
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                        color: Color(
+                                                                          0xFF777777,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                similarProductResponse
+                                                                            .data![i]
+                                                                            .variants![0]
+                                                                            .cartQuantity ==
+                                                                        0
+                                                                    ? Expanded(
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          // context.read<HomeBloc>().add(AddButtonClikedEvent(
+                                                                          //     response:
+                                                                          //         freshFruitsresponse,
+                                                                          //     type:
+                                                                          //         "screen",
+                                                                          //     index:
+                                                                          //         i,
+                                                                          //     isButtonPressed:
+                                                                          //         true));
+                                                                        },
+                                                                        child: Container(
+                                                                          height:
+                                                                              30,
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border.all(
+                                                                              color:
+                                                                                  appColor,
+                                                                            ),
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              20,
+                                                                            ),
+                                                                          ),
+                                                                          child: Center(
+                                                                            child: Text(
+                                                                              'Add',
+                                                                              style: TextStyle(
+                                                                                color:
+                                                                                    appColor,
+                                                                                fontSize:
+                                                                                    12,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                    : Expanded(
+                                                                      child: Container(
+                                                                        height:
+                                                                            30,
+                                                                        decoration: BoxDecoration(
+                                                                          color:
+                                                                              appColor,
+                                                                          border: Border.all(
+                                                                            color:
+                                                                                appColor,
+                                                                          ),
+                                                                          borderRadius: BorderRadius.circular(
+                                                                            20,
+                                                                          ),
+                                                                        ),
+                                                                        child: Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceAround,
+                                                                          children: [
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                // context.read<HomeBloc>().add(RemoveItemButtonClikedEvent(
+                                                                                //     response: freshFruitsresponse,
+                                                                                //     type: "screen",
+                                                                                //     index: i,
+                                                                                //     isButtonPressed: true));
+                                                                              },
+                                                                              child: const Icon(
+                                                                                Icons.remove,
+                                                                                color:
+                                                                                    Colors.white,
+                                                                                size:
+                                                                                    16,
+                                                                              ),
+                                                                            ),
+                                                                            Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color:
+                                                                                    Colors.white,
+                                                                              ),
+                                                                              child: Center(
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.only(
+                                                                                    left:
+                                                                                        8,
+                                                                                    right:
+                                                                                        8,
+                                                                                  ),
+                                                                                  child: Text(
+                                                                                    similarProductResponse.data![i].variants![0].cartQuantity.toString(),
+                                                                                    textAlign:
+                                                                                        TextAlign.center,
+                                                                                    // style: GoogleFonts.poppins(
+                                                                                    //   color: const Color(0xFF326A32),
+                                                                                    //   fontSize: 14,
+                                                                                    //   fontWeight: FontWeight.w500,
+                                                                                    // ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                // context.read<HomeBloc>().add(AddButtonClikedEvent(
+                                                                                //     response: freshFruitsresponse,
+                                                                                //     type: "screen",
+                                                                                //     index: i,
+                                                                                //     isButtonPressed: true));
+                                                                              },
+                                                                              child: const Icon(
+                                                                                Icons.add,
+                                                                                color:
+                                                                                    Colors.white,
+                                                                                size:
+                                                                                    16,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                      : Column(
+                        children: [
+                          Image.asset(emptyCartImage),
+                          Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Center(
+                              child: Text(
+                                errorMsg,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
