@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import 'package:selorgweb_main/presentation/home/home_screen.dart';
 
 void main() {
@@ -10,13 +12,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=> Navigationprovider())
+      ],
+      child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Selorg',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: HomeScreen(),
-    );
+    ));
   }
 }

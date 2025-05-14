@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:selorgweb_main/order/screens/my_account_orders.dart';
+import 'package:selorgweb_main/screens/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class HeaderWidget extends StatelessWidget {
@@ -86,14 +88,14 @@ class HeaderWidget extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) {
-                        //       return const MyAccountOrders();
-                        //     },
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MyAccountOrders();
+                            },
+                          ),
+                        );
                       },
                       child: const Text(
                         'My Account',
@@ -108,14 +110,14 @@ class HeaderWidget extends StatelessWidget {
                     const SizedBox(width: 28),
                     InkWell(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) {
-                        //       return const CartScreen();
-                        //     },
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return CartScreen();
+                            },
+                          ),
+                        );
                       },
                       child: Container(
                         width: 127,
@@ -222,14 +224,14 @@ class HeaderWidget extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return const MyAccountOrders();
-                          //     },
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return MyAccountOrders();
+                              },
+                            ),
+                          );
                         },
                         child: const Text(
                           'My Account',
@@ -244,14 +246,14 @@ class HeaderWidget extends StatelessWidget {
                       const SizedBox(width: 28),
                       InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return const CartScreen();
-                          //     },
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return CartScreen();
+                              },
+                            ),
+                          );
                         },
                         child: Container(
                           width: 127,

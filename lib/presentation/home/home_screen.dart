@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_network/image_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
@@ -157,6 +158,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       HeaderWidget(),
                       Container(
+                        constraints: BoxConstraints(maxWidth: 1280),
                         color: appbackgroundColor,
                         height: MediaQuery.of(context).size.height * 0.45,
                         child: Stack(
@@ -175,10 +177,10 @@ class HomeScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const SizedBox(height: 24),
+                                    const SizedBox(height: 0),
                                     Text(
                                       'Grab & Go essentials for you!',
-                                      style: const TextStyle(
+                                      style: GoogleFonts.poppins(
                                         fontSize: 24,
                                         color: Colors.white,
                                       ),
@@ -188,7 +190,7 @@ class HomeScreen extends StatelessWidget {
                                     Visibility(
                                       visible: !(grabandEssential.data == null),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -288,14 +290,18 @@ class HomeScreen extends StatelessWidget {
                                                             ),
                                                           );
                                                         },
-                                                        child: Container(
-                                                          color: whiteColor,
-                                                          child: ImageNetworkWidget(
-                                                            url:
-                                                                grabandEssential
-                                                                    .data![i]
-                                                                    .imageUrl ??
-                                                                "",
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                15,
+                                                              ),
+                                                          child: Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  0,
+                                                                ),
+                                                            clipBehavior:
+                                                                Clip.hardEdge,
                                                             width:
                                                                 MediaQuery.of(
                                                                   context,
@@ -306,62 +312,79 @@ class HomeScreen extends StatelessWidget {
                                                                         1124
                                                                     ? 150
                                                                     : 200,
-                                                            fit:
-                                                                BoxFit.fitWidth,
+                                                            decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors
+                                                                      .transparent,
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    15,
+                                                                  ),
+                                                            ),
+                                                            child: Image.network(
+                                                              grabandEssential
+                                                                      .data![i]
+                                                                      .imageUrl ??
+                                                                  "",
+                                                              width:
+                                                                  double
+                                                                      .infinity,
+                                                              height:
+                                                                  double
+                                                                      .infinity,
+                                                              // height:
+                                                              //     constraints.maxWidth <
+                                                              //             1124
+                                                              //         ? 150
+                                                              //         : 200,
+                                                              fit: BoxFit.cover,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                      Positioned.fill(
-                                                        child: Align(
-                                                          alignment:
-                                                              Alignment
-                                                                  .bottomCenter,
-                                                          child: Container(
-                                                            height: 50,
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                  top: 3,
-                                                                  right: 3,
-                                                                  left: 3,
-                                                                  bottom: 3,
+                                                      Positioned(
+                                                        bottom: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        child: Container(
+                                                          width:
+                                                              MediaQuery.of(
+                                                                context,
+                                                              ).size.width,
+                                                          height: 50,
+
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  5,
                                                                 ),
-                                                            decoration:
-                                                                BoxDecoration(
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                  top: 4,
+                                                                  bottom: 4,
+                                                                  left: 15,
+                                                                  right: 15,
+                                                                ),
+                                                            child: Center(
+                                                              child: Text(
+                                                                grabandEssential
+                                                                        .data![i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                  fontSize: 15,
                                                                   color:
                                                                       Colors
-                                                                          .white,
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        5,
-                                                                      ),
-                                                                ),
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets.only(
-                                                                    top: 4,
-                                                                    bottom: 4,
-                                                                    left: 15,
-                                                                    right: 15,
-                                                                  ),
-                                                              child: Center(
-                                                                child: Text(
-                                                                  grabandEssential
-                                                                          .data![i]
-                                                                          .name ??
-                                                                      "",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    color:
-                                                                        Colors
-                                                                            .black,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
+                                                                          .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
                                                                 ),
                                                               ),
                                                             ),
