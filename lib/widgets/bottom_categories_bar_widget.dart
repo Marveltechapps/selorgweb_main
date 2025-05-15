@@ -7,11 +7,15 @@ class BottomCategoriesBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
       width: double.infinity,
       color: whiteColor,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 150, vertical: 50),
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 20 : 60,
+          vertical: 50,
+        ),
         child: Column(
           spacing: 20,
           crossAxisAlignment: CrossAxisAlignment.start,
