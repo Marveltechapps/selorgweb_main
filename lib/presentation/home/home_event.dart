@@ -91,9 +91,10 @@ class UpdateLocationEvent extends HomeEvent {
 }
 
 class GetScreenEvent extends HomeEvent {
+  final int cartcount;
   final int index;
 
-  GetScreenEvent({required this.index});
+  GetScreenEvent({required this.cartcount, required this.index});
 }
 
 class GetOrganicFruitsEvent extends HomeEvent {

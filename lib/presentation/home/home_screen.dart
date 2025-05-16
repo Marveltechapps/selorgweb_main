@@ -15,6 +15,7 @@ import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
+import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_menu.dart';
 
 import 'package:selorgweb_main/utils/constant.dart';
@@ -27,6 +28,11 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   static GrabandEssential grabandEssential = GrabandEssential();
+  static MainCategory mainCategory = MainCategory();
+
+  static TextEditingController searchController = TextEditingController();
+
+  static List<Category> categories = [];
   static List<BannerList> festivalbanners = [];
   static List<BannerList> dailybanners = [];
   static List<BannerList> offerbanners = [];
@@ -36,8 +42,14 @@ class HomeScreen extends StatelessWidget {
   static ProductStyleResponse nutsDriedFruitsResponse = ProductStyleResponse();
   static ProductStyleResponse riceCerealsResponse = ProductStyleResponse();
 
-  static MainCategory mainCategory = MainCategory();
-  static List<Category> categories = [];
+  static PageController pageController = PageController(initialPage: 0);
+  static int currentPage = 0;
+  // static Timer? timer;
+  static List<BannerList> loopingBanners = [];
+  static bool addButtonClicked = false;
+  static int selectedIndexes = 0;
+  static int selectedProductIndexes = 0;
+  static int productVarientIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +100,175 @@ class HomeScreen extends StatelessWidget {
           } else if (state is CategoryLoadedState) {
             categories = state.categories;
             debugPrint("CategoryLoadedState");
+          } else if (state is AddButtonClickedState) {
+            // noOfIteminCart = noOfIteminCart + 1;
+            // context.read<CounterCubit>().increment();
+            addButtonClicked = state.isSelected;
+            selectedIndexes = state.selectedIndexes;
+            if (state.type == "screen") {
+              state
+                  .response
+                  .data![state.selectedIndexes]
+                  .variants![0]
+                  .cartQuantity = (state
+                          .response
+                          .data![state.selectedIndexes]
+                          .variants![0]
+                          .cartQuantity ??
+                      0) +
+                  1;
+              context.read<HomeBloc>().add(
+                AddItemInCartApiEvent(
+                  userId: userId,
+                  productId:
+                      state.response.data![state.selectedIndexes].productId ??
+                      "",
+                  quantity: 1,
+                  variantLabel:
+                      selectedProductIndexes == state.selectedIndexes
+                          ? state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![productVarientIndex]
+                              .label
+                              .toString()
+                          : state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![0]
+                              .label
+                              .toString(),
+                  imageUrl:
+                      selectedProductIndexes == state.selectedIndexes
+                          ? state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![productVarientIndex]
+                              .imageUrl
+                              .toString()
+                          : state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![0]
+                              .imageUrl
+                              .toString(),
+                  price:
+                      selectedProductIndexes == state.selectedIndexes
+                          ? state
+                                  .response
+                                  .data![state.selectedIndexes]
+                                  .variants![productVarientIndex]
+                                  .price ??
+                              0
+                          : state
+                                  .response
+                                  .data![state.selectedIndexes]
+                                  .variants![0]
+                                  .price ??
+                              0,
+                  discountPrice:
+                      selectedProductIndexes == state.selectedIndexes
+                          ? state
+                                  .response
+                                  .data![state.selectedIndexes]
+                                  .variants![productVarientIndex]
+                                  .discountPrice ??
+                              0
+                          : state
+                                  .response
+                                  .data![state.selectedIndexes]
+                                  .variants![0]
+                                  .discountPrice ??
+                              0,
+                  deliveryInstructions: "",
+                  addNotes: "",
+                ),
+              );
+            } else if (state.type == "dialog") {
+              state
+                  .response
+                  .data![0]
+                  .variants![state.selectedIndexes]
+                  .cartQuantity = (state
+                          .response
+                          .data![0]
+                          .variants![state.selectedIndexes]
+                          .cartQuantity ??
+                      0) +
+                  1;
+            }
+          } else if (state is ItemAddedToCartInHomeScreenState) {
+            //   context.read<CounterCubit>().increment(1);
+            context.read<HomeBloc>().add(GetCartCountEvent(userId: userId));
+          } else if (state is CartDataSuccess) {
+            // context.read<CounterCubit>().decrement(state.noOfItems);
+            noOfIteminCart = state.noOfItems;
+            context.read<HomeBloc>().add(
+              GetScreenEvent(cartcount: state.noOfItems, index: 0),
+            );
+            context.read<CounterCubit>().increment(state.noOfItems);
+            noOfIteminCart = state.noOfItems;
+          } else if (state is RemoveButtonClickedState) {
+            // noOfIteminCart = noOfIteminCart - 1;
+            if (state.type == "screen") {
+              state
+                          .response
+                          .data![state.selectedIndexes]
+                          .variants![0]
+                          .cartQuantity ==
+                      0
+                  ? null
+                  : state
+                      .response
+                      .data![state.selectedIndexes]
+                      .variants![0]
+                      .cartQuantity = (state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![0]
+                              .cartQuantity ??
+                          0) -
+                      1;
+              context.read<HomeBloc>().add(
+                RemoveItemInCartApiEvent(
+                  userId: userId,
+                  productId:
+                      state.response.data![state.selectedIndexes].productId ??
+                      "",
+                  variantLabel:
+                      selectedProductIndexes == state.selectedIndexes
+                          ? state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![productVarientIndex]
+                              .label
+                              .toString()
+                          : state
+                              .response
+                              .data![state.selectedIndexes]
+                              .variants![0]
+                              .label
+                              .toString(),
+                  quantity: 1,
+                  deliveryTip: 0,
+                  handlingCharges: 0,
+                ),
+              );
+            } else if (state.type == "dialog") {
+              state
+                  .response
+                  .data![0]
+                  .variants![state.selectedIndexes]
+                  .cartQuantity = (state
+                          .response
+                          .data![0]
+                          .variants![state.selectedIndexes]
+                          .cartQuantity ??
+                      0) -
+                  1;
+            }
+          } else if (state is ItemRemovedToCartState) {
+            context.read<CounterCubit>().decrement(1);
           }
         },
         builder: (context, state) {
@@ -446,7 +627,6 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       Container(
                         constraints: BoxConstraints(maxWidth: 1280),
-
                         child: Column(
                           // spacing: 20,
                           children: [
@@ -508,15 +688,32 @@ class HomeScreen extends StatelessWidget {
                                             // Navigator.push(
                                             //   context,
                                             //   MaterialPageRoute(
-                                            //     builder: (context) =>
-                                            //         BannerScreen(
-                                            //       bannerId:
-                                            //           festivalbanners[index].id ??
+                                            //     builder:
+                                            //         (context) => BannerScreen(
+                                            //           bannerId:
+                                            //               festivalbanners[index]
+                                            //                   .id ??
                                             //               "",
-                                            //     ),
+                                            //         ),
                                             //   ),
-                                            // );
-                                            // debugPrint(festivalbanners[index].id);
+                                            // ).then((value) {
+                                            //   if (!context.mounted) return;
+                                            //   context.read<HomeBloc>().add(
+                                            //     GetCartCountEvent(
+                                            //       userId: userId,
+                                            //     ),
+                                            //   );
+                                            //   // context
+                                            //   //     .read<CounterCubit>()
+                                            //   //     .decrement(cartCount);
+                                            //   context
+                                            //       .read<CounterCubit>()
+                                            //       .increment(cartCount);
+                                            //   noOfIteminCart = cartCount;
+                                            // });
+                                            debugPrint(
+                                              festivalbanners[index].id,
+                                            );
                                           },
                                           child: Container(
                                             margin: const EdgeInsets.symmetric(
@@ -775,81 +972,167 @@ class HomeScreen extends StatelessWidget {
                                                       i++
                                                     )
                                                       Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .stretch,
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              width: null,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            debugPrint(
+                                                              "*******",
+                                                            );
+                                                            // title =
+                                                            //     mainCategory
+                                                            //         .data![i]
+                                                            //         .name ??
+                                                            //     "";
+                                                            // id =
+                                                            //     mainCategory
+                                                            //         .data![i]
+                                                            //         .id ??
+                                                            //     "";
+                                                            // isMainCategory =
+                                                            //     true;
+                                                            // mainCatId =
+                                                            //     mainCategory
+                                                            //         .data![i]
+                                                            //         .id ??
+                                                            //     "";
+                                                            // isCategory = false;
+                                                            // catId = "";
+                                                            // Navigator.push(
+                                                            //   context,
+                                                            //   MaterialPageRoute(
+                                                            //     builder:
+                                                            //         (
+                                                            //           context,
+                                                            //         ) => ProductListMenuScreen(
+                                                            //           title:
+                                                            //               mainCategory
+                                                            //                   .data![i]
+                                                            //                   .name ??
+                                                            //               "",
+                                                            //           id:
+                                                            //               mainCategory
+                                                            //                   .data![i]
+                                                            //                   .id ??
+                                                            //               "",
+                                                            //           isMainCategory:
+                                                            //               true,
+                                                            //           mainCatId:
+                                                            //               mainCategory
+                                                            //                   .data![i]
+                                                            //                   .id ??
+                                                            //               "",
+                                                            //           isCategory:
+                                                            //               false,
+                                                            //           catId: "",
+                                                            //         ),
+                                                            //   ),
+                                                            // ).then((value) {
+                                                            //   if (!context
+                                                            //       .mounted) {
+                                                            //     return;
+                                                            //   }
+                                                            //   context
+                                                            //       .read<
+                                                            //         HomeBloc
+                                                            //       >()
+                                                            //       .add(
+                                                            //         GetCartCountEvent(
+                                                            //           userId:
+                                                            //               userId,
+                                                            //         ),
+                                                            //       );
+                                                            //   // context
+                                                            //   //     .read<CounterCubit>()
+                                                            //   //     .decrement(cartCount);
+                                                            //   context
+                                                            //       .read<
+                                                            //         CounterCubit
+                                                            //       >()
+                                                            //       .increment(
+                                                            //         cartCount,
+                                                            //       );
+                                                            //   noOfIteminCart =
+                                                            //       cartCount;
+                                                            // });
+                                                          },
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .stretch,
+                                                            children: [
+                                                              InkWell(
+                                                                onTap: () {
+                                                                  debugPrint(
+                                                                    "******",
+                                                                  );
+                                                                },
+                                                                child: Container(
+                                                                  height: 130,
+                                                                  width: null,
+                                                                  decoration: BoxDecoration(
+                                                                    color: const Color(
                                                                       0xFFE5EEC3,
                                                                     ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
-                                                                    ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          5,
                                                                         ),
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                        color:
+                                                                            greyColor,
+                                                                        blurRadius:
+                                                                            3,
+                                                                        offset:
+                                                                            const Offset(
+                                                                              0,
+                                                                              1,
+                                                                            ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        mainCategory
-                                                                            .data![i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      ImageNetworkWidget(
+                                                                        url:
+                                                                            mainCategory.data![i].imageUrl ??
+                                                                            "",
+                                                                        height:
+                                                                            100,
+                                                                        width:
+                                                                            double.infinity,
+                                                                        fit:
+                                                                            BoxFit.contain,
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              mainCategory
-                                                                      .data![i]
-                                                                      .name ??
-                                                                  "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                mainCategory
+                                                                        .data![i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -972,81 +1255,164 @@ class HomeScreen extends StatelessWidget {
                                                       i++
                                                     )
                                                       Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .stretch,
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              width: null,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE5EEC3,
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            debugPrint(
+                                                              "*******",
+                                                            );
+                                                            title =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                true;
+                                                            mainCatId =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "";
+                                                            isCategory = false;
+                                                            catId = "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMenuScreen(
+                                                                      title:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          true,
+                                                                      mainCatId:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isCategory:
+                                                                          false,
+                                                                      catId: "",
                                                                     ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
+                                                              ),
+                                                            ).then((value) {
+                                                              if (!context
+                                                                  .mounted) {
+                                                                return;
+                                                              }
+                                                              context
+                                                                  .read<
+                                                                    HomeBloc
+                                                                  >()
+                                                                  .add(
+                                                                    GetCartCountEvent(
+                                                                      userId:
+                                                                          userId,
                                                                     ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
-                                                                        ),
+                                                                  );
+                                                              // context
+                                                              //     .read<CounterCubit>()
+                                                              //     .decrement(cartCount);
+                                                              context
+                                                                  .read<
+                                                                    CounterCubit
+                                                                  >()
+                                                                  .increment(
+                                                                    cartCount,
+                                                                  );
+                                                              noOfIteminCart =
+                                                                  cartCount;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .stretch,
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                width: null,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        mainCategory
-                                                                            .data![i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              mainCategory
-                                                                      .data![i]
-                                                                      .name ??
-                                                                  "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
+                                                                      ),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                            0,
+                                                                            1,
+                                                                          ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                mainCategory
+                                                                        .data![i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -1066,76 +1432,156 @@ class HomeScreen extends StatelessWidget {
                                                   if (categories.isNotEmpty)
                                                     for (int i = 0; i < 3; i++)
                                                       Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              width: null,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE5EEC3,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
-                                                                    ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
-                                                                        ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        categories[i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            debugPrint(
                                                               categories[i]
                                                                       .name ??
                                                                   "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
+                                                            );
+                                                            title =
+                                                                categories[i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                categories[i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                false;
+                                                            mainCatId = "";
+                                                            isCategory = true;
+                                                            catId =
+                                                                categories[i]
+                                                                    .id ??
+                                                                "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMenuScreen(
+                                                                      title:
+                                                                          categories[i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          categories[i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          false,
+                                                                      mainCatId:
+                                                                          "",
+                                                                      isCategory:
+                                                                          true,
+                                                                      catId:
+                                                                          categories[i]
+                                                                              .id ??
+                                                                          "",
+                                                                    ),
+                                                              ),
+                                                            ).then((value) {
+                                                              if (!context
+                                                                  .mounted) {
+                                                                return;
+                                                              }
+                                                              context
+                                                                  .read<
+                                                                    HomeBloc
+                                                                  >()
+                                                                  .add(
+                                                                    GetCartCountEvent(
+                                                                      userId:
+                                                                          userId,
+                                                                    ),
+                                                                  );
+                                                              // context
+                                                              //     .read<CounterCubit>()
+                                                              //     .decrement(cartCount);
+                                                              context
+                                                                  .read<
+                                                                    CounterCubit
+                                                                  >()
+                                                                  .increment(
+                                                                    cartCount,
+                                                                  );
+                                                              noOfIteminCart =
+                                                                  cartCount;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                width: null,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
+                                                                      ),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                            0,
+                                                                            1,
+                                                                          ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          categories[i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                categories[i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -1353,76 +1799,156 @@ class HomeScreen extends StatelessWidget {
                                                   if (categories.isNotEmpty)
                                                     for (int i = 3; i < 6; i++)
                                                       Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              // width: 130,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE5EEC3,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
-                                                                    ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
-                                                                        ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        categories[i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            debugPrint(
                                                               categories[i]
                                                                       .name ??
                                                                   "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
+                                                            );
+                                                            title =
+                                                                categories[i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                categories[i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                false;
+                                                            mainCatId = "";
+                                                            isCategory = true;
+                                                            catId =
+                                                                categories[i]
+                                                                    .id ??
+                                                                "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMenuScreen(
+                                                                      title:
+                                                                          categories[i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          categories[i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          false,
+                                                                      mainCatId:
+                                                                          "",
+                                                                      isCategory:
+                                                                          true,
+                                                                      catId:
+                                                                          categories[i]
+                                                                              .id ??
+                                                                          "",
+                                                                    ),
+                                                              ),
+                                                            ).then((value) {
+                                                              if (!context
+                                                                  .mounted) {
+                                                                return;
+                                                              }
+                                                              context
+                                                                  .read<
+                                                                    HomeBloc
+                                                                  >()
+                                                                  .add(
+                                                                    GetCartCountEvent(
+                                                                      userId:
+                                                                          userId,
+                                                                    ),
+                                                                  );
+                                                              // context
+                                                              //     .read<CounterCubit>()
+                                                              //     .decrement(cartCount);
+                                                              context
+                                                                  .read<
+                                                                    CounterCubit
+                                                                  >()
+                                                                  .increment(
+                                                                    cartCount,
+                                                                  );
+                                                              noOfIteminCart =
+                                                                  cartCount;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                // width: 130,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
+                                                                      ),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                            0,
+                                                                            1,
+                                                                          ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          categories[i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                categories[i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -1446,76 +1972,151 @@ class HomeScreen extends StatelessWidget {
                                                       i++
                                                     )
                                                       Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              // width: 130,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE5EEC3,
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            title =
+                                                                categories[i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                categories[i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                false;
+                                                            mainCatId = "";
+                                                            isCategory = true;
+                                                            catId =
+                                                                categories[i]
+                                                                    .id ??
+                                                                "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMenuScreen(
+                                                                      title:
+                                                                          categories[i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          categories[i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          false,
+                                                                      mainCatId:
+                                                                          "",
+                                                                      isCategory:
+                                                                          true,
+                                                                      catId:
+                                                                          categories[i]
+                                                                              .id ??
+                                                                          "",
                                                                     ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
+                                                              ),
+                                                            ).then((value) {
+                                                              if (!context
+                                                                  .mounted) {
+                                                                return;
+                                                              }
+                                                              context
+                                                                  .read<
+                                                                    HomeBloc
+                                                                  >()
+                                                                  .add(
+                                                                    GetCartCountEvent(
+                                                                      userId:
+                                                                          userId,
                                                                     ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
-                                                                        ),
+                                                                  );
+                                                              // context
+                                                              //     .read<CounterCubit>()
+                                                              //     .decrement(cartCount);
+                                                              context
+                                                                  .read<
+                                                                    CounterCubit
+                                                                  >()
+                                                                  .increment(
+                                                                    cartCount,
+                                                                  );
+                                                              noOfIteminCart =
+                                                                  cartCount;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                // width: 130,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        categories[i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              categories[i]
-                                                                      .name ??
-                                                                  "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
+                                                                      ),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                            0,
+                                                                            1,
+                                                                          ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          categories[i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                categories[i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -1634,26 +2235,49 @@ class HomeScreen extends StatelessWidget {
                                             )
                                               InkWell(
                                                 onTap: () {
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //   builder: (context) {
-                                                  //     return ProductDetailsScreen(
-                                                  //         productId: freshFruitsresponse
-                                                  //                 .data![i].productId ??
-                                                  //             "");
-                                                  //   },
-                                                  // )).then(
-                                                  //   (value) {
-                                                  //     if (!context.mounted) return;
-                                                  //     context.read<HomeBloc>().add(
-                                                  //         GetOrganicFruitsEvent(
-                                                  //             mainCatId:
-                                                  //                 "676431a2edae32578ae6d220",
-                                                  //             subCatId:
-                                                  //                 "676ad87c756fa03a5d0d0616",
-                                                  //             mobileNo: phoneNumber));
-                                                  //   },
-                                                  // );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return ProductDetailsScreen(
+                                                          productId:
+                                                              freshFruitsresponse
+                                                                  .data![i]
+                                                                  .productId ??
+                                                              "",
+                                                          screenType: "back",
+                                                        );
+                                                      },
+                                                    ),
+                                                  ).then((value) {
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
+                                                    context.read<HomeBloc>().add(
+                                                      GetOrganicFruitsEvent(
+                                                        mainCatId:
+                                                            "676431a2edae32578ae6d220",
+                                                        subCatId:
+                                                            "676ad87c756fa03a5d0d0616",
+                                                        mobileNo: phoneNumber,
+                                                      ),
+                                                    );
+
+                                                    context
+                                                        .read<HomeBloc>()
+                                                        .add(
+                                                          GetCartCountEvent(
+                                                            userId: userId,
+                                                          ),
+                                                        );
+                                                    // context
+                                                    //     .read<CounterCubit>()
+                                                    //     .decrement(cartCount);
+                                                    context
+                                                        .read<CounterCubit>()
+                                                        .increment(cartCount);
+                                                    noOfIteminCart = cartCount;
+                                                  });
                                                 },
                                                 child: Container(
                                                   height: 250,
@@ -1856,15 +2480,22 @@ class HomeScreen extends StatelessWidget {
                                                                       ? Expanded(
                                                                         child: InkWell(
                                                                           onTap: () {
-                                                                            // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                            //     response:
-                                                                            //         freshFruitsresponse,
-                                                                            //     type:
-                                                                            //         "screen",
-                                                                            //     index:
-                                                                            //         i,
-                                                                            //     isButtonPressed:
-                                                                            //         true));
+                                                                            context
+                                                                                .read<
+                                                                                  HomeBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  AddButtonClikedEvent(
+                                                                                    response:
+                                                                                        freshFruitsresponse,
+                                                                                    type:
+                                                                                        "screen",
+                                                                                    index:
+                                                                                        i,
+                                                                                    isButtonPressed:
+                                                                                        true,
+                                                                                  ),
+                                                                                );
                                                                           },
                                                                           child: Container(
                                                                             height:
@@ -1913,11 +2544,22 @@ class HomeScreen extends StatelessWidget {
                                                                             children: [
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(RemoveItemButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        RemoveItemButtonClikedEvent(
+                                                                                          response:
+                                                                                              freshFruitsresponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.remove,
@@ -1955,11 +2597,22 @@ class HomeScreen extends StatelessWidget {
                                                                               ),
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        AddButtonClikedEvent(
+                                                                                          response:
+                                                                                              freshFruitsresponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.add,
@@ -2028,26 +2681,47 @@ class HomeScreen extends StatelessWidget {
                                             )
                                               InkWell(
                                                 onTap: () {
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //   builder: (context) {
-                                                  //     return ProductDetailsScreen(
-                                                  //         productId: freshFruitsresponse
-                                                  //                 .data![i].productId ??
-                                                  //             "");
-                                                  //   },
-                                                  // )).then(
-                                                  //   (value) {
-                                                  //     if (!context.mounted) return;
-                                                  //     context.read<HomeBloc>().add(
-                                                  //         GetOrganicFruitsEvent(
-                                                  //             mainCatId:
-                                                  //                 "676431a2edae32578ae6d220",
-                                                  //             subCatId:
-                                                  //                 "676ad87c756fa03a5d0d0616",
-                                                  //             mobileNo: phoneNumber));
-                                                  //   },
-                                                  // );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return ProductDetailsScreen(
+                                                          productId:
+                                                              groceryEssentialsResponse
+                                                                  .data![i]
+                                                                  .productId ??
+                                                              "",
+                                                          screenType: "back",
+                                                        );
+                                                      },
+                                                    ),
+                                                  ).then((value) {
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
+                                                    context.read<HomeBloc>().add(
+                                                      GetGroceryEssentialsEvent(
+                                                        subCatId:
+                                                            "676b624a84dd76eac5d33a3e",
+                                                        mobileNo: phoneNumber,
+                                                      ),
+                                                    );
+
+                                                    context
+                                                        .read<HomeBloc>()
+                                                        .add(
+                                                          GetCartCountEvent(
+                                                            userId: userId,
+                                                          ),
+                                                        );
+                                                    // context
+                                                    //     .read<CounterCubit>()
+                                                    //     .decrement(cartCount);
+                                                    context
+                                                        .read<CounterCubit>()
+                                                        .increment(cartCount);
+                                                    noOfIteminCart = cartCount;
+                                                  });
                                                 },
                                                 child: Container(
                                                   height: 250,
@@ -2248,15 +2922,22 @@ class HomeScreen extends StatelessWidget {
                                                                       ? Expanded(
                                                                         child: InkWell(
                                                                           onTap: () {
-                                                                            // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                            //     response:
-                                                                            //         freshFruitsresponse,
-                                                                            //     type:
-                                                                            //         "screen",
-                                                                            //     index:
-                                                                            //         i,
-                                                                            //     isButtonPressed:
-                                                                            //         true));
+                                                                            context
+                                                                                .read<
+                                                                                  HomeBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  AddButtonClikedEvent(
+                                                                                    response:
+                                                                                        groceryEssentialsResponse,
+                                                                                    type:
+                                                                                        "screen",
+                                                                                    index:
+                                                                                        i,
+                                                                                    isButtonPressed:
+                                                                                        true,
+                                                                                  ),
+                                                                                );
                                                                           },
                                                                           child: Container(
                                                                             height:
@@ -2305,11 +2986,22 @@ class HomeScreen extends StatelessWidget {
                                                                             children: [
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(RemoveItemButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        RemoveItemButtonClikedEvent(
+                                                                                          response:
+                                                                                              groceryEssentialsResponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.remove,
@@ -2347,11 +3039,22 @@ class HomeScreen extends StatelessWidget {
                                                                               ),
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        AddButtonClikedEvent(
+                                                                                          response:
+                                                                                              groceryEssentialsResponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.add,
@@ -2420,26 +3123,47 @@ class HomeScreen extends StatelessWidget {
                                             )
                                               InkWell(
                                                 onTap: () {
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //   builder: (context) {
-                                                  //     return ProductDetailsScreen(
-                                                  //         productId: freshFruitsresponse
-                                                  //                 .data![i].productId ??
-                                                  //             "");
-                                                  //   },
-                                                  // )).then(
-                                                  //   (value) {
-                                                  //     if (!context.mounted) return;
-                                                  //     context.read<HomeBloc>().add(
-                                                  //         GetOrganicFruitsEvent(
-                                                  //             mainCatId:
-                                                  //                 "676431a2edae32578ae6d220",
-                                                  //             subCatId:
-                                                  //                 "676ad87c756fa03a5d0d0616",
-                                                  //             mobileNo: phoneNumber));
-                                                  //   },
-                                                  // );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return ProductDetailsScreen(
+                                                          productId:
+                                                              nutsDriedFruitsResponse
+                                                                  .data![i]
+                                                                  .productId ??
+                                                              "",
+                                                          screenType: "back",
+                                                        );
+                                                      },
+                                                    ),
+                                                  ).then((value) {
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
+                                                    context.read<HomeBloc>().add(
+                                                      GetNutsDriedFruitsEvent(
+                                                        subCatId:
+                                                            "676b62c484dd76eac5d33a46",
+                                                        mobileNo: phoneNumber,
+                                                      ),
+                                                    );
+
+                                                    context
+                                                        .read<HomeBloc>()
+                                                        .add(
+                                                          GetCartCountEvent(
+                                                            userId: userId,
+                                                          ),
+                                                        );
+                                                    // context
+                                                    //     .read<CounterCubit>()
+                                                    //     .decrement(cartCount);
+                                                    context
+                                                        .read<CounterCubit>()
+                                                        .increment(cartCount);
+                                                    noOfIteminCart = cartCount;
+                                                  });
                                                 },
                                                 child: Container(
                                                   height: 250,
@@ -2640,15 +3364,22 @@ class HomeScreen extends StatelessWidget {
                                                                       ? Expanded(
                                                                         child: InkWell(
                                                                           onTap: () {
-                                                                            // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                            //     response:
-                                                                            //         freshFruitsresponse,
-                                                                            //     type:
-                                                                            //         "screen",
-                                                                            //     index:
-                                                                            //         i,
-                                                                            //     isButtonPressed:
-                                                                            //         true));
+                                                                            context
+                                                                                .read<
+                                                                                  HomeBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  AddButtonClikedEvent(
+                                                                                    response:
+                                                                                        nutsDriedFruitsResponse,
+                                                                                    type:
+                                                                                        "screen",
+                                                                                    index:
+                                                                                        i,
+                                                                                    isButtonPressed:
+                                                                                        true,
+                                                                                  ),
+                                                                                );
                                                                           },
                                                                           child: Container(
                                                                             height:
@@ -2697,11 +3428,22 @@ class HomeScreen extends StatelessWidget {
                                                                             children: [
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(RemoveItemButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        RemoveItemButtonClikedEvent(
+                                                                                          response:
+                                                                                              nutsDriedFruitsResponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.remove,
@@ -2739,11 +3481,22 @@ class HomeScreen extends StatelessWidget {
                                                                               ),
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        AddButtonClikedEvent(
+                                                                                          response:
+                                                                                              nutsDriedFruitsResponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.add,
@@ -2812,26 +3565,49 @@ class HomeScreen extends StatelessWidget {
                                             )
                                               InkWell(
                                                 onTap: () {
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //   builder: (context) {
-                                                  //     return ProductDetailsScreen(
-                                                  //         productId: freshFruitsresponse
-                                                  //                 .data![i].productId ??
-                                                  //             "");
-                                                  //   },
-                                                  // )).then(
-                                                  //   (value) {
-                                                  //     if (!context.mounted) return;
-                                                  //     context.read<HomeBloc>().add(
-                                                  //         GetOrganicFruitsEvent(
-                                                  //             mainCatId:
-                                                  //                 "676431a2edae32578ae6d220",
-                                                  //             subCatId:
-                                                  //                 "676ad87c756fa03a5d0d0616",
-                                                  //             mobileNo: phoneNumber));
-                                                  //   },
-                                                  // );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return ProductDetailsScreen(
+                                                          productId:
+                                                              riceCerealsResponse
+                                                                  .data![i]
+                                                                  .productId ??
+                                                              "",
+                                                          screenType: "back",
+                                                        );
+                                                      },
+                                                    ),
+                                                  ).then((value) {
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
+                                                    context.read<HomeBloc>().add(
+                                                      GetRiceCerealsEvent(
+                                                        mainCatId:
+                                                            "676431ddedae32578ae6d222",
+                                                        subCatId:
+                                                            "676b60bd84dd76eac5d33a2a",
+                                                        mobileNo: phoneNumber,
+                                                      ),
+                                                    );
+
+                                                    context
+                                                        .read<HomeBloc>()
+                                                        .add(
+                                                          GetCartCountEvent(
+                                                            userId: userId,
+                                                          ),
+                                                        );
+                                                    // context
+                                                    //     .read<CounterCubit>()
+                                                    //     .decrement(cartCount);
+                                                    context
+                                                        .read<CounterCubit>()
+                                                        .increment(cartCount);
+                                                    noOfIteminCart = cartCount;
+                                                  });
                                                 },
                                                 child: Container(
                                                   height: 250,
@@ -3032,15 +3808,22 @@ class HomeScreen extends StatelessWidget {
                                                                       ? Expanded(
                                                                         child: InkWell(
                                                                           onTap: () {
-                                                                            // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                            //     response:
-                                                                            //         freshFruitsresponse,
-                                                                            //     type:
-                                                                            //         "screen",
-                                                                            //     index:
-                                                                            //         i,
-                                                                            //     isButtonPressed:
-                                                                            //         true));
+                                                                            context
+                                                                                .read<
+                                                                                  HomeBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  AddButtonClikedEvent(
+                                                                                    response:
+                                                                                        riceCerealsResponse,
+                                                                                    type:
+                                                                                        "screen",
+                                                                                    index:
+                                                                                        i,
+                                                                                    isButtonPressed:
+                                                                                        true,
+                                                                                  ),
+                                                                                );
                                                                           },
                                                                           child: Container(
                                                                             height:
@@ -3089,11 +3872,22 @@ class HomeScreen extends StatelessWidget {
                                                                             children: [
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(RemoveItemButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        RemoveItemButtonClikedEvent(
+                                                                                          response:
+                                                                                              riceCerealsResponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.remove,
@@ -3131,11 +3925,22 @@ class HomeScreen extends StatelessWidget {
                                                                               ),
                                                                               InkWell(
                                                                                 onTap: () {
-                                                                                  // context.read<HomeBloc>().add(AddButtonClikedEvent(
-                                                                                  //     response: freshFruitsresponse,
-                                                                                  //     type: "screen",
-                                                                                  //     index: i,
-                                                                                  //     isButtonPressed: true));
+                                                                                  context
+                                                                                      .read<
+                                                                                        HomeBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        AddButtonClikedEvent(
+                                                                                          response:
+                                                                                              riceCerealsResponse,
+                                                                                          type:
+                                                                                              "screen",
+                                                                                          index:
+                                                                                              i,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
                                                                                 },
                                                                                 child: const Icon(
                                                                                   Icons.add,

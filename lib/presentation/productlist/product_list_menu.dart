@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
@@ -1192,6 +1193,8 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                             productId:
                                                                                 productStyleResponse.data![index].productId ??
                                                                                 "",
+                                                                            screenType:
+                                                                                "",
                                                                           );
                                                                         },
                                                                       ),
@@ -1476,6 +1479,179 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                         ),
                                                                       ],
                                                                     ),
+                                                                    productStyleResponse
+                                                                                .data![index]
+                                                                                .variants![selectedIndexes ==
+                                                                                        index
+                                                                                    ? variantindex
+                                                                                    : 0]
+                                                                                .cartQuantity ==
+                                                                            0
+                                                                        ? InkWell(
+                                                                          onTap: () {
+                                                                            context
+                                                                                .read<
+                                                                                  ProductBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  AddButtonClikedEvent(
+                                                                                    type:
+                                                                                        "screen",
+                                                                                    index:
+                                                                                        index,
+                                                                                    isButtonPressed:
+                                                                                        true,
+                                                                                  ),
+                                                                                );
+                                                                          },
+                                                                          child: Container(
+                                                                            padding: const EdgeInsets.symmetric(
+                                                                              vertical:
+                                                                                  1,
+                                                                            ),
+                                                                            decoration: BoxDecoration(
+                                                                              color:
+                                                                                  whiteColor,
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                20,
+                                                                              ),
+                                                                              border: Border.all(
+                                                                                color:
+                                                                                    appColor,
+                                                                              ),
+                                                                            ),
+                                                                            height:
+                                                                                27,
+                                                                            child: Row(
+                                                                              mainAxisAlignment:
+                                                                                  MainAxisAlignment.center,
+                                                                              children: [
+                                                                                Text(
+                                                                                  "Add",
+                                                                                  textAlign:
+                                                                                      TextAlign.center,
+                                                                                  style: GoogleFonts.poppins(
+                                                                                    color:
+                                                                                        appColor,
+                                                                                    fontSize:
+                                                                                        12,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                        : Container(
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                1,
+                                                                          ),
+                                                                          decoration: BoxDecoration(
+                                                                            color: const Color(
+                                                                              0xFF326A32,
+                                                                            ),
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              20,
+                                                                            ),
+                                                                            border: Border.all(
+                                                                              color:
+                                                                                  appColor,
+                                                                            ),
+                                                                          ),
+                                                                          height:
+                                                                              27,
+                                                                          child: Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: InkWell(
+                                                                                  onTap: () {
+                                                                                    context
+                                                                                        .read<
+                                                                                          ProductBloc
+                                                                                        >()
+                                                                                        .add(
+                                                                                          RemoveItemButtonClikedEvent(
+                                                                                            type:
+                                                                                                "screen",
+                                                                                            index:
+                                                                                                index,
+                                                                                            isButtonPressed:
+                                                                                                true,
+                                                                                          ),
+                                                                                        );
+                                                                                  },
+                                                                                  child: const Icon(
+                                                                                    Icons.remove,
+                                                                                    color:
+                                                                                        Colors.white,
+                                                                                    size:
+                                                                                        16,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              Container(
+                                                                                // margin:
+                                                                                //     const EdgeInsets
+                                                                                //         .symmetric(
+                                                                                //         horizontal:
+                                                                                //             16),
+                                                                                //  padding: const EdgeInsets.symmetric(vertical: 2),
+                                                                                width:
+                                                                                    37,
+                                                                                decoration: BoxDecoration(
+                                                                                  color:
+                                                                                      Colors.white,
+                                                                                  //  borderRadius: BorderRadius.circular(4),
+                                                                                ),
+                                                                                child: Text(
+                                                                                  productStyleResponse.data![index].variants![0].cartQuantity.toString(),
+                                                                                  textAlign:
+                                                                                      TextAlign.center,
+                                                                                  style: GoogleFonts.poppins(
+                                                                                    color: const Color(
+                                                                                      0xFF326A32,
+                                                                                    ),
+                                                                                    fontSize:
+                                                                                        14,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              Expanded(
+                                                                                child: InkWell(
+                                                                                  onTap: () {
+                                                                                    context
+                                                                                        .read<
+                                                                                          ProductBloc
+                                                                                        >()
+                                                                                        .add(
+                                                                                          AddButtonClikedEvent(
+                                                                                            type:
+                                                                                                "screen",
+                                                                                            index:
+                                                                                                index,
+                                                                                            isButtonPressed:
+                                                                                                true,
+                                                                                          ),
+                                                                                        );
+                                                                                  },
+                                                                                  child: const Icon(
+                                                                                    Icons.add,
+                                                                                    color:
+                                                                                        Colors.white,
+                                                                                    size:
+                                                                                        16,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
                                                                   ],
                                                                 ),
                                                               ),
@@ -1719,6 +1895,8 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                             return ProductDetailsScreen(
                                                                               productId:
                                                                                   productStyleResponse.data![index].productId ??
+                                                                                  "",
+                                                                              screenType:
                                                                                   "",
                                                                             );
                                                                           },
@@ -2006,6 +2184,183 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                           ),
                                                                         ],
                                                                       ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            6,
+                                                                      ),
+                                                                      productStyleResponse
+                                                                                  .data![index]
+                                                                                  .variants![selectedIndexes ==
+                                                                                          index
+                                                                                      ? variantindex
+                                                                                      : 0]
+                                                                                  .cartQuantity ==
+                                                                              0
+                                                                          ? InkWell(
+                                                                            onTap: () {
+                                                                              context
+                                                                                  .read<
+                                                                                    ProductBloc
+                                                                                  >()
+                                                                                  .add(
+                                                                                    AddButtonClikedEvent(
+                                                                                      type:
+                                                                                          "screen",
+                                                                                      index:
+                                                                                          index,
+                                                                                      isButtonPressed:
+                                                                                          true,
+                                                                                    ),
+                                                                                  );
+                                                                            },
+                                                                            child: Container(
+                                                                              padding: const EdgeInsets.symmetric(
+                                                                                vertical:
+                                                                                    1,
+                                                                              ),
+                                                                              decoration: BoxDecoration(
+                                                                                color:
+                                                                                    whiteColor,
+                                                                                borderRadius: BorderRadius.circular(
+                                                                                  20,
+                                                                                ),
+                                                                                border: Border.all(
+                                                                                  color:
+                                                                                      appColor,
+                                                                                ),
+                                                                              ),
+                                                                              height:
+                                                                                  27,
+                                                                              child: Row(
+                                                                                mainAxisAlignment:
+                                                                                    MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    "Add",
+                                                                                    textAlign:
+                                                                                        TextAlign.center,
+                                                                                    style: GoogleFonts.poppins(
+                                                                                      color:
+                                                                                          appColor,
+                                                                                      fontSize:
+                                                                                          12,
+                                                                                      fontWeight:
+                                                                                          FontWeight.w500,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          )
+                                                                          : Container(
+                                                                            padding: const EdgeInsets.symmetric(
+                                                                              vertical:
+                                                                                  1,
+                                                                            ),
+                                                                            decoration: BoxDecoration(
+                                                                              color: const Color(
+                                                                                0xFF326A32,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                20,
+                                                                              ),
+                                                                              border: Border.all(
+                                                                                color:
+                                                                                    appColor,
+                                                                              ),
+                                                                            ),
+                                                                            height:
+                                                                                27,
+                                                                            child: Row(
+                                                                              mainAxisAlignment:
+                                                                                  MainAxisAlignment.center,
+                                                                              children: [
+                                                                                Expanded(
+                                                                                  child: InkWell(
+                                                                                    onTap: () {
+                                                                                      context
+                                                                                          .read<
+                                                                                            ProductBloc
+                                                                                          >()
+                                                                                          .add(
+                                                                                            RemoveItemButtonClikedEvent(
+                                                                                              type:
+                                                                                                  "screen",
+                                                                                              index:
+                                                                                                  index,
+                                                                                              isButtonPressed:
+                                                                                                  true,
+                                                                                            ),
+                                                                                          );
+                                                                                    },
+                                                                                    child: const Icon(
+                                                                                      Icons.remove,
+                                                                                      color:
+                                                                                          Colors.white,
+                                                                                      size:
+                                                                                          16,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Container(
+                                                                                  // margin:
+                                                                                  //     const EdgeInsets
+                                                                                  //         .symmetric(
+                                                                                  //         horizontal:
+                                                                                  //             16),
+                                                                                  //  padding: const EdgeInsets.symmetric(vertical: 2),
+                                                                                  width:
+                                                                                      37,
+                                                                                  decoration: BoxDecoration(
+                                                                                    color:
+                                                                                        Colors.white,
+                                                                                    //  borderRadius: BorderRadius.circular(4),
+                                                                                  ),
+                                                                                  child: Text(
+                                                                                    productStyleResponse.data![index].variants![0].cartQuantity.toString(),
+                                                                                    textAlign:
+                                                                                        TextAlign.center,
+                                                                                    style: GoogleFonts.poppins(
+                                                                                      color: const Color(
+                                                                                        0xFF326A32,
+                                                                                      ),
+                                                                                      fontSize:
+                                                                                          14,
+                                                                                      fontWeight:
+                                                                                          FontWeight.w500,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: InkWell(
+                                                                                    onTap: () {
+                                                                                      context
+                                                                                          .read<
+                                                                                            ProductBloc
+                                                                                          >()
+                                                                                          .add(
+                                                                                            AddButtonClikedEvent(
+                                                                                              type:
+                                                                                                  "screen",
+                                                                                              index:
+                                                                                                  index,
+                                                                                              isButtonPressed:
+                                                                                                  true,
+                                                                                            ),
+                                                                                          );
+                                                                                    },
+                                                                                    child: const Icon(
+                                                                                      Icons.add,
+                                                                                      color:
+                                                                                          Colors.white,
+                                                                                      size:
+                                                                                          16,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
                                                                     ],
                                                                   ),
                                                                 ),

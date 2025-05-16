@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+//
+var title = "";
+var id = "";
+var isMainCategory = false;
+var mainCatId = "";
+var isCategory = false;
+var catId = "";
+
 // svgs
 var appTextImage = 'assets/appIcon.svg';
 
