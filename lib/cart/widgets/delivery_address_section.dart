@@ -37,7 +37,7 @@ final List<AddressItem> addressList = [
 ];
 
 class DeliveryAddressSection extends StatelessWidget {
-  const DeliveryAddressSection({Key? key}) : super(key: key);
+  const DeliveryAddressSection({super.key});
   @override
   Widget build(BuildContext context) {
     bool isaddressadded = true;

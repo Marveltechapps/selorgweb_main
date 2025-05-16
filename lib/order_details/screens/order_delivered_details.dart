@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
-import '../widgets/order_header.dart';
 import '../widgets/side_navigation.dart';
 import '../widgets/order_items.dart';
 import '../widgets/bill_summary.dart';
 import '../widgets/order_info.dart';
 
 class OrderDeliveredDetails extends StatelessWidget {
-  const OrderDeliveredDetails({Key? key}) : super(key: key);
+  const OrderDeliveredDetails({super.key});
 
   @override
   Widget build(BuildContext context) {

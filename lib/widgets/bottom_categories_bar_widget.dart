@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class BottomCategoriesBarWidget extends StatelessWidget {
@@ -13,7 +12,7 @@ class BottomCategoriesBarWidget extends StatelessWidget {
       color: whiteColor,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 60,
+          horizontal: isMobile ? 20 : 150,
           vertical: 50,
         ),
         child: Column(

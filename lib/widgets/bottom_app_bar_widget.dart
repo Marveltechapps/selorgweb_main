@@ -7,14 +7,13 @@ class BottomAppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = MediaQuery.of(context).size.width < 991;
     final isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
       width: MediaQuery.of(context).size.width,
       color: appColor,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 60,
+          horizontal: isMobile ? 20 : 150,
           vertical: 50,
         ),
         child: Container(

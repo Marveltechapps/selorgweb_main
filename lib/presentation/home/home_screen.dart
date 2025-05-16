@@ -3187,7 +3187,6 @@ class HomeScreen extends StatelessWidget {
                                   width: 1280,
                                   height: 350,
                                 ),
-
                                 // Content
                                 Positioned(
                                   left: 100,
@@ -3279,7 +3278,6 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-
                       BottomCategoriesBarWidget(),
                       BottomAppBarWidget(),
                     ],
@@ -3303,14 +3301,14 @@ class AppStoreButton extends StatelessWidget {
   final TextStyle? bottomTextStyle;
 
   const AppStoreButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.topText,
     required this.bottomText,
     required this.iconSize,
     this.topTextStyle,
     this.bottomTextStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
