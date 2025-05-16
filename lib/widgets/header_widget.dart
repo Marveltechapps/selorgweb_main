@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:selorgweb_main/order/screens/my_account_orders.dart';
-import 'package:selorgweb_main/screens/cart_screen.dart';
+import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class HeaderWidget extends StatelessWidget {
