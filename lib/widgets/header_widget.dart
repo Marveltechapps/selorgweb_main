@@ -11,11 +11,11 @@ class HeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < 1124) {
+        if (constraints.maxWidth < 991) {
           // mobile view and tablet view
           return Container(
             padding: EdgeInsets.symmetric(
-              horizontal: constraints.maxWidth < 1124 ? 20 : 52,
+              horizontal: constraints.maxWidth < 991 ? 20 : 52,
               vertical: 7,
             ),
             color: const Color(0xFF052E16),
@@ -55,7 +55,7 @@ class HeaderWidget extends StatelessWidget {
                 const SizedBox(height: 10),
                 Container(
                   width:
-                      constraints.maxWidth < 1124
+                      constraints.maxWidth < 991
                           ? 524
                           : MediaQuery.of(context).size.width / 3,
                   height: 40,

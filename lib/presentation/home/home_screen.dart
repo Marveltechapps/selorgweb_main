@@ -1572,6 +1572,9 @@ class HomeScreen extends StatelessWidget {
                                   horizontal: isMobile ? 20 : 60,
                                 ),
                                 child: Container(
+                                  constraints: BoxConstraints(maxWidth: 1280),
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(),
                                   width: double.infinity,
                                   // color: appColor,
                                   child: InkWell(
@@ -1586,7 +1589,7 @@ class HomeScreen extends StatelessWidget {
                                     },
                                     child: Image.asset(
                                       "banner.png",
-                                      width: 1280,
+                                      width: double.infinity,
                                       height: null,
                                       fit: BoxFit.cover,
                                     ),

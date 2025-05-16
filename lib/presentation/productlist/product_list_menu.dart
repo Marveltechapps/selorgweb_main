@@ -62,7 +62,7 @@ class ProductListMenuScreen extends StatelessWidget {
   ) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
+      isScrollControlled: false,
       backgroundColor: whiteColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -78,160 +78,209 @@ class ProductListMenuScreen extends StatelessWidget {
                     builder: (context, setState) {
                       return Padding(
                         padding: const EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              name,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
 
-                            // ✅ Now BlocBuilder will work because ProductBloc is provided
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount:
-                                  productStyleResponse
-                                      .data![productIndex]
-                                      .variants!
-                                      .length,
-                              itemBuilder: (context, i) {
-                                return InkWell(
-                                  onTap: () {
-                                    context.read<ProductBloc>().add(
-                                      ChangeVarientItemEvent(
-                                        productIndex: productIndex,
-                                        varientIndex: i,
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 6,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: whiteColor,
-                                      borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(
-                                        color: Colors.green,
-                                        width: 0.5,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                productStyleResponse
-                                                        .data![productIndex]
-                                                        .variants![i]
-                                                        .label ??
-                                                    "",
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodySmall,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  RichText(
-                                                    text: TextSpan(
-                                                      text: '₹ ',
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
-                                                      children: <TextSpan>[
-                                                        TextSpan(
-                                                          text:
-                                                              productStyleResponse
-                                                                  .data![productIndex]
-                                                                  .variants![i]
-                                                                  .discountPrice
-                                                                  .toString(),
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color:
-                                                                    Colors
-                                                                        .black,
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  RichText(
-                                                    text: TextSpan(
-                                                      text: '₹ ',
-                                                      style: const TextStyle(
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
-                                                        fontSize: 12,
-                                                        color: Colors.grey,
-                                                      ),
-                                                      children: <TextSpan>[
-                                                        TextSpan(
-                                                          text:
-                                                              productStyleResponse
-                                                                  .data![productIndex]
-                                                                  .variants![i]
-                                                                  .price
-                                                                  .toString(),
-                                                          style: const TextStyle(
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .lineThrough,
-                                                            fontSize: 12,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                              // ✅ Now BlocBuilder will work because ProductBloc is provided
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount:
+                                    productStyleResponse
+                                        .data![productIndex]
+                                        .variants!
+                                        .length,
+                                itemBuilder: (context, i) {
+                                  return InkWell(
+                                    onTap: () {
+                                      context.read<ProductBloc>().add(
+                                        ChangeVarientItemEvent(
+                                          productIndex: productIndex,
+                                          varientIndex: i,
                                         ),
-                                        productStyleResponse
-                                                    .data![productIndex]
-                                                    .variants![i]
-                                                    .cartQuantity ==
-                                                0
-                                            ? GestureDetector(
-                                              onTap: () {
-                                                setState(() {});
-                                                context.read<ProductBloc>().add(
-                                                  ChangeVarientItemEvent(
-                                                    productIndex: productIndex,
-                                                    varientIndex: i,
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 6,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        borderRadius: BorderRadius.circular(3),
+                                        border: Border.all(
+                                          color: Colors.green,
+                                          width: 0.5,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  productStyleResponse
+                                                          .data![productIndex]
+                                                          .variants![i]
+                                                          .label ??
+                                                      "",
+                                                  style:
+                                                      Theme.of(
+                                                        context,
+                                                      ).textTheme.bodySmall,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    RichText(
+                                                      text: TextSpan(
+                                                        text: '₹ ',
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black,
+                                                        ),
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                            text:
+                                                                productStyleResponse
+                                                                    .data![productIndex]
+                                                                    .variants![i]
+                                                                    .discountPrice
+                                                                    .toString(),
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      Colors
+                                                                          .black,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    RichText(
+                                                      text: TextSpan(
+                                                        text: '₹ ',
+                                                        style: const TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                          fontSize: 12,
+                                                          color: Colors.grey,
+                                                        ),
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                            text:
+                                                                productStyleResponse
+                                                                    .data![productIndex]
+                                                                    .variants![i]
+                                                                    .price
+                                                                    .toString(),
+                                                            style: const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .lineThrough,
+                                                              fontSize: 12,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          productStyleResponse
+                                                      .data![productIndex]
+                                                      .variants![i]
+                                                      .cartQuantity ==
+                                                  0
+                                              ? GestureDetector(
+                                                onTap: () {
+                                                  setState(() {});
+                                                  context
+                                                      .read<ProductBloc>()
+                                                      .add(
+                                                        ChangeVarientItemEvent(
+                                                          productIndex:
+                                                              productIndex,
+                                                          varientIndex: i,
+                                                        ),
+                                                      );
+                                                  context
+                                                      .read<ProductBloc>()
+                                                      .add(
+                                                        AddButtonClikedEvent(
+                                                          type: "dialog",
+                                                          index: productIndex,
+                                                          isButtonPressed: true,
+                                                        ),
+                                                      );
+                                                },
+                                                child: Container(
+                                                  width: 130,
+                                                  height: 30,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 1,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        productStyleResponse
+                                                                    .data![productIndex]
+                                                                    .variants![i]
+                                                                    .cartQuantity ==
+                                                                0
+                                                            ? whiteColor
+                                                            : const Color(
+                                                              0xFF326A32,
+                                                            ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
+                                                    border: Border.all(
+                                                      color: appColor,
+                                                    ),
                                                   ),
-                                                );
-                                                context.read<ProductBloc>().add(
-                                                  AddButtonClikedEvent(
-                                                    type: "dialog",
-                                                    index: productIndex,
-                                                    isButtonPressed: true,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Add",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      // style:
+                                                      //     GoogleFonts.poppins(
+                                                      //   color: appColor,
+                                                      //   fontSize: 12,
+                                                      //   fontWeight:
+                                                      //       FontWeight.w500,
+                                                      // ),
+                                                    ),
                                                   ),
-                                                );
-                                              },
-                                              child: Container(
+                                                ),
+                                              )
+                                              : Container(
                                                 width: 130,
                                                 height: 30,
                                                 padding:
@@ -255,266 +304,243 @@ class ProductListMenuScreen extends StatelessWidget {
                                                     color: appColor,
                                                   ),
                                                 ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "Add",
-                                                    textAlign: TextAlign.center,
-                                                    // style:
-                                                    //     GoogleFonts.poppins(
-                                                    //   color: appColor,
-                                                    //   fontSize: 12,
-                                                    //   fontWeight:
-                                                    //       FontWeight.w500,
-                                                    // ),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                            : Container(
-                                              width: 130,
-                                              height: 30,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 1,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    productStyleResponse
-                                                                .data![productIndex]
-                                                                .variants![i]
-                                                                .cartQuantity ==
-                                                            0
-                                                        ? whiteColor
-                                                        : const Color(
-                                                          0xFF326A32,
-                                                        ),
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                border: Border.all(
-                                                  color: appColor,
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Expanded(
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        // context.read<ProductBloc>().add(
-                                                        //     RemoveItemButtonClikedEvent(
-                                                        //         type: "dialog",
-                                                        //         index: i,
-                                                        //         isButtonPressed:
-                                                        //             true));
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          // context.read<ProductBloc>().add(
+                                                          //     RemoveItemButtonClikedEvent(
+                                                          //         type: "dialog",
+                                                          //         index: i,
+                                                          //         isButtonPressed:
+                                                          //             true));
 
-                                                        context
-                                                            .read<ProductBloc>()
-                                                            .add(
-                                                              ChangeVarientItemEvent(
-                                                                productIndex:
-                                                                    productIndex,
-                                                                varientIndex: i,
-                                                              ),
-                                                            );
-                                                        context
-                                                            .read<ProductBloc>()
-                                                            .add(
-                                                              RemoveItemButtonClikedEvent(
-                                                                type: "dialog",
-                                                                index:
-                                                                    productIndex,
-                                                                isButtonPressed:
-                                                                    true,
-                                                              ),
-                                                            );
-                                                      },
-                                                      child: SizedBox(
-                                                        height: 30,
-                                                        child: const Icon(
-                                                          Icons.remove,
-                                                          color: Colors.white,
-                                                          size: 16,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    // margin:
-                                                    //     const EdgeInsets.symmetric(
-                                                    //         horizontal: 16),
-                                                    width: 37,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                    ),
-                                                    child: Text(
-                                                      i == variantindex
-                                                          ? productStyleResponse
-                                                              .data![productIndex]
-                                                              .variants![i]
-                                                              .cartQuantity
-                                                              .toString()
-                                                          : productStyleResponse
-                                                              .data![productIndex]
-                                                              .variants![i]
-                                                              .cartQuantity
-                                                              .toString(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      // style:
-                                                      //     GoogleFonts.poppins(
-                                                      //   color: const Color(
-                                                      //       0xFF326A32),
-                                                      //   fontSize: 14,
-                                                      //   fontWeight:
-                                                      //       FontWeight.w500,
-                                                      // ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        context
-                                                            .read<ProductBloc>()
-                                                            .add(
-                                                              ChangeVarientItemEvent(
-                                                                productIndex:
-                                                                    productIndex,
-                                                                varientIndex: i,
-                                                              ),
-                                                            );
-                                                        context
-                                                            .read<ProductBloc>()
-                                                            .add(
-                                                              AddButtonClikedEvent(
-                                                                type: "dialog",
-                                                                index:
-                                                                    productIndex,
-                                                                isButtonPressed:
-                                                                    true,
-                                                              ),
-                                                            );
-                                                      },
-                                                      child: SizedBox(
-                                                        height: 30,
-                                                        child: Center(
+                                                          context
+                                                              .read<
+                                                                ProductBloc
+                                                              >()
+                                                              .add(
+                                                                ChangeVarientItemEvent(
+                                                                  productIndex:
+                                                                      productIndex,
+                                                                  varientIndex:
+                                                                      i,
+                                                                ),
+                                                              );
+                                                          context
+                                                              .read<
+                                                                ProductBloc
+                                                              >()
+                                                              .add(
+                                                                RemoveItemButtonClikedEvent(
+                                                                  type:
+                                                                      "dialog",
+                                                                  index:
+                                                                      productIndex,
+                                                                  isButtonPressed:
+                                                                      true,
+                                                                ),
+                                                              );
+                                                        },
+                                                        child: SizedBox(
+                                                          height: 30,
                                                           child: const Icon(
-                                                            Icons.add,
+                                                            Icons.remove,
                                                             color: Colors.white,
                                                             size: 16,
                                                           ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            cartCount == 0
-                                ? SizedBox()
-                                : Container(
-                                  height: 56,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: appColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "$cartCount Item",
-                                                // style: GoogleFonts.poppins(
-                                                //   fontSize: 16,
-                                                //   color: whiteColor,
-                                                //   fontWeight: FontWeight.bold,
-                                                // ),
-                                              ),
-                                              Text(
-                                                " | ",
-                                                // style: GoogleFonts.poppins(
-                                                //   fontSize: 16,
-                                                //   color: whitecolor,
-                                                //   fontWeight: FontWeight.bold,
-                                                // ),
-                                              ),
-                                              RichText(
-                                                text: TextSpan(
-                                                  text: '₹',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: whiteColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  children: <TextSpan>[
-                                                    TextSpan(
-                                                      text:
-                                                          totalAmount
-                                                              .toString(),
-                                                      style: TextStyle(
-                                                        fontFamily: '`Poppins`',
-                                                        fontSize: 16,
-                                                        color: whiteColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                    Container(
+                                                      // margin:
+                                                      //     const EdgeInsets.symmetric(
+                                                      //         horizontal: 16),
+                                                      width: 37,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                      ),
+                                                      child: Text(
+                                                        i == variantindex
+                                                            ? productStyleResponse
+                                                                .data![productIndex]
+                                                                .variants![i]
+                                                                .cartQuantity
+                                                                .toString()
+                                                            : productStyleResponse
+                                                                .data![productIndex]
+                                                                .variants![i]
+                                                                .cartQuantity
+                                                                .toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        // style:
+                                                        //     GoogleFonts.poppins(
+                                                        //   color: const Color(
+                                                        //       0xFF326A32),
+                                                        //   fontSize: 14,
+                                                        //   fontWeight:
+                                                        //       FontWeight.w500,
+                                                        // ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          context
+                                                              .read<
+                                                                ProductBloc
+                                                              >()
+                                                              .add(
+                                                                ChangeVarientItemEvent(
+                                                                  productIndex:
+                                                                      productIndex,
+                                                                  varientIndex:
+                                                                      i,
+                                                                ),
+                                                              );
+                                                          context
+                                                              .read<
+                                                                ProductBloc
+                                                              >()
+                                                              .add(
+                                                                AddButtonClikedEvent(
+                                                                  type:
+                                                                      "dialog",
+                                                                  index:
+                                                                      productIndex,
+                                                                  isButtonPressed:
+                                                                      true,
+                                                                ),
+                                                              );
+                                                        },
+                                                        child: SizedBox(
+                                                          height: 30,
+                                                          child: Center(
+                                                            child: const Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 16,
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              // Navigator.pushNamed(context, '/cart');
-                                              // Navigator.push(context,
-                                              //     MaterialPageRoute(
-                                              //   builder: (context) {
-                                              //     return CartScreen(
-                                              //       fromScreen: 'productlist',
-                                              //     );
-                                              //   },
-                                              // ));
-                                            },
-                                            child: Row(
-                                              spacing: 10,
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              cartCount == 0
+                                  ? SizedBox()
+                                  : Container(
+                                    height: 56,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: appColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 20,
+                                          right: 20,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
                                               children: [
-                                                Image.asset(viewCartImage),
                                                 Text(
-                                                  "View Cart",
+                                                  "$cartCount Item",
                                                   // style: GoogleFonts.poppins(
                                                   //   fontSize: 16,
                                                   //   color: whiteColor,
                                                   //   fontWeight: FontWeight.bold,
                                                   // ),
                                                 ),
+                                                Text(
+                                                  " | ",
+                                                  // style: GoogleFonts.poppins(
+                                                  //   fontSize: 16,
+                                                  //   color: whitecolor,
+                                                  //   fontWeight: FontWeight.bold,
+                                                  // ),
+                                                ),
+                                                RichText(
+                                                  text: TextSpan(
+                                                    text: '₹',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: whiteColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    children: <TextSpan>[
+                                                      TextSpan(
+                                                        text:
+                                                            totalAmount
+                                                                .toString(),
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              '`Poppins`',
+                                                          fontSize: 16,
+                                                          color: whiteColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                // Navigator.pushNamed(context, '/cart');
+                                                // Navigator.push(context,
+                                                //     MaterialPageRoute(
+                                                //   builder: (context) {
+                                                //     return CartScreen(
+                                                //       fromScreen: 'productlist',
+                                                //     );
+                                                //   },
+                                                // ));
+                                              },
+                                              child: Row(
+                                                spacing: 10,
+                                                children: [
+                                                  Image.asset(viewCartImage),
+                                                  Text(
+                                                    "View Cart",
+                                                    // style: GoogleFonts.poppins(
+                                                    //   fontSize: 16,
+                                                    //   color: whiteColor,
+                                                    //   fontWeight: FontWeight.bold,
+                                                    // ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
 
-                            const SizedBox(height: 10),
-                          ],
+                              const SizedBox(height: 10),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -926,524 +952,1080 @@ class ProductListMenuScreen extends StatelessWidget {
               ),
             );
           }
+          final isTablet = MediaQuery.of(context).size.width < 991;
+          final isMobile = MediaQuery.of(context).size.width < 600;
           return Scaffold(
             body: SingleChildScrollView(
               child: Column(
                 children: [
                   HeaderWidget(),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 150),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 25,
-                      children: [
-                        Container(
-                          color: appColor,
-                          width: 250,
-                          // height: MediaQuery.of(context).size.height,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: subCatList.length,
-                            itemBuilder: (context, i) {
-                              return InkWell(
-                                onTap: () {
-                                  selectedIndexes = 0;
-                                  productDetailResponse =
-                                      ProductDetailResponse();
-                                  context.read<ProductBloc>().add(
-                                    OnSelectEvent(
-                                      index: i,
-                                      name: subCatList[i].name ?? "",
-                                    ),
-                                  );
-
-                                  // Scroll to the top
-                                  _scrollController.positions.isEmpty
-                                      ? null
-                                      : _scrollController.animateTo(
-                                        0.0,
-                                        duration: const Duration(
-                                          milliseconds: 300,
-                                        ),
-                                        curve: Curves.easeInOut,
-                                      );
-                                },
-                                child: Container(
-                                  height: 85,
-                                  color:
-                                      isSelected == i
-                                          ? const Color(0xFFE9FBE9)
-                                          : Colors.white,
-                                  child: Row(
-                                    children: [
-                                      if (isSelected == i)
-                                        Container(width: 4, color: appColor),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            ImageNetworkWidget(
-                                              url: subCatList[i].imageUrl ?? "",
-                                              width: 53,
-                                              height: 53,
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              subCatList[i].name ?? "",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            color: appbackgroundColor,
-                            width: 250,
-                            height: MediaQuery.of(context).size.height,
-                            child: Column(
+                    padding: EdgeInsets.symmetric(
+                      horizontal:
+                          isMobile
+                              ? 10
+                              : isTablet
+                              ? 20
+                              : 60,
+                      vertical: 10,
+                    ),
+                    child:
+                        isTablet
+                            ? Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              spacing: 25,
                               children: [
-                                if (productStyleResponse.data == null)
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Text(
-                                            errorMsg,
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.titleMedium,
+                                Container(
+                                  // color: appColor,
+                                  width: MediaQuery.of(context).size.width - 40,
+                                  height: 70,
+                                  // height: MediaQuery.of(context).size.height,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: subCatList.length,
+                                    itemBuilder: (context, i) {
+                                      return InkWell(
+                                        onTap: () {
+                                          selectedIndexes = 0;
+                                          productDetailResponse =
+                                              ProductDetailResponse();
+                                          context.read<ProductBloc>().add(
+                                            OnSelectEvent(
+                                              index: i,
+                                              name: subCatList[i].name ?? "",
+                                            ),
+                                          );
+
+                                          // Scroll to the top
+                                          _scrollController.positions.isEmpty
+                                              ? null
+                                              : _scrollController.animateTo(
+                                                0.0,
+                                                duration: const Duration(
+                                                  milliseconds: 300,
+                                                ),
+                                                curve: Curves.easeInOut,
+                                              );
+                                        },
+                                        child: Container(
+                                          width: isMobile ? 100 : 200,
+                                          height: 70,
+                                          color:
+                                              isSelected == i
+                                                  ? const Color(0xFFE9FBE9)
+                                                  : Colors.white,
+                                          child: Column(
+                                            children: [
+                                              if (isSelected == i)
+                                                Container(
+                                                  height: 4,
+                                                  color: appColor,
+                                                ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    ImageNetworkWidget(
+                                                      url:
+                                                          subCatList[i]
+                                                              .imageUrl ??
+                                                          "",
+                                                      width: 45,
+                                                      height: 45,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      subCatList[i].name ?? "",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   ),
-                                if (productStyleResponse.data != null)
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: LayoutBuilder(
-                                        builder: (context, constraints) {
-                                          double screenWidth =
-                                              constraints.maxWidth;
-                                          double itemWidth =
-                                              screenWidth / 5 -
-                                              16; // Divide by 5 for 5 items per row, adjust for spacing
-                                          double itemHeight =
-                                              itemWidth *
-                                              1.5; // Adjust height dynamically based on width
-
-                                          return GridView.builder(
-                                            controller: _scrollController,
-                                            shrinkWrap: true,
-                                            padding: EdgeInsets.zero,
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount:
-                                                      5, // 5 items per row
-                                                  mainAxisSpacing: 10,
-                                                  crossAxisSpacing: 10,
-                                                  childAspectRatio:
-                                                      itemWidth /
-                                                      itemHeight, // Maintain aspect ratio
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    color: appbackgroundColor,
+                                    width:
+                                        MediaQuery.of(context).size.width - 40,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Column(
+                                      children: [
+                                        if (productStyleResponse.data == null)
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    20.0,
+                                                  ),
+                                                  child: Text(
+                                                    errorMsg,
+                                                    textAlign: TextAlign.center,
+                                                    style:
+                                                        Theme.of(
+                                                          context,
+                                                        ).textTheme.titleMedium,
+                                                  ),
                                                 ),
-                                            itemCount:
-                                                context
-                                                            .read<ProductBloc>()
-                                                            .page >=
-                                                        page
-                                                    ? productStyleResponse
-                                                            .data!
-                                                            .length +
-                                                        1
-                                                    : productStyleResponse
-                                                        .data!
-                                                        .length,
-                                            itemBuilder: (context, index) {
-                                              if (index ==
-                                                      productStyleResponse
-                                                          .data!
-                                                          .length &&
-                                                  context
-                                                          .read<ProductBloc>()
-                                                          .page >=
-                                                      page) {
-                                                return Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          color: appColor,
+                                              ],
+                                            ),
+                                          ),
+                                        if (productStyleResponse.data != null)
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: LayoutBuilder(
+                                                builder: (
+                                                  context,
+                                                  constraints,
+                                                ) {
+                                                  double screenWidth =
+                                                      constraints.maxWidth;
+                                                  double itemWidth =
+                                                      screenWidth /
+                                                          (isMobile ? 3 : 5) -
+                                                      16; // Divide by 5 for 5 items per row, adjust for spacing
+                                                  double itemHeight =
+                                                      itemWidth *
+                                                      1.5; // Adjust height dynamically based on width
+
+                                                  return GridView.builder(
+                                                    controller:
+                                                        _scrollController,
+                                                    shrinkWrap: true,
+                                                    padding: EdgeInsets.zero,
+                                                    gridDelegate:
+                                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount:
+                                                              isMobile
+                                                                  ? 2
+                                                                  : 4, // 5 items per row
+                                                          mainAxisSpacing: 10,
+                                                          crossAxisSpacing: 10,
+                                                          childAspectRatio:
+                                                              itemWidth /
+                                                              itemHeight, // Maintain aspect ratio
                                                         ),
-                                                  ),
-                                                );
-                                              } else {
-                                                return Container(
-                                                  width: itemWidth,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Expanded(
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (
-                                                                  context,
-                                                                ) {
-                                                                  return ProductDetailsScreen(
-                                                                    productId:
-                                                                        productStyleResponse
-                                                                            .data![index]
-                                                                            .productId ??
-                                                                        "",
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ).then((value) {
-                                                              // Scroll to the top
-                                                              _scrollController.animateTo(
-                                                                0.0,
-                                                                duration:
-                                                                    const Duration(
-                                                                      milliseconds:
-                                                                          300,
-                                                                    ),
-                                                                curve:
-                                                                    Curves
-                                                                        .easeInOut,
-                                                              );
-                                                              if (!context
-                                                                  .mounted) {
-                                                                return;
-                                                              }
-                                                              selectedIndexes =
-                                                                  0;
-                                                              ProductBloc
-                                                                  .productList = [];
-                                                              page = 1;
-                                                              context.read<ProductBloc>().add(
-                                                                ProductStyleEvent(
-                                                                  mobilNo:
-                                                                      phoneNumber,
-                                                                  userId:
-                                                                      userId,
-                                                                  isMainCategory:
-                                                                      isMainCategory,
-                                                                  mainCatId:
-                                                                      mainCatId,
-                                                                  isSubCategory:
-                                                                      true,
-                                                                  subCatId:
-                                                                      subCatList[isSelected]
-                                                                          .id ??
-                                                                      "",
-                                                                  page: page,
-                                                                ),
-                                                              );
-                                                              context
+                                                    itemCount:
+                                                        context
+                                                                    .read<
+                                                                      ProductBloc
+                                                                    >()
+                                                                    .page >=
+                                                                page
+                                                            ? productStyleResponse
+                                                                    .data!
+                                                                    .length +
+                                                                1
+                                                            : productStyleResponse
+                                                                .data!
+                                                                .length,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      if (index ==
+                                                              productStyleResponse
+                                                                  .data!
+                                                                  .length &&
+                                                          context
                                                                   .read<
                                                                     ProductBloc
                                                                   >()
-                                                                  .add(
-                                                                    CartLengthEvent(
-                                                                      userId:
-                                                                          userId,
-                                                                    ),
-                                                                  );
-                                                            });
-                                                          },
-                                                          child: Stack(
-                                                            children: [
-                                                              Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.only(
-                                                                        top:
-                                                                            12.0,
-                                                                      ),
-                                                                  child: ImageNetworkWidget(
-                                                                    url:
-                                                                        selectedProductIndexes ==
-                                                                                index
-                                                                            ? productStyleResponse.data![index].variants![productVarientIndex].imageUrl ??
-                                                                                ""
-                                                                            : productStyleResponse.data![index].variants![0].imageUrl ??
-                                                                                "",
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                    width:
-                                                                        itemWidth,
-                                                                  ),
-                                                                ),
+                                                                  .page >=
+                                                              page) {
+                                                        return Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                8.0,
                                                               ),
-                                                              Positioned(
-                                                                top: 0,
-                                                                left: 0,
-                                                                child: Container(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                  decoration: const BoxDecoration(
-                                                                    color: Color(
-                                                                      0xFF034703,
-                                                                    ),
-                                                                    borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                      bottomRight:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                    ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    selectedProductIndexes ==
-                                                                            index
-                                                                        ? productStyleResponse.data![index].variants![productVarientIndex].offer ??
-                                                                            ""
-                                                                        : productStyleResponse.data![index].variants![0].offer ??
-                                                                            "",
-                                                                    style: const TextStyle(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
-                                                                  ),
+                                                          child: Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                                  color:
+                                                                      appColor,
                                                                 ),
-                                                              ),
-                                                            ],
                                                           ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                              10,
-                                                            ),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              productStyleResponse
-                                                                      .data![index]
-                                                                      .skuName ??
-                                                                  "",
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color:
-                                                                    Colors
-                                                                        .black,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 6,
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () {
-                                                                showProductBottomSheet(
-                                                                  context,
-                                                                  productStyleResponse
-                                                                          .data![index]
-                                                                          .skuName ??
-                                                                      "",
-                                                                  index,
-                                                                  context
-                                                                      .read<
-                                                                        ProductBloc
-                                                                      >(),
-                                                                );
-                                                              },
-                                                              child: Container(
-                                                                padding:
-                                                                    const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          4,
-                                                                      vertical:
-                                                                          8,
-                                                                    ),
-                                                                decoration: BoxDecoration(
-                                                                  border: Border.all(
-                                                                    color: const Color(
-                                                                      0xFFE0ECE0,
-                                                                    ),
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        4,
-                                                                      ),
+                                                        );
+                                                      } else {
+                                                        return Container(
+                                                          width: itemWidth,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  20,
                                                                 ),
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child: Text(
-                                                                        selectedProductIndexes ==
-                                                                                index
-                                                                            ? productStyleResponse.data![index].variants![productVarientIndex].label ??
-                                                                                ""
-                                                                            : productStyleResponse.data![index].variants![0].label ??
+                                                          ),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Expanded(
+                                                                child: InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder: (
+                                                                          context,
+                                                                        ) {
+                                                                          return ProductDetailsScreen(
+                                                                            productId:
+                                                                                productStyleResponse.data![index].productId ??
                                                                                 "",
-                                                                        maxLines:
-                                                                            1,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: const TextStyle(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color:
-                                                                              Colors.black,
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    ).then((
+                                                                      value,
+                                                                    ) {
+                                                                      // Scroll to the top
+                                                                      _scrollController.animateTo(
+                                                                        0.0,
+                                                                        duration: const Duration(
+                                                                          milliseconds:
+                                                                              300,
+                                                                        ),
+                                                                        curve:
+                                                                            Curves.easeInOut,
+                                                                      );
+                                                                      if (!context
+                                                                          .mounted) {
+                                                                        return;
+                                                                      }
+                                                                      selectedIndexes =
+                                                                          0;
+                                                                      ProductBloc
+                                                                          .productList = [];
+                                                                      page = 1;
+                                                                      context
+                                                                          .read<
+                                                                            ProductBloc
+                                                                          >()
+                                                                          .add(
+                                                                            ProductStyleEvent(
+                                                                              mobilNo:
+                                                                                  phoneNumber,
+                                                                              userId:
+                                                                                  userId,
+                                                                              isMainCategory:
+                                                                                  isMainCategory,
+                                                                              mainCatId:
+                                                                                  mainCatId,
+                                                                              isSubCategory:
+                                                                                  true,
+                                                                              subCatId:
+                                                                                  subCatList[isSelected].id ??
+                                                                                  "",
+                                                                              page:
+                                                                                  page,
+                                                                            ),
+                                                                          );
+                                                                      context
+                                                                          .read<
+                                                                            ProductBloc
+                                                                          >()
+                                                                          .add(
+                                                                            CartLengthEvent(
+                                                                              userId:
+                                                                                  userId,
+                                                                            ),
+                                                                          );
+                                                                    });
+                                                                  },
+                                                                  child: Stack(
+                                                                    children: [
+                                                                      Center(
+                                                                        child: Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                            top:
+                                                                                12.0,
+                                                                          ),
+                                                                          child: ImageNetworkWidget(
+                                                                            url:
+                                                                                selectedProductIndexes ==
+                                                                                        index
+                                                                                    ? productStyleResponse.data![index].variants![productVarientIndex].imageUrl ??
+                                                                                        ""
+                                                                                    : productStyleResponse.data![index].variants![0].imageUrl ??
+                                                                                        "",
+                                                                            fit:
+                                                                                BoxFit.contain,
+                                                                            width:
+                                                                                itemWidth,
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                    const Icon(
-                                                                      Icons
-                                                                          .keyboard_arrow_down_rounded,
-                                                                      size: 15,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 6,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                RichText(
-                                                                  text: TextSpan(
-                                                                    text: '₹ ',
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color:
-                                                                          Colors
-                                                                              .black,
-                                                                    ),
-                                                                    children: <
-                                                                      TextSpan
-                                                                    >[
-                                                                      TextSpan(
-                                                                        text:
+                                                                      Positioned(
+                                                                        top: 0,
+                                                                        left: 0,
+                                                                        child: Container(
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                8,
+                                                                            vertical:
+                                                                                4,
+                                                                          ),
+                                                                          decoration: const BoxDecoration(
+                                                                            color: Color(
+                                                                              0xFF034703,
+                                                                            ),
+                                                                            borderRadius: BorderRadius.only(
+                                                                              topLeft: Radius.circular(
+                                                                                20,
+                                                                              ),
+                                                                              bottomRight: Radius.circular(
+                                                                                20,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          child: Text(
                                                                             selectedProductIndexes ==
                                                                                     index
-                                                                                ? productStyleResponse.data![index].variants![productVarientIndex].discountPrice?.toString() ??
+                                                                                ? productStyleResponse.data![index].variants![productVarientIndex].offer ??
                                                                                     ""
-                                                                                : productStyleResponse.data![index].variants![0].discountPrice?.toString() ??
+                                                                                : productStyleResponse.data![index].variants![0].offer ??
                                                                                     "",
-                                                                        style: const TextStyle(
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.black,
+                                                                            style: const TextStyle(
+                                                                              color:
+                                                                                  Colors.white,
+                                                                              fontSize:
+                                                                                  14,
+                                                                              fontWeight:
+                                                                                  FontWeight.w500,
+                                                                            ),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                 ),
-                                                                const SizedBox(
-                                                                  width: 6,
-                                                                ),
-                                                                Text(
-                                                                  selectedProductIndexes ==
-                                                                          index
-                                                                      ? productStyleResponse
-                                                                              .data![index]
-                                                                              .variants![productVarientIndex]
-                                                                              .price
-                                                                              ?.toString() ??
-                                                                          ""
-                                                                      : productStyleResponse
-                                                                              .data![index]
-                                                                              .variants![0]
-                                                                              .price
-                                                                              ?.toString() ??
-                                                                          "",
-                                                                  style: const TextStyle(
-                                                                    decoration:
-                                                                        TextDecoration
-                                                                            .lineThrough,
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                      0xFF777777,
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets.all(
+                                                                      10,
                                                                     ),
-                                                                  ),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      productStyleResponse
+                                                                              .data![index]
+                                                                              .skuName ??
+                                                                          "",
+                                                                      style: const TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                        color:
+                                                                            Colors.black,
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 6,
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap: () {
+                                                                        showProductBottomSheet(
+                                                                          context,
+                                                                          productStyleResponse.data![index].skuName ??
+                                                                              "",
+                                                                          index,
+                                                                          context
+                                                                              .read<
+                                                                                ProductBloc
+                                                                              >(),
+                                                                        );
+                                                                      },
+                                                                      child: Container(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              4,
+                                                                          vertical:
+                                                                              8,
+                                                                        ),
+                                                                        decoration: BoxDecoration(
+                                                                          border: Border.all(
+                                                                            color: const Color(
+                                                                              0xFFE0ECE0,
+                                                                            ),
+                                                                          ),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(
+                                                                                4,
+                                                                              ),
+                                                                        ),
+                                                                        child: Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                selectedProductIndexes ==
+                                                                                        index
+                                                                                    ? productStyleResponse.data![index].variants![productVarientIndex].label ??
+                                                                                        ""
+                                                                                    : productStyleResponse.data![index].variants![0].label ??
+                                                                                        "",
+                                                                                maxLines:
+                                                                                    1,
+                                                                                overflow:
+                                                                                    TextOverflow.ellipsis,
+                                                                                style: const TextStyle(
+                                                                                  fontSize:
+                                                                                      10,
+                                                                                  color:
+                                                                                      Colors.black,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            const Icon(
+                                                                              Icons.keyboard_arrow_down_rounded,
+                                                                              size:
+                                                                                  15,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 6,
+                                                                    ),
+                                                                    Row(
+                                                                      children: [
+                                                                        RichText(
+                                                                          text: TextSpan(
+                                                                            text:
+                                                                                '₹ ',
+                                                                            style: const TextStyle(
+                                                                              fontSize:
+                                                                                  16,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold,
+                                                                              color:
+                                                                                  Colors.black,
+                                                                            ),
+                                                                            children: <
+                                                                              TextSpan
+                                                                            >[
+                                                                              TextSpan(
+                                                                                text:
+                                                                                    selectedProductIndexes ==
+                                                                                            index
+                                                                                        ? productStyleResponse.data![index].variants![productVarientIndex].discountPrice?.toString() ??
+                                                                                            ""
+                                                                                        : productStyleResponse.data![index].variants![0].discountPrice?.toString() ??
+                                                                                            "",
+                                                                                style: const TextStyle(
+                                                                                  fontSize:
+                                                                                      16,
+                                                                                  fontWeight:
+                                                                                      FontWeight.bold,
+                                                                                  color:
+                                                                                      Colors.black,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              6,
+                                                                        ),
+                                                                        Text(
+                                                                          selectedProductIndexes ==
+                                                                                  index
+                                                                              ? productStyleResponse.data![index].variants![productVarientIndex].price?.toString() ??
+                                                                                  ""
+                                                                              : productStyleResponse.data![index].variants![0].price?.toString() ??
+                                                                                  "",
+                                                                          style: const TextStyle(
+                                                                            decoration:
+                                                                                TextDecoration.lineThrough,
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color: Color(
+                                                                              0xFF777777,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                            : Container(
+                              constraints: BoxConstraints(maxWidth: 1280),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 10,
+                                children: [
+                                  Container(
+                                    color: appColor,
+                                    width: 220,
+                                    // height: MediaQuery.of(context).size.height,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: subCatList.length,
+                                      itemBuilder: (context, i) {
+                                        return InkWell(
+                                          onTap: () {
+                                            selectedIndexes = 0;
+                                            productDetailResponse =
+                                                ProductDetailResponse();
+                                            context.read<ProductBloc>().add(
+                                              OnSelectEvent(
+                                                index: i,
+                                                name: subCatList[i].name ?? "",
+                                              ),
+                                            );
+
+                                            // Scroll to the top
+                                            _scrollController.positions.isEmpty
+                                                ? null
+                                                : _scrollController.animateTo(
+                                                  0.0,
+                                                  duration: const Duration(
+                                                    milliseconds: 300,
+                                                  ),
+                                                  curve: Curves.easeInOut,
+                                                );
+                                          },
+                                          child: Container(
+                                            height: 85,
+                                            color:
+                                                isSelected == i
+                                                    ? const Color(0xFFE9FBE9)
+                                                    : Colors.white,
+                                            child: Row(
+                                              children: [
+                                                if (isSelected == i)
+                                                  Container(
+                                                    width: 4,
+                                                    color: appColor,
+                                                  ),
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      ImageNetworkWidget(
+                                                        url:
+                                                            subCatList[i]
+                                                                .imageUrl ??
+                                                            "",
+                                                        width: 53,
+                                                        height: 53,
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        subCatList[i].name ??
+                                                            "",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                          color: Colors.black,
                                                         ),
                                                       ),
                                                     ],
                                                   ),
-                                                );
-                                              }
-                                            },
-                                          );
-                                        },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      color: appbackgroundColor,
+                                      width: 250,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: Column(
+                                        children: [
+                                          if (productStyleResponse.data == null)
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          20.0,
+                                                        ),
+                                                    child: Text(
+                                                      errorMsg,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .titleMedium,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          if (productStyleResponse.data != null)
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  8.0,
+                                                ),
+                                                child: LayoutBuilder(
+                                                  builder: (
+                                                    context,
+                                                    constraints,
+                                                  ) {
+                                                    double screenWidth =
+                                                        constraints.maxWidth;
+                                                    double itemWidth =
+                                                        screenWidth / 5 -
+                                                        16; // Divide by 5 for 5 items per row, adjust for spacing
+                                                    double itemHeight =
+                                                        itemWidth *
+                                                        1.5; // Adjust height dynamically based on width
+
+                                                    return GridView.builder(
+                                                      controller:
+                                                          _scrollController,
+                                                      shrinkWrap: true,
+                                                      padding: EdgeInsets.zero,
+                                                      gridDelegate:
+                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount:
+                                                                5, // 5 items per row
+                                                            mainAxisSpacing: 10,
+                                                            crossAxisSpacing:
+                                                                10,
+                                                            childAspectRatio:
+                                                                itemWidth /
+                                                                itemHeight, // Maintain aspect ratio
+                                                          ),
+                                                      itemCount:
+                                                          context
+                                                                      .read<
+                                                                        ProductBloc
+                                                                      >()
+                                                                      .page >=
+                                                                  page
+                                                              ? productStyleResponse
+                                                                      .data!
+                                                                      .length +
+                                                                  1
+                                                              : productStyleResponse
+                                                                  .data!
+                                                                  .length,
+                                                      itemBuilder: (
+                                                        context,
+                                                        index,
+                                                      ) {
+                                                        if (index ==
+                                                                productStyleResponse
+                                                                    .data!
+                                                                    .length &&
+                                                            context
+                                                                    .read<
+                                                                      ProductBloc
+                                                                    >()
+                                                                    .page >=
+                                                                page) {
+                                                          return Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  8.0,
+                                                                ),
+                                                            child: Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                    color:
+                                                                        appColor,
+                                                                  ),
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          return Container(
+                                                            width: itemWidth,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        20,
+                                                                      ),
+                                                                ),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: InkWell(
+                                                                    onTap: () {
+                                                                      Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (
+                                                                            context,
+                                                                          ) {
+                                                                            return ProductDetailsScreen(
+                                                                              productId:
+                                                                                  productStyleResponse.data![index].productId ??
+                                                                                  "",
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                      ).then((
+                                                                        value,
+                                                                      ) {
+                                                                        // Scroll to the top
+                                                                        _scrollController.animateTo(
+                                                                          0.0,
+                                                                          duration: const Duration(
+                                                                            milliseconds:
+                                                                                300,
+                                                                          ),
+                                                                          curve:
+                                                                              Curves.easeInOut,
+                                                                        );
+                                                                        if (!context
+                                                                            .mounted) {
+                                                                          return;
+                                                                        }
+                                                                        selectedIndexes =
+                                                                            0;
+                                                                        ProductBloc.productList =
+                                                                            [];
+                                                                        page =
+                                                                            1;
+                                                                        context
+                                                                            .read<
+                                                                              ProductBloc
+                                                                            >()
+                                                                            .add(
+                                                                              ProductStyleEvent(
+                                                                                mobilNo:
+                                                                                    phoneNumber,
+                                                                                userId:
+                                                                                    userId,
+                                                                                isMainCategory:
+                                                                                    isMainCategory,
+                                                                                mainCatId:
+                                                                                    mainCatId,
+                                                                                isSubCategory:
+                                                                                    true,
+                                                                                subCatId:
+                                                                                    subCatList[isSelected].id ??
+                                                                                    "",
+                                                                                page:
+                                                                                    page,
+                                                                              ),
+                                                                            );
+                                                                        context
+                                                                            .read<
+                                                                              ProductBloc
+                                                                            >()
+                                                                            .add(
+                                                                              CartLengthEvent(
+                                                                                userId:
+                                                                                    userId,
+                                                                              ),
+                                                                            );
+                                                                      });
+                                                                    },
+                                                                    child: Stack(
+                                                                      children: [
+                                                                        Center(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.only(
+                                                                              top:
+                                                                                  12.0,
+                                                                            ),
+                                                                            child: ImageNetworkWidget(
+                                                                              url:
+                                                                                  selectedProductIndexes ==
+                                                                                          index
+                                                                                      ? productStyleResponse.data![index].variants![productVarientIndex].imageUrl ??
+                                                                                          ""
+                                                                                      : productStyleResponse.data![index].variants![0].imageUrl ??
+                                                                                          "",
+                                                                              fit:
+                                                                                  BoxFit.contain,
+                                                                              width:
+                                                                                  itemWidth,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Positioned(
+                                                                          top:
+                                                                              0,
+                                                                          left:
+                                                                              0,
+                                                                          child: Container(
+                                                                            padding: const EdgeInsets.symmetric(
+                                                                              horizontal:
+                                                                                  8,
+                                                                              vertical:
+                                                                                  4,
+                                                                            ),
+                                                                            decoration: const BoxDecoration(
+                                                                              color: Color(
+                                                                                0xFF034703,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.only(
+                                                                                topLeft: Radius.circular(
+                                                                                  20,
+                                                                                ),
+                                                                                bottomRight: Radius.circular(
+                                                                                  20,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            child: Text(
+                                                                              selectedProductIndexes ==
+                                                                                      index
+                                                                                  ? productStyleResponse.data![index].variants![productVarientIndex].offer ??
+                                                                                      ""
+                                                                                  : productStyleResponse.data![index].variants![0].offer ??
+                                                                                      "",
+                                                                              style: const TextStyle(
+                                                                                color:
+                                                                                    Colors.white,
+                                                                                fontSize:
+                                                                                    14,
+                                                                                fontWeight:
+                                                                                    FontWeight.w500,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets.all(
+                                                                        10,
+                                                                      ),
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                        productStyleResponse.data![index].skuName ??
+                                                                            "",
+                                                                        style: const TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height:
+                                                                            6,
+                                                                      ),
+                                                                      InkWell(
+                                                                        onTap: () {
+                                                                          showProductBottomSheet(
+                                                                            context,
+                                                                            productStyleResponse.data![index].skuName ??
+                                                                                "",
+                                                                            index,
+                                                                            context
+                                                                                .read<
+                                                                                  ProductBloc
+                                                                                >(),
+                                                                          );
+                                                                        },
+                                                                        child: Container(
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                4,
+                                                                            vertical:
+                                                                                8,
+                                                                          ),
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border.all(
+                                                                              color: const Color(
+                                                                                0xFFE0ECE0,
+                                                                              ),
+                                                                            ),
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              4,
+                                                                            ),
+                                                                          ),
+                                                                          child: Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: Text(
+                                                                                  selectedProductIndexes ==
+                                                                                          index
+                                                                                      ? productStyleResponse.data![index].variants![productVarientIndex].label ??
+                                                                                          ""
+                                                                                      : productStyleResponse.data![index].variants![0].label ??
+                                                                                          "",
+                                                                                  maxLines:
+                                                                                      1,
+                                                                                  overflow:
+                                                                                      TextOverflow.ellipsis,
+                                                                                  style: const TextStyle(
+                                                                                    fontSize:
+                                                                                        10,
+                                                                                    color:
+                                                                                        Colors.black,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              const Icon(
+                                                                                Icons.keyboard_arrow_down_rounded,
+                                                                                size:
+                                                                                    15,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height:
+                                                                            6,
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          RichText(
+                                                                            text: TextSpan(
+                                                                              text:
+                                                                                  '₹ ',
+                                                                              style: const TextStyle(
+                                                                                fontSize:
+                                                                                    16,
+                                                                                fontWeight:
+                                                                                    FontWeight.bold,
+                                                                                color:
+                                                                                    Colors.black,
+                                                                              ),
+                                                                              children: <
+                                                                                TextSpan
+                                                                              >[
+                                                                                TextSpan(
+                                                                                  text:
+                                                                                      selectedProductIndexes ==
+                                                                                              index
+                                                                                          ? productStyleResponse.data![index].variants![productVarientIndex].discountPrice?.toString() ??
+                                                                                              ""
+                                                                                          : productStyleResponse.data![index].variants![0].discountPrice?.toString() ??
+                                                                                              "",
+                                                                                  style: const TextStyle(
+                                                                                    fontSize:
+                                                                                        16,
+                                                                                    fontWeight:
+                                                                                        FontWeight.bold,
+                                                                                    color:
+                                                                                        Colors.black,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                6,
+                                                                          ),
+                                                                          Text(
+                                                                            selectedProductIndexes ==
+                                                                                    index
+                                                                                ? productStyleResponse.data![index].variants![productVarientIndex].price?.toString() ??
+                                                                                    ""
+                                                                                : productStyleResponse.data![index].variants![0].price?.toString() ??
+                                                                                    "",
+                                                                            style: const TextStyle(
+                                                                              decoration:
+                                                                                  TextDecoration.lineThrough,
+                                                                              fontSize:
+                                                                                  12,
+                                                                              fontWeight:
+                                                                                  FontWeight.w600,
+                                                                              color: Color(
+                                                                                0xFF777777,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),
