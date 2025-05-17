@@ -710,7 +710,10 @@ class HomeScreen extends StatelessWidget {
           if (state is HomeInitialState) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               location == "No Location Found"
-                  ? context.read<HomeBloc>().add(ContinueLocationEvent())
+                  ? showLocationMainAlertDialog(
+                    context,
+                    context.read<HomeBloc>(),
+                  ) /*  context.read<HomeBloc>().add(ContinueLocationEvent()) */
                   : null;
             });
             context.read<HomeBloc>().add(GetCartCountEvent(userId: userId));
@@ -773,7 +776,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       HeaderWidget(
                         onClick: () {
-                          showLocationMainAlertDialog(
+                          showSearchLocationAlertDialog(
                             context,
                             context.read<HomeBloc>(),
                           );
