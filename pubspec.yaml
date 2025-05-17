@@ -46,6 +46,8 @@ dependencies:
   carousel_slider: ^5.0.0
   google_fonts: ^6.2.1
   provider: ^6.1.5
+  google_maps_flutter: ^2.10.0
+  google_places_flutter: ^2.0.9
 
 dev_dependencies:
   flutter_test:

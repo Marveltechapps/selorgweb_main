@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:selorgweb_main/order/screens/my_account_orders.dart';
 import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
+import 'package:selorgweb_main/presentation/settings/setting_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class HeaderWidget extends StatelessWidget {
@@ -118,7 +119,7 @@ class HeaderWidget extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return CartScreen();
+                              return SettingScreen();
                             },
                           ),
                         );
@@ -235,7 +236,7 @@ class HeaderWidget extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) {
-                                return MyAccountOrders();
+                                return SettingScreen();
                               },
                             ),
                           );
