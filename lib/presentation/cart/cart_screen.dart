@@ -1541,7 +1541,7 @@ class CartScreen extends StatelessWidget {
                                                 title: 'Item Total & GST',
                                                 // originalPrice: '₹96',
                                                 price:
-                                                    '₹${int.parse(cartResponse.billSummary!.itemTotal!.toString()) + int.parse(cartResponse.billSummary!.gst!.toString())}',
+                                                    '₹${cartResponse.billSummary!.itemTotal! + cartResponse.billSummary!.gst!.toInt()}',
                                                 showInfo: true,
                                               ),
                                               buildBillItem(
