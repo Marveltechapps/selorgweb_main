@@ -1,3 +1,5 @@
+import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_model.dart';
+import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
 import 'package:selorgweb_main/model/category/main_category_model.dart';
@@ -67,6 +69,19 @@ class LocationContinueSuccessState extends HomeState {
     required this.longitude,
     required this.place,
   });
+}
+
+
+class SearchedLocationSuccessState extends HomeState {
+  final List<SearchedLocationResponse> searchedLocationResponse;
+
+  SearchedLocationSuccessState({required this.searchedLocationResponse});
+}
+
+class LatLongAddressSuccessState extends HomeState {
+ final LatLongLocationResponse latLongLocationResponse;
+
+  LatLongAddressSuccessState({required this.latLongLocationResponse});
 }
 
 class BottomSheetVisible extends HomeState {}

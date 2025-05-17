@@ -5,7 +5,8 @@ import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({super.key});
+  final Function()? onClick;
+  const HeaderWidget({super.key, this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +32,27 @@ class HeaderWidget extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       color: Colors.white,
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          'Lattice Bridge',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontFamily: 'Poppins',
+                    InkWell(
+                      onTap: onClick,
+                      child: Row(
+                        children: [
+                          Text(
+                            location,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.white,
-                          // size: 24,
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.white,
+                            // size: 24,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -172,24 +176,27 @@ class HeaderWidget extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                         color: Colors.white,
                       ),
-                      Row(
-                        children: [
-                          const Text(
-                            'Lattice Bridge',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
+                      InkWell(
+                        onTap: onClick,
+                        child: Row(
+                          children: [
+                            Text(
+                              location,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ],
+                            const SizedBox(width: 12),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

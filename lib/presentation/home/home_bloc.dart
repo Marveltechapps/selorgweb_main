@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
+import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_model.dart';
+import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_error_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
@@ -40,6 +41,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetCartCountEvent>(getCartCount);
     on<GetMainCategoryDataEvent>(getMainCategoryData);
     on<GetCategoryDataEvent>(getCategoryData);
+    on<GetLocationUsingLatLongFromApiEvent>(getlatlongfromapi);
+    on<SearchLocationEvent>(seachLocation);
     on<ShowBottomSheetEvent>((event, emit) => emit(BottomSheetVisible()));
   }
 
@@ -301,20 +304,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Position position = await Geolocator.getCurrentPosition(
       locationSettings: AndroidSettings(accuracy: LocationAccuracy.high),
     );
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-    if (placemarks.isNotEmpty) {
-      place = placemarks.first.subLocality;
-      // debugPrint(
-      //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
-    }
+    // List<Placemark> placemarks = await placemarkFromCoordinates(
+    //   position.latitude,
+    //   position.longitude,
+    // );
+    // if (placemarks.isNotEmpty) {
+    //   place = placemarks.first.subLocality;
+    //   // debugPrint(
+    //   //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
+    // }
     emit(
       LocationSuccessState(
         latitude: position.latitude.toString(),
         longitude: position.longitude.toString(),
-        place: place,
+        place: "place",
       ),
     );
     debugPrint(
@@ -324,11 +327,56 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //     "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
   }
 
+  getlatlongfromapi(
+    GetLocationUsingLatLongFromApiEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(HomeLoadingState());
+    String url =
+        "$latlonggetAddressUrl${event.latitude},${event.longitude}&key=AIzaSyAKVumkjaEhGUefBCclE23rivFqPK3LDRQ";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var result = latLongLocationResponseFromJson(response.body);
+        emit(LatLongAddressSuccessState(latLongLocationResponse: result));
+      } else {
+        emit(HomeErrorState(message: "Failed to fetch data"));
+      }
+    } catch (e) {
+      emit(HomeErrorState(message: e.toString()));
+    }
+  }
+
+  seachLocation(SearchLocationEvent event, Emitter<HomeState> emit) async {
+    emit(HomeLoadingState());
+    String url = seachLocationUrl + event.searchText;
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var searchedLocationResponse = searchedLocationResponseFromJson(
+          response.body,
+        );
+        emit(
+          SearchedLocationSuccessState(
+            searchedLocationResponse: searchedLocationResponse,
+          ),
+        );
+      } else {
+        if (event.searchText.isEmpty) {
+        } else {
+          emit(HomeErrorState(message: "Failed to fetch data"));
+        }
+      }
+    } catch (e) {
+      emit(HomeErrorState(message: e.toString()));
+    }
+  }
+
+  //
   locationContinue(ContinueLocationEvent event, Emitter<HomeState> emit) async {
     emit(HomeLoadingState());
     bool serviceEnabled;
     LocationPermission permission;
-    String? place;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       permission = await Geolocator.requestPermission();
@@ -359,21 +407,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Position position = await Geolocator.getCurrentPosition(
       locationSettings: AndroidSettings(accuracy: LocationAccuracy.high),
     );
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-    if (placemarks.isNotEmpty) {
-      place =
-          "${placemarks.first.subLocality ?? ''} - ${placemarks.first.locality ?? ''}";
-      // debugPrint(
-      //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
-    }
+    // List<Placemark> placemarks = await placemarkFromCoordinates(
+    //   position.latitude,
+    //   position.longitude,
+    // );
+    // if (placemarks.isNotEmpty) {
+    //   place =
+    //       "${placemarks.first.subLocality ?? ''} - ${placemarks.first.locality ?? ''}";
+    //   // debugPrint(
+    //   //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
+    // }
     emit(
       LocationContinueSuccessState(
         latitude: position.latitude.toString(),
         longitude: position.longitude.toString(),
-        place: place,
+        place: "place",
       ),
     );
     debugPrint(

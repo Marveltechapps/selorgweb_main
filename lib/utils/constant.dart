@@ -171,6 +171,7 @@ var profileSaveUrl = "${baseUrl}users/create";
 var getSavedProfileUrl = "${baseUrl}users/";
 var updateProfileUrl = "${baseUrl}users/update-profile";
 var clearCartUrl = "${baseUrl}carts/clear-cart?mobileNumber=";
-
+var latlonggetAddressUrl =
+    "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
 // var seachLocationUrl =
 //     "https://nominatim.openstreetmap.org/search?format=json&q=";

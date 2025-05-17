@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_network/image_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
 import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
@@ -21,6 +22,7 @@ import 'package:selorgweb_main/presentation/productlist/product_list_menu.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
 import 'package:selorgweb_main/widgets/network_image.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 
@@ -51,8 +53,353 @@ class HomeScreen extends StatelessWidget {
   static int selectedProductIndexes = 0;
   static int productVarientIndex = 0;
 
+  static List<SearchedLocationResponse> searchedLocations = [];
+
+  static TextEditingController searchLocationController =
+      TextEditingController();
+
+  void showLocationMainAlertDialog(BuildContext context, HomeBloc homebloc) {
+    showDialog(
+      context: context,
+      barrierDismissible: !(location == "No Location Found"),
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+              child: Column(
+                spacing: 10,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: appColor,
+                        child: Icon(Icons.close, size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Image.asset(locationImage, width: 100, height: 100),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Please Enable Location permission",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "for better delivery experience",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: greyColor),
+                  ),
+                  const SizedBox(height: 28),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        homebloc.add(ContinueLocationEvent());
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: appColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text(
+                        "Continue",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        showSearchLocationAlertDialog(context, homebloc);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: Color(0xFF004D00),
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.search, color: Color(0xFF004D00)),
+                          SizedBox(width: 8),
+                          Text(
+                            "Search your location",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF004D00),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void showSearchLocationAlertDialog(BuildContext context, HomeBloc homebloc) {
+    showDialog(
+      context: context,
+      barrierDismissible: !(location == "No Location Found"),
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: appColor,
+                        child: Icon(Icons.close, size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      height: 45,
+                      child: TextFormField(
+                        controller: searchLocationController,
+                        cursorColor: appColor,
+                        cursorHeight: 15,
+                        onChanged: (value) {
+                          homebloc.add(SearchLocationEvent(searchText: value));
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Search a new address",
+                          hintStyle: Theme.of(context).textTheme.labelMedium,
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                          ),
+                          prefixIconConstraints: BoxConstraints(
+                            minWidth: 40,
+                            minHeight: 40,
+                          ),
+                          suffixIcon:
+                              searchLocationController.text.isNotEmpty
+                                  ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        searchLocationController.clear();
+                                        searchedLocations.clear();
+                                        context.read<HomeBloc>().add(
+                                          SearchLocationEvent(searchText: ""),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: Colors.grey,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                                  : null,
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 12,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        // style: Theme.of(context).textTheme.displayMedium,
+                      ),
+                    ),
+                  ),
+                  if (searchLocationController.text.isNotEmpty)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: searchedLocations.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    searchedLocations[index]
+                                            .structuredFormatting!
+                                            .mainText ??
+                                        "",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    searchedLocations[index].description!,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    searchLocationController.text =
+                                        searchedLocations[index].description!;
+                                    // context.read<LocationBloc>().add(
+                                    //   GetLatLonOnListEvent(
+                                    //     placeId:
+                                    //         searchedLocations[index].placeId!,
+                                    //   ),
+                                    // );
+
+                                    // context.read<LocationBloc>().add(
+                                    //     GetLatLonEvent(
+                                    //         latitude:
+                                    //             searchedLocations[index].lat!,
+                                    //         longitude:
+                                    //             searchedLocations[index].lon!));
+                                  },
+                                ),
+                                Divider(),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  if (searchLocationController.text.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40.0, top: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) {
+                          //       return YourLocationScreen(
+                          //         screenType:
+                          //             screenType == "dialog"
+                          //                 ? "current"
+                          //                 : screenType,
+                          //       );
+                          //     },
+                          //   ),
+                          // );
+                        },
+                        child: Row(
+                          spacing: 8,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.asset(locationIcon),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Current Location",
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "Using GPS",
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.width < 991;
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => HomeBloc()),
@@ -269,15 +616,32 @@ class HomeScreen extends StatelessWidget {
             }
           } else if (state is ItemRemovedToCartState) {
             context.read<CounterCubit>().decrement(1);
+          } else if (state is LocationContinueSuccessState) {
+            context.read<HomeBloc>().add(
+              GetLocationUsingLatLongFromApiEvent(
+                latitude: state.latitude ?? "",
+                longitude: state.longitude ?? "",
+              ),
+            );
+          } else if (state is LatLongAddressSuccessState) {
+            location =
+                "${state.latLongLocationResponse.results![0].addressComponents![1].shortName} - ${state.latLongLocationResponse.results![0].addressComponents![3].shortName}";
+            debugPrint(location);
+          } else if (state is SearchedLocationSuccessState) {
+            searchedLocations = state.searchedLocationResponse;
+            int i;
+            // for (var element in state.searchedLocationResponse) {
+            //   // debugPrint("Searched Location: ${element.}");
+            // }
           }
         },
         builder: (context, state) {
           if (state is HomeInitialState) {
-            // WidgetsBinding.instance.addPostFrameCallback((_) {
-            //   location == "No Location Found"
-            //       ? context.read<HomeBloc>().add(GetLocationEvent())
-            //       : null;
-            // });
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              location == "No Location Found"
+                  ? context.read<HomeBloc>().add(ContinueLocationEvent())
+                  : null;
+            });
             context.read<HomeBloc>().add(GetCartCountEvent(userId: userId));
             context.read<HomeBloc>().add(GrabAndGoEvent());
             context.read<HomeBloc>().add(GetBannerEvent());
@@ -329,8 +693,6 @@ class HomeScreen extends StatelessWidget {
             //   }
             // });
           }
-          final isTablet = MediaQuery.of(context).size.width < 991;
-          final isMobile = MediaQuery.of(context).size.width < 600;
           return Scaffold(
             backgroundColor: appbackgroundColor,
             body: LayoutBuilder(
@@ -338,7 +700,14 @@ class HomeScreen extends StatelessWidget {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      HeaderWidget(),
+                      HeaderWidget(
+                        onClick: () {
+                          showLocationMainAlertDialog(
+                            context,
+                            context.read<HomeBloc>(),
+                          );
+                        },
+                      ),
                       Container(
                         constraints: BoxConstraints(maxHeight: 300),
                         color: appbackgroundColor,
@@ -3975,114 +4344,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 40),
-                      isTablet
-                          ? SizedBox()
-                          : Container(
-                            constraints: const BoxConstraints(
-                              minHeight: 400,
-                              maxWidth: 1280,
-                            ),
-                            child: Stack(
-                              children: [
-                                // Background Image
-                                Image.asset(
-                                  'download_banner.png',
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                  width: 1280,
-                                  height: 350,
-                                ),
-                                // Content
-                                Positioned(
-                                  left: 100,
-                                  top: 0,
-                                  bottom: 0,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: isMobile ? 20 : 10,
-                                    ),
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 1280,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Download the Selorg app',
-                                                style: TextStyle(
-                                                  color: const Color(
-                                                    0xFF034703,
-                                                  ),
-                                                  fontSize: 28,
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 17),
-                                              Text(
-                                                'Download Selorg app available on Android & iOS',
-                                                style: TextStyle(
-                                                  color: const Color(
-                                                    0xFF555555,
-                                                  ),
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 21),
-                                              Wrap(
-                                                spacing: 20,
-                                                runSpacing: 20,
-                                                children: [
-                                                  AppStoreButton(
-                                                    icon:
-                                                        'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                                    topText: 'Get it On',
-                                                    bottomText: 'Google Play',
-                                                    iconSize: const Size(
-                                                      47,
-                                                      47,
-                                                    ),
-                                                  ),
-                                                  AppStoreButton(
-                                                    icon:
-                                                        'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                                    topText: 'Download on the',
-                                                    bottomText: 'App Store',
-                                                    iconSize: const Size(
-                                                      44,
-                                                      50,
-                                                    ),
-                                                    topTextStyle:
-                                                        const TextStyle(
-                                                          fontSize: 19,
-                                                        ),
-                                                    bottomTextStyle:
-                                                        const TextStyle(
-                                                          fontSize: 22,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                      BottomImageWidget(),
                       BottomCategoriesBarWidget(),
                       BottomAppBarWidget(),
                     ],
@@ -4092,88 +4354,6 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class AppStoreButton extends StatelessWidget {
-  final String icon;
-  final String topText;
-  final String bottomText;
-  final Size iconSize;
-  final TextStyle? topTextStyle;
-  final TextStyle? bottomTextStyle;
-
-  const AppStoreButton({
-    super.key,
-    required this.icon,
-    required this.topText,
-    required this.bottomText,
-    required this.iconSize,
-    this.topTextStyle,
-    this.bottomTextStyle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF444444),
-        borderRadius: BorderRadius.circular(9.159),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.network(
-            icon,
-            width: iconSize.width,
-            height: iconSize.height,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(width: 5),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                topText,
-                style:
-                    topTextStyle?.copyWith(
-                      color: Colors.white,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      height: 1,
-                    ) ??
-                    const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Roboto',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      height: 1.6,
-                    ),
-              ),
-              Text(
-                bottomText,
-                style:
-                    bottomTextStyle?.copyWith(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                      height: 1,
-                    ) ??
-                    const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      height: 1,
-                    ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

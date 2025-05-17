@@ -14,7 +14,7 @@ class CategoryInitialState extends CategoryState {}
 class CategoryLoadingState extends CategoryState {}
 
 class MainCategoryLoadedState extends CategoryState {
- final MainCategory mainCategory;
+  final MainCategory mainCategory;
 
   const MainCategoryLoadedState({required this.mainCategory});
 
@@ -31,7 +31,7 @@ class CategoryLoadedState extends CategoryState {
   List<Object> get props => [categories];
 }
 
-class CategoryErrorState extends CategoryState{
+class CategoryErrorState extends CategoryState {
   final String message;
 
   const CategoryErrorState({required this.message});

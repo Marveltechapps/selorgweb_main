@@ -14,6 +14,22 @@ class GetCartCountEvent extends HomeEvent {
   GetCartCountEvent({required this.userId});
 }
 
+class SearchLocationEvent extends HomeEvent {
+  final String searchText;
+
+  SearchLocationEvent({required this.searchText});
+}
+
+class GetLocationUsingLatLongFromApiEvent extends HomeEvent {
+  final String latitude;
+  final String longitude;
+
+  GetLocationUsingLatLongFromApiEvent({
+    required this.latitude,
+    required this.longitude,
+  });
+}
+
 class AddButtonClikedEvent extends HomeEvent {
   final ProductStyleResponse response;
   final String type;
