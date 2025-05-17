@@ -14,6 +14,18 @@ class GetCartCountEvent extends HomeEvent {
   GetCartCountEvent({required this.userId});
 }
 
+class PlaceLocaitonEvent extends HomeEvent {
+  final String locationText;
+
+  PlaceLocaitonEvent({required this.locationText});
+}
+
+class GetLatLonOnListEvent extends HomeEvent {
+  final String placeId;
+
+  GetLatLonOnListEvent({required this.placeId});
+}
+
 class SearchLocationEvent extends HomeEvent {
   final String searchText;
 

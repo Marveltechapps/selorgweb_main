@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
 import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_model.dart';
+import 'package:selorgweb_main/model/addaddress/lat_long_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_error_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
@@ -43,7 +44,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetCategoryDataEvent>(getCategoryData);
     on<GetLocationUsingLatLongFromApiEvent>(getlatlongfromapi);
     on<SearchLocationEvent>(seachLocation);
+    on<GetLatLonOnListEvent>(getlatlon);
+    on<PlaceLocaitonEvent>(placelocatiovalue);
     on<ShowBottomSheetEvent>((event, emit) => emit(BottomSheetVisible()));
+  }
+
+  placelocatiovalue(PlaceLocaitonEvent event, Emitter<HomeState> emit) {
+    emit(HomeLoadingState());
+    emit(PlaceLocaitonState(locationText: event.locationText));
   }
 
   getCartCount(GetCartCountEvent event, Emitter<HomeState> emit) async {
@@ -269,11 +277,38 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(NavigateState(index: event.index));
   }
 
+  getlatlon(GetLatLonOnListEvent event, Emitter<HomeState> emit) async {
+    emit(HomeLoadingState());
+    String url =
+        "$getLatLonUrl${event.placeId}&key=AIzaSyAKVumkjaEhGUefBCclE23rivFqPK3LDRQ";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var latlongLocationResponse = latLonLocationResponseFromJson(
+          response.body,
+        );
+        emit(
+          LatLongSuccessState(
+            longitude:
+                latlongLocationResponse.result!.geometry!.location!.lng
+                    .toString(),
+            latitude:
+                latlongLocationResponse.result!.geometry!.location!.lat
+                    .toString(),
+          ),
+        );
+      } else {
+        emit(HomeErrorState(message: "Failed to fetch data"));
+      }
+    } catch (e) {
+      emit(HomeErrorState(message: e.toString()));
+    }
+  }
+
   getlocation(GetLocationEvent event, Emitter<HomeState> emit) async {
     emit(HomeLoadingState());
     bool serviceEnabled;
     LocationPermission permission;
-    String? place;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       permission = await Geolocator.requestPermission();

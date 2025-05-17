@@ -138,6 +138,7 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.pop(context);
                         showSearchLocationAlertDialog(context, homebloc);
+                        searchLocationController.clear();
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(
@@ -179,217 +180,279 @@ class HomeScreen extends StatelessWidget {
       context: context,
       barrierDismissible: !(location == "No Location Found"),
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: CircleAvatar(
-                        radius: 14,
-                        backgroundColor: appColor,
-                        child: Icon(Icons.close, size: 16, color: Colors.white),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SizedBox(
-                      height: 45,
-                      child: TextFormField(
-                        controller: searchLocationController,
-                        cursorColor: appColor,
-                        cursorHeight: 15,
-                        onChanged: (value) {
-                          homebloc.add(SearchLocationEvent(searchText: value));
-                        },
-                        decoration: InputDecoration(
-                          hintText: "Search a new address",
-                          hintStyle: Theme.of(context).textTheme.labelMedium,
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                              size: 20,
+        return BlocProvider.value(
+          value: homebloc,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.white,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 500,
+                            maxWidth: 500,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 30,
                             ),
-                          ),
-                          prefixIconConstraints: BoxConstraints(
-                            minWidth: 40,
-                            minHeight: 40,
-                          ),
-                          suffixIcon:
-                              searchLocationController.text.isNotEmpty
-                                  ? Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12,
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: InkWell(
+                                    onTap: () => Navigator.pop(context),
+                                    child: CircleAvatar(
+                                      radius: 14,
+                                      backgroundColor: appColor,
+                                      child: Icon(
+                                        Icons.close,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        searchLocationController.clear();
-                                        searchedLocations.clear();
-                                        context.read<HomeBloc>().add(
-                                          SearchLocationEvent(searchText: ""),
+                                  ),
+                                ),
+
+                                SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: SizedBox(
+                                    height: 45,
+                                    child: TextFormField(
+                                      controller: searchLocationController,
+                                      cursorColor: appColor,
+                                      cursorHeight: 15,
+                                      onChanged: (value) {
+                                        homebloc.add(
+                                          SearchLocationEvent(
+                                            searchText: value,
+                                          ),
                                         );
                                       },
-                                      icon: Icon(
-                                        Icons.close,
-                                        color: Colors.grey,
-                                        size: 20,
+                                      decoration: InputDecoration(
+                                        hintText: "Search a new address",
+                                        hintStyle:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelMedium,
+                                        prefixIcon: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          child: Icon(
+                                            Icons.search,
+                                            color: Colors.grey,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        prefixIconConstraints: BoxConstraints(
+                                          minWidth: 40,
+                                          minHeight: 40,
+                                        ),
+                                        suffixIcon:
+                                            searchLocationController
+                                                    .text
+                                                    .isNotEmpty
+                                                ? Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                  ),
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      searchLocationController
+                                                          .clear();
+                                                      searchedLocations.clear();
+                                                      context
+                                                          .read<HomeBloc>()
+                                                          .add(
+                                                            SearchLocationEvent(
+                                                              searchText: "",
+                                                            ),
+                                                          );
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.close,
+                                                      color: Colors.grey,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                )
+                                                : null,
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          vertical: 14,
+                                          horizontal: 12,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 2,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                  : null,
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 14,
-                            horizontal: 12,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 1,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        // style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                    ),
-                  ),
-                  if (searchLocationController.text.isNotEmpty)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: searchedLocations.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                    searchedLocations[index]
-                                            .structuredFormatting!
-                                            .mainText ??
-                                        "",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
+                                      // style: Theme.of(context).textTheme.displayMedium,
                                     ),
                                   ),
-                                  subtitle: Text(
-                                    searchedLocations[index].description!,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    searchLocationController.text =
-                                        searchedLocations[index].description!;
-                                    // context.read<LocationBloc>().add(
-                                    //   GetLatLonOnListEvent(
-                                    //     placeId:
-                                    //         searchedLocations[index].placeId!,
-                                    //   ),
-                                    // );
-
-                                    // context.read<LocationBloc>().add(
-                                    //     GetLatLonEvent(
-                                    //         latitude:
-                                    //             searchedLocations[index].lat!,
-                                    //         longitude:
-                                    //             searchedLocations[index].lon!));
-                                  },
                                 ),
-                                Divider(),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  if (searchLocationController.text.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40.0, top: 20),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return YourLocationScreen(
-                          //         screenType:
-                          //             screenType == "dialog"
-                          //                 ? "current"
-                          //                 : screenType,
-                          //       );
-                          //     },
-                          //   ),
-                          // );
-                        },
-                        child: Row(
-                          spacing: 8,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(locationIcon),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Current Location",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
+                                if (searchLocationController.text.isNotEmpty)
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: searchedLocations.length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            children: [
+                                              ListTile(
+                                                title: Text(
+                                                  searchedLocations[index]
+                                                          .structuredFormatting!
+                                                          .mainText ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                subtitle: Text(
+                                                  searchedLocations[index]
+                                                      .description!,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                onTap: () {
+                                                  searchLocationController
+                                                          .text =
+                                                      searchedLocations[index]
+                                                          .description!;
+                                                  context.read<HomeBloc>().add(
+                                                    PlaceLocaitonEvent(
+                                                      locationText:
+                                                          "${searchedLocations[index].structuredFormatting!.mainText} - ${searchedLocations[index].structuredFormatting!.secondaryText!.split(",").first}",
+                                                    ),
+                                                  );
+                                                  Navigator.pop(context);
+                                                  // context.read<LocationBloc>().add(
+                                                  //     GetLatLonEvent(
+                                                  //         latitude:
+                                                  //             searchedLocations[index].lat!,
+                                                  //         longitude:
+                                                  //             searchedLocations[index].lon!));
+                                                },
+                                              ),
+                                              Divider(),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
-                                  ],
-                                ),
-                                Text(
-                                  "Using GPS",
-                                  style: TextStyle(color: Colors.green),
-                                ),
+                                  ),
+                                if (searchLocationController.text.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 40.0,
+                                      top: 20,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        homebloc.add(ContinueLocationEvent());
+                                        Navigator.pop(context);
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) {
+                                        //       return YourLocationScreen(
+                                        //         screenType:
+                                        //             screenType == "dialog"
+                                        //                 ? "current"
+                                        //                 : screenType,
+                                        //       );
+                                        //     },
+                                        //   ),
+                                        // );
+                                      },
+                                      child: Row(
+                                        spacing: 8,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Image.asset(locationIcon),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "Current Location",
+                                                    style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                "Using GPS",
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
           ),
         );
       },
@@ -425,6 +488,8 @@ class HomeScreen extends StatelessWidget {
                 offerbanners.add(state.banners.data![i]);
               }
             }
+          } else if (state is PlaceLocaitonState) {
+            location = state.locationText;
           } else if (state is OrganicFreshFruitsLoadedState) {
             freshFruitsresponse = ProductStyleResponse();
             // freshFruitsList = state.productStyleResponse.data ?? [];
@@ -629,10 +694,16 @@ class HomeScreen extends StatelessWidget {
             debugPrint(location);
           } else if (state is SearchedLocationSuccessState) {
             searchedLocations = state.searchedLocationResponse;
-            int i;
-            // for (var element in state.searchedLocationResponse) {
-            //   // debugPrint("Searched Location: ${element.}");
-            // }
+          } else if (state is LatLongSuccessState) {
+            // Navigator.push(context, MaterialPageRoute(
+            //   builder: (context) {
+            //     return YourLocationScreen(
+            //         lat: state.latitude,
+            //         long: state.longitude,
+            //         screenType:
+            //             screenType == "address" ? "listview" : "search");
+            //   },
+            // ));
           }
         },
         builder: (context, state) {

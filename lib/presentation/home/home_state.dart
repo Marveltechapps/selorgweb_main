@@ -72,6 +72,19 @@ class LocationContinueSuccessState extends HomeState {
 }
 
 
+class LatLongSuccessState extends HomeState {
+  String latitude;
+  String longitude;
+
+  LatLongSuccessState({required this.latitude, required this.longitude});
+}
+
+class PlaceLocaitonState extends HomeState {
+  final String locationText;
+
+  PlaceLocaitonState({required this.locationText});
+}
+
 class SearchedLocationSuccessState extends HomeState {
   final List<SearchedLocationResponse> searchedLocationResponse;
 
