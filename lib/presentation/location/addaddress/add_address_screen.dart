@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:selorgweb_main/presentation/address/address_bloc.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_bloc.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_event.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
 import 'package:selorgweb_main/presentation/location/yourlocation/your_location_screen.dart';
+import 'package:selorgweb_main/presentation/settings/address/address_event.dart';
 import 'package:selorgweb_main/widgets/success_dialog_widget.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/cart/add_address_styles.dart';
@@ -22,18 +24,19 @@ class AddAddress extends StatelessWidget {
   String? landmark;
   String? label;
 
-  AddAddress(
-      {super.key,
-      required this.place,
-      required this.screenType,
-      required this.latitude,
-      this.id,
-      required this.isEdit,
-      this.houseNo,
-      this.building,
-      this.landmark,
-      this.label,
-      required this.longitude});
+  AddAddress({
+    super.key,
+    required this.place,
+    required this.screenType,
+    required this.latitude,
+    this.id,
+    required this.isEdit,
+    this.houseNo,
+    this.building,
+    this.landmark,
+    this.label,
+    required this.longitude,
+  });
 
   static String selectedLabel = '';
   static TextEditingController houseNoController = TextEditingController();
@@ -43,6 +46,50 @@ class AddAddress extends StatelessWidget {
   static String long = "";
   final _formKey = GlobalKey<FormState>();
   final Set<Marker> markers = {};
+  void showLocationSelect(BuildContext context) {
+    showDialog(
+      context: context,
+      // barrierDismissible: !(location == "No Location Found"),
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 500,
+              maxWidth: 500,
+              minHeight: 500,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Column(
+                spacing: 10,
+                mainAxisSize: MainAxisSize.min,
+
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: appColor,
+                        child: Icon(Icons.close, size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                  // LocationScreen(screenType: 'address'),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +99,13 @@ class AddAddress extends StatelessWidget {
         listener: (context, state) {
           if (state is AddAddressSaveSuccess) {
             showSuccessDialog(
-                true,
-                state.addAddressSaveResponse.message ?? "",
-                "${place.name} ,${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}",
-                selectedLabel,
-                screenType,
-                context);
+              true,
+              state.addAddressSaveResponse.message ?? "",
+              "${place.name} ,${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}",
+              selectedLabel,
+              screenType,
+              context,
+            );
             houseNoController.clear();
             buildingController.clear();
             landmarkController.clear();
@@ -78,54 +126,228 @@ class AddAddress extends StatelessWidget {
             markers.add(
               Marker(
                 markerId: MarkerId('unique_id'),
-                position:
-                    LatLng(double.parse(latitude), double.parse(longitude)),
+                position: LatLng(
+                  double.parse(latitude),
+                  double.parse(longitude),
+                ),
                 infoWindow: InfoWindow(
-                  title: 'My Marker',
+                  title: 'Place Your Location',
                   snippet: 'Some info here',
                 ),
               ),
             );
           }
-          return Scaffold(
-            backgroundColor: AddAddressStyles.backgroundColor,
-            appBar: AppBar(
-              leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios_new,
-                    color: Colors.white,
-                    size: 16,
-                  )),
-              elevation: 0,
-              title: Text("Add Address Details"),
-            ),
-            body: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints:
-                    const BoxConstraints(maxWidth: AddAddressStyles.maxWidth),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AddAddressStyles.defaultPadding,
-                      ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          _buildMapPreview(context),
-                          const SizedBox(height: 18),
-                          _buildLocationInfo(place, context),
-                          const SizedBox(height: 22),
-                          _buildAddressForm(
-                              context.read<AddAddressBloc>(), context),
-                        ],
-                      ),
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AddAddressStyles.maxWidth,
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AddAddressStyles.defaultPadding,
                     ),
-                  ],
-                ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        Container(
+                          height: 323,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: GoogleMap(
+                              onTap: (argument) {
+                                debugPrint(screenType);
+                                if (screenType == "editaddress") {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return YourLocationScreen(
+                                          lat: latitude,
+                                          long: longitude,
+                                          screenType: screenType,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(
+                                  double.parse(latitude),
+                                  double.parse(longitude),
+                                ),
+                                zoom: 20.0,
+                              ),
+                              onMapCreated: (GoogleMapController controller) {},
+                              markers: markers,
+                              // onCameraIdle: () {
+                              //   context.read<LocationBloc>().add(GetLatLonOnIdleEvent(
+                              //       latitude: latitude, longitude: longitude));
+                              // },
+                              // onCameraMove: (CameraPosition position) {
+                              //   context.read<LocationBloc>().add(GetLatLonEvent(
+                              //       latitude: position.target.latitude.toString(),
+                              //       longitude: position.target.longitude.toString()));
+                              // },
+                            ) /*   ImageNetwork(url:
+          "https://cdn.builder.io/api/v1/image/assets/TEMP/08c56c190f2fda8733801f3fb8dd6154df55c0368b56a26bb54f2a751577ff14?placeholderIfAbsent=true&apiKey=479ee9553c984302af0d67c8f0a948e9",
+          fit: BoxFit.cover,
+          width: double.infinity,
+        ), */,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  place.subLocality == ""
+                                      ? SizedBox()
+                                      : Text(
+                                        place.subLocality ?? "",
+                                        style:
+                                            AddAddressStyles.locationTitleStyle,
+                                      ),
+                                  Text(
+                                    "${place.name}${place.name == "" ? "" : ","}${place.subLocality}${place.subLocality == "" ? "" : ","} ${place.locality}${place.locality == "" ? "" : ","} ${place.administrativeArea}${place.administrativeArea == "" ? "" : ","} ${place.postalCode}${place.postalCode == "" ? "" : ","} ${place.country}",
+                                    style:
+                                        AddAddressStyles.locationSubtitleStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 49),
+                            OutlinedButton(
+                              onPressed: () {
+                                debugPrint(screenType);
+                                if (screenType == "editaddress") {
+                                  // showBottomSheet(
+                                  //   context: context,
+                                  //   // barrierDismissible: !(location == "No Location Found"),
+                                  //   builder: (BuildContext context) {
+                                  //     return Dialog(
+                                  //       shape: RoundedRectangleBorder(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //           10,
+                                  //         ),
+                                  //       ),
+                                  //       backgroundColor: Colors.white,
+                                  //       child: Container(
+                                  //         width: 500,
+                                  //         constraints: BoxConstraints(
+                                  //           maxHeight: 500,
+                                  //           maxWidth: 500,
+                                  //           minHeight: 500,
+                                  //         ),
+                                  //         child: Padding(
+                                  //           padding: const EdgeInsets.symmetric(
+                                  //             horizontal: 20,
+                                  //             vertical: 8,
+                                  //           ),
+                                  //           child: SingleChildScrollView(
+                                  //             child: Column(
+                                  //               spacing: 10,
+                                  //               mainAxisSize: MainAxisSize.min,
+
+                                  //               children: [
+                                  //                 Align(
+                                  //                   alignment:
+                                  //                       Alignment.topRight,
+                                  //                   child: InkWell(
+                                  //                     onTap:
+                                  //                         () => Navigator.pop(
+                                  //                           context,
+                                  //                         ),
+                                  //                     child: CircleAvatar(
+                                  //                       radius: 14,
+                                  //                       backgroundColor:
+                                  //                           appColor,
+                                  //                       child: Icon(
+                                  //                         Icons.close,
+                                  //                         size: 16,
+                                  //                         color: Colors.white,
+                                  //                       ),
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+
+                                  //                 Container(
+                                  //                   width: 300,
+                                  //                   height: 300,
+                                  //                   clipBehavior: Clip.hardEdge,
+                                  //                   decoration: BoxDecoration(),
+                                  //                   child: YourLocationScreen(
+                                  //                     lat: latitude,
+                                  //                     long: longitude,
+                                  //                     screenType: screenType,
+                                  //                   ),
+                                  //                 ),
+                                  //               ],
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // );
+                                  
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return YourLocationScreen(
+                                          lat: latitude,
+                                          long: longitude,
+                                          screenType: screenType,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: AddAddressStyles.primaryGreen,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 17,
+                                  vertical: 8,
+                                ),
+                              ),
+                              child: const Text(
+                                'Change',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 22),
+                        _buildAddressForm(
+                          context.read<AddAddressBloc>(),
+                          context,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -137,46 +359,50 @@ class AddAddress extends StatelessWidget {
   Widget _buildMapPreview(context) {
     return Container(
       height: 323,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: GoogleMap(
-            onTap: (argument) {
-              debugPrint(screenType);
-              if (screenType == "editaddress") {
-                Navigator.push(context, MaterialPageRoute(
+        borderRadius: BorderRadius.circular(10),
+        child: GoogleMap(
+          onTap: (argument) {
+            debugPrint(screenType);
+            if (screenType == "editaddress") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
                   builder: (context) {
                     return YourLocationScreen(
-                        lat: latitude, long: longitude, screenType: screenType);
+                      lat: latitude,
+                      long: longitude,
+                      screenType: screenType,
+                    );
                   },
-                ));
-              } else {
-                Navigator.pop(context);
-              }
-            },
-            initialCameraPosition: CameraPosition(
-              target: LatLng(double.parse(latitude), double.parse(longitude)),
-              zoom: 20.0,
-            ),
-            onMapCreated: (GoogleMapController controller) {},
-            markers: markers,
-            // onCameraIdle: () {
-            //   context.read<LocationBloc>().add(GetLatLonOnIdleEvent(
-            //       latitude: latitude, longitude: longitude));
-            // },
-            // onCameraMove: (CameraPosition position) {
-            //   context.read<LocationBloc>().add(GetLatLonEvent(
-            //       latitude: position.target.latitude.toString(),
-            //       longitude: position.target.longitude.toString()));
-            // },
-          ) /*   ImageNetwork(url:
+                ),
+              );
+            } else {
+              Navigator.pop(context);
+            }
+          },
+          initialCameraPosition: CameraPosition(
+            target: LatLng(double.parse(latitude), double.parse(longitude)),
+            zoom: 20.0,
+          ),
+          onMapCreated: (GoogleMapController controller) {},
+          markers: markers,
+          // onCameraIdle: () {
+          //   context.read<LocationBloc>().add(GetLatLonOnIdleEvent(
+          //       latitude: latitude, longitude: longitude));
+          // },
+          // onCameraMove: (CameraPosition position) {
+          //   context.read<LocationBloc>().add(GetLatLonEvent(
+          //       latitude: position.target.latitude.toString(),
+          //       longitude: position.target.longitude.toString()));
+          // },
+        ) /*   ImageNetwork(url:
           "https://cdn.builder.io/api/v1/image/assets/TEMP/08c56c190f2fda8733801f3fb8dd6154df55c0368b56a26bb54f2a751577ff14?placeholderIfAbsent=true&apiKey=479ee9553c984302af0d67c8f0a948e9",
           fit: BoxFit.cover,
           width: double.infinity,
-        ), */
-          ),
+        ), */,
+      ),
     );
   }
 
@@ -190,9 +416,9 @@ class AddAddress extends StatelessWidget {
               place.subLocality == ""
                   ? SizedBox()
                   : Text(
-                      place.subLocality ?? "",
-                      style: AddAddressStyles.locationTitleStyle,
-                    ),
+                    place.subLocality ?? "",
+                    style: AddAddressStyles.locationTitleStyle,
+                  ),
               Text(
                 "${place.name}${place.name == "" ? "" : ","}${place.subLocality}${place.subLocality == "" ? "" : ","} ${place.locality}${place.locality == "" ? "" : ","} ${place.administrativeArea}${place.administrativeArea == "" ? "" : ","} ${place.postalCode}${place.postalCode == "" ? "" : ","} ${place.country}",
                 style: AddAddressStyles.locationSubtitleStyle,
@@ -205,12 +431,18 @@ class AddAddress extends StatelessWidget {
           onPressed: () {
             debugPrint(screenType);
             if (screenType == "editaddress") {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return YourLocationScreen(
-                      lat: latitude, long: longitude, screenType: screenType);
-                },
-              ));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return YourLocationScreen(
+                      lat: latitude,
+                      long: longitude,
+                      screenType: screenType,
+                    );
+                  },
+                ),
+              );
             } else {
               Navigator.pop(context);
             }
@@ -246,7 +478,10 @@ class AddAddress extends StatelessWidget {
           _buildInputField('Building & Block No.', buildingController, context),
           const SizedBox(height: 8),
           _buildInputField(
-              'Landmark & Area name(Optional)', landmarkController, context),
+            'Landmark & Area name(Optional)',
+            landmarkController,
+            context,
+          ),
           const SizedBox(height: 25),
           _buildAddressLabels(addAddressBloc),
           const SizedBox(height: 25),
@@ -258,14 +493,14 @@ class AddAddress extends StatelessWidget {
   }
 
   Widget _buildInputField(
-      String label, TextEditingController controller, BuildContext context) {
+    String label,
+    TextEditingController controller,
+    BuildContext context,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: AddAddressStyles.labelStyle,
-        ),
+        Text(label, style: AddAddressStyles.labelStyle),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
@@ -286,8 +521,9 @@ class AddAddress extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: appColor), // Border when focused & error
+              borderSide: BorderSide(
+                color: appColor,
+              ), // Border when focused & error
               borderRadius: BorderRadius.circular(10),
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -295,7 +531,9 @@ class AddAddress extends StatelessWidget {
               vertical: 10,
             ),
           ),
-          style: Theme.of(context).textTheme.displayMedium,
+          style: Theme.of(
+            context,
+          ).textTheme.displayMedium?.copyWith(fontSize: 14),
         ),
       ],
     );
@@ -337,12 +575,14 @@ class AddAddress extends StatelessWidget {
           addAddressBloc.add(SelectLabelEvent(label: label));
         },
         style: AddAddressStyles.addressLabelButtonStyle.copyWith(
-          backgroundColor: isSelected
-              ? WidgetStateProperty.all(Colors.green.shade200)
-              : WidgetStateProperty.all(Colors.transparent),
-          foregroundColor: isSelected
-              ? WidgetStateProperty.all(Colors.white)
-              : WidgetStateProperty.all(AddAddressStyles.borderColor),
+          backgroundColor:
+              isSelected
+                  ? WidgetStateProperty.all(Colors.green.shade200)
+                  : WidgetStateProperty.all(Colors.transparent),
+          foregroundColor:
+              isSelected
+                  ? WidgetStateProperty.all(Colors.white)
+                  : WidgetStateProperty.all(AddAddressStyles.borderColor),
         ),
         child: Text(
           label,
@@ -367,35 +607,43 @@ class AddAddress extends StatelessWidget {
             );
           } else {
             isEdit
-                ? addAddressBloc.add(UpdateAddressEvent(
+                ? addAddressBloc.add(
+                  UpdateAddressEvent(
                     id: id ?? "",
                     userId: userId,
                     label: selectedLabel,
                     houseNo: houseNoController.text,
                     building: buildingController.text,
                     landMark: landmarkController.text,
-                    area: place.subLocality == ""
-                        ? place.name.toString()
-                        : place.subLocality.toString(),
+                    area:
+                        place.subLocality == ""
+                            ? place.name.toString()
+                            : place.subLocality.toString(),
                     city: place.locality.toString(),
                     state: place.administrativeArea.toString(),
                     pinCode: place.postalCode.toString(),
                     latitude: latitude,
-                    longitude: longitude))
-                : addAddressBloc.add(SaveAddressEvent(
+                    longitude: longitude,
+                  ),
+                )
+                : addAddressBloc.add(
+                  SaveAddressEvent(
                     userId: userId,
                     label: selectedLabel,
                     houseNo: houseNoController.text,
                     building: buildingController.text,
                     landMark: landmarkController.text,
-                    area: place.subLocality == ""
-                        ? place.name.toString()
-                        : place.subLocality.toString(),
+                    area:
+                        place.subLocality == ""
+                            ? place.name.toString()
+                            : place.subLocality.toString(),
                     city: place.locality.toString(),
                     state: place.administrativeArea.toString(),
                     pinCode: place.postalCode.toString(),
                     latitude: latitude,
-                    longitude: longitude));
+                    longitude: longitude,
+                  ),
+                );
           }
           // showSuccessDialog(context);
           // if (_formKey.currentState!.validate()) {
@@ -405,10 +653,7 @@ class AddAddress extends StatelessWidget {
         style: AddAddressStyles.saveButtonStyle,
         child: const Text(
           'Save Address',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );

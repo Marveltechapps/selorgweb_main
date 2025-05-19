@@ -54,7 +54,41 @@ class FAQScreen extends StatelessWidget {
               answer:
                   'In rare cases when an item is unavailable, we\'ll notify you immediately and offer alternatives or issue a quick refund.',
             ),
-            const FAQItem(question: 'How do I pay for my order?', answer: ''),
+            const FAQItem(
+              question: 'How do I pay for my order?',
+              answer:
+                  'We accept multiple payment options, including credit/debit cards, UPI, digital wallets, and cash on delivery.',
+            ),
+            const FAQItem(
+              question: 'Can I modify my order after placing it?',
+              answer:
+                  'Order modifications and cancellations are not available at the moment. Please double-check your cart before placing your order.',
+            ),
+            const FAQItem(
+              question: 'What if I receive a wrong or damaged item?',
+              answer:
+                  'If you receive an incorrect or damaged product, please report it through the Support@sodakku.com and we’ll replace it or issue a refund.',
+            ),
+            const FAQItem(
+              question: 'How can I track my order?',
+              answer:
+                  'Once your order is confirmed, you can track its real-time status through the app until it reaches your doorstep.',
+            ),
+            const FAQItem(
+              question: 'How do I return an item?',
+              answer:
+                  'Currently, we don\'t offer a return option. Please check your order carefully before confirming your purchase.',
+            ),
+            const FAQItem(
+              question: 'Is my personal information secure?',
+              answer:
+                  'Absolutely. We prioritize your privacy and use advanced security measures to protect your data.',
+            ),
+            const FAQItem(
+              question: 'How can I provide feedback?',
+              answer:
+                  'We love hearing from you! Rate your experience through the app or drop us a message in the feedback section.',
+            ),
           ],
         ),
       ),

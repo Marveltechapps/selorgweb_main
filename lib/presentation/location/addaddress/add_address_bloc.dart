@@ -7,6 +7,7 @@ import 'package:selorgweb_main/presentation/location/addaddress/add_address_even
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
 import 'package:http/http.dart' as http;
+import 'package:selorgweb_main/presentation/settings/address/address_state.dart';
 
 import 'package:selorgweb_main/utils/constant.dart';
 
@@ -94,6 +95,7 @@ class AddAddressBloc extends Bloc<AddAddressEvent, AddAddressState> {
         var addAddressSaveResponse = addAddressSaveResponseFromJson(res);
         emit(AddAddressSaveSuccess(
             addAddressSaveResponse: addAddressSaveResponse));
+            
       } else {
         emit(AddAddressErrorState(errorMsg: response.reasonPhrase ?? ""));
       }

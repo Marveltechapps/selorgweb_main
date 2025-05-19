@@ -10,7 +10,7 @@ class AddAddressStyles {
   static const double defaultPadding = 12.0;
   static const double formSpacing = 8.0;
   static const double borderRadius = 5.0;
-  static const double maxWidth = 480.0;
+  static const double maxWidth = 1280;
 
   static const TextStyle headerStyle = TextStyle(
     fontSize: 20,
@@ -51,18 +51,14 @@ class AddAddressStyles {
   static ButtonStyle addressLabelButtonStyle = OutlinedButton.styleFrom(
     foregroundColor: borderColor,
     side: const BorderSide(color: borderColor),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(40),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
     padding: const EdgeInsets.symmetric(horizontal: 23, vertical: 5),
   );
 
   static ButtonStyle saveButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: primaryGreen,
     foregroundColor: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(32),
-    ),
-    padding: const EdgeInsets.symmetric(vertical: 11),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+    padding: const EdgeInsets.symmetric(vertical: 15),
   );
 }

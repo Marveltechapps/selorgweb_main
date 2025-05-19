@@ -7,7 +7,8 @@ import 'package:selorgweb_main/order/pages/orderdetails.dart';
 import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
 import 'package:selorgweb_main/order/pages/profilesection.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
-import 'package:selorgweb_main/presentation/address/address_screen.dart';
+import 'package:selorgweb_main/presentation/settings/address/address_screen.dart';
+import 'package:selorgweb_main/presentation/settings/profile/profile_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import './constants/colors.dart';
 import './constants/styles.dart';
@@ -27,7 +28,8 @@ class _SettingScreenState extends State<SettingScreen> {
     Center(child: OrdersList()),
     FAQScreen(),
     AddressScreen(),
-    Profilesection(),
+    // Profilesection(),
+    ProfileScreen(),
     Orderdetails(),
   ];
 

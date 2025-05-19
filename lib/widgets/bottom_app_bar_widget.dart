@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:selorgweb_main/presentation/general/privacy_policy.dart';
+import 'package:selorgweb_main/presentation/general/terms_conditions.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class BottomAppBarWidget extends StatelessWidget {
@@ -63,13 +65,31 @@ class BottomAppBarWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Privacy Policy",
-                        style: TextStyle(color: whiteColor),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PrivacyPolicy(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Privacy Policy",
+                          style: TextStyle(color: whiteColor),
+                        ),
                       ),
-                      Text(
-                        "Terms & Conditions",
-                        style: TextStyle(color: whiteColor),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => TermsConditions(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Terms & Conditions",
+                          style: TextStyle(color: whiteColor),
+                        ),
                       ),
                       Text(
                         "Delivery Areas",
