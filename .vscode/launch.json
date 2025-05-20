@@ -11,7 +11,9 @@
             "type": "dart",
             "flutterMode": "debug",
             "args": [
-                "--web-port=8080"
+                "--web-port=8080",
+                "--verbose",
+                "--release"
             ],
             "program": "lib/main.dart",
             "cwd": "${workspaceFolder}",

@@ -2,40 +2,91 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_flutter_web/google_maps_flutter_web.dart' as WebMap;
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_bloc.dart';
-import 'package:selorgweb_main/presentation/location/location_state.dart';
 import 'package:selorgweb_main/presentation/location/location_event.dart';
-import '../../../utils/constant.dart';
+import 'package:selorgweb_main/presentation/location/location_state.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
-class YourLocationScreen extends StatelessWidget {
-  final String screenType;
-  final String? lat;
-  final String? long;
-  YourLocationScreen({
+class YourLocation extends StatefulWidget {
+  const YourLocation({
     super.key,
     this.lat,
     this.long,
     required this.screenType,
   });
+  final String screenType;
+  final String? lat;
+  final String? long;
 
+  @override
+  State<YourLocation> createState() => _YourLocationState();
+}
+
+class _YourLocationState extends State<YourLocation> {
+  late GoogleMapController mapController;
+  final LatLng _initialPosition = const LatLng(12.9715987, 77.5945627);
+  LatLng _currentPosition = const LatLng(12.9715987, 77.5945627);
+  LatLng? _selectedPosition;
+  Set<Marker> _markers = {};
   static String latitude = "";
   static String longitude = "";
   static Placemark place = Placemark();
   static bool iserrorLocation = false;
-  late GoogleMapController mapController;
-  Set<Marker> _markers = {};
+  void _onCameraMove(CameraPosition position) {
+    setState(() {
+      _currentPosition = position.target;
+    });
+  }
+
+  void _onCameraIdle() {
+    _updateMarker(_currentPosition);
+  }
+
+  void _updateMarker(LatLng position) {
+    setState(() {
+      _markers = {
+        Marker(
+          markerId: const MarkerId('selected-location'),
+          position: _initialPosition,
+          // infoWindow: InfoWindow(title: 'Initial Position'),
+        ),
+      };
+    });
+  }
+
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('selected-location'),
+          position: _initialPosition,
+          // infoWindow: InfoWindow(title: 'Initial Position'),
+        ),
+      );
+    });
+  }
 
-    _markers.add(
-      Marker(
-        markerId: const MarkerId('selected-location'),
-        position: LatLng(double.parse(lat!), double.parse(long!)),
-        // infoWindow: InfoWindow(title: 'Initial Position'),
-      ),
-    );
+  void _onMapTapped(LatLng position) {
+    setState(() {
+      _selectedPosition = position;
+      _markers = {
+        Marker(
+          markerId: const MarkerId('selected-location'),
+          position: position,
+          // infoWindow: InfoWindow(title: 'Selected Position'),
+        ),
+      };
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    debugPrint(widget.lat);
+    debugPrint(widget.long);
   }
 
   @override
@@ -45,13 +96,16 @@ class YourLocationScreen extends StatelessWidget {
       child: BlocConsumer<LocationBloc, LocationState>(
         listener: (context, state) {
           if (state is LocationSuccessState) {
-            debugPrint(state.place?.name);
             latitude = "";
             longitude = "";
             latitude = /* lat ??  */ state.latitude!;
             longitude = /* long ??  */ state.longitude!;
             place = state.place!;
             iserrorLocation = false;
+          } else if (state is LatLongAddressSuccessState) {
+            location =
+                "${state.latLongLocationResponse.results![0].addressComponents![1].shortName} - ${state.latLongLocationResponse.results![0].addressComponents![3].shortName}";
+            debugPrint(location);
           } else if (state is LocationContinueSuccessState) {
             if (state.screenType == 'dialog') {
               location = state.place ?? "";
@@ -67,7 +121,7 @@ class YourLocationScreen extends StatelessWidget {
                       isEdit: false,
                       longitude: state.longitude.toString(),
                       place: place,
-                      screenType: screenType,
+                      screenType: widget.screenType,
                     );
                   },
                 ),
@@ -82,7 +136,7 @@ class YourLocationScreen extends StatelessWidget {
                       latitude: state.latitude.toString(),
                       longitude: state.longitude.toString(),
                       place: place,
-                      screenType: screenType,
+                      screenType: widget.screenType,
                     );
                   },
                 ),
@@ -97,7 +151,7 @@ class YourLocationScreen extends StatelessWidget {
                       latitude: state.latitude.toString(),
                       longitude: state.longitude.toString(),
                       place: place,
-                      screenType: screenType,
+                      screenType: widget.screenType,
                     );
                   },
                 ),
@@ -148,60 +202,67 @@ class YourLocationScreen extends StatelessWidget {
             latitude = "";
             longitude = "";
             iserrorLocation = false;
-            if (screenType == "search") {
-              latitude = lat ?? "";
-              longitude = long ?? "";
-            } else if (screenType == "dialog") {
-              latitude = lat ?? "";
-              longitude = long ?? "";
-            } else if (screenType == "listview") {
-              latitude = lat ?? "";
-              longitude = long ?? "";
-            } /* else if (screenType == "address") {
-              latitude = lat ?? "";
-              longitude = long ?? "";
+            if (widget.screenType == "search") {
+              latitude = widget.lat ?? "";
+              longitude = widget.long ?? "";
+            } else if (widget.screenType == "dialog") {
+              latitude = widget.lat ?? "";
+              longitude = widget.long ?? "";
+            } else if (widget.screenType == "listview") {
+              latitude = widget.lat ?? "";
+              longitude = widget.long ?? "";
+            } /* else if (widget.screenType == "address") {
+              latitude = widget.lat ?? "";
+              longitude = widget.long ?? "";
             } */ else {
+              debugPrint("getLocation event");
               // context.read<LocationBloc>().add(GetLocationEvent());
+              context.read<LocationBloc>().add(
+                GetLocationUsingLatLongFromApiEvent(
+                  latitude: widget.lat!,
+                  longitude: widget.long!,
+                ),
+              );
             }
           }
           return Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-
             child: SizedBox(
-              width: 500,
-              height: 500,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               child: Stack(
                 children: [
-                  latitude == ""
-                      ? SizedBox()
-                      : GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(
-                            double.parse(lat!),
-                            double.parse(long!),
-                          ),
-                          zoom: 14.0,
-                        ),
-                        onMapCreated: _onMapCreated,
-                        onCameraIdle: () {
-                          context.read<LocationBloc>().add(
-                            GetLatLonOnIdleEvent(
-                              latitude: latitude,
-                              longitude: longitude,
-                            ),
-                          );
-                        },
-                        onCameraMove: (CameraPosition position) {
-                          context.read<LocationBloc>().add(
-                            GetLatLonEvent(
-                              latitude: position.target.latitude.toString(),
-                              longitude: position.target.longitude.toString(),
-                            ),
-                          );
-                        },
+                  GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                        double.parse(widget.lat!),
+                        double.parse(widget.long!),
                       ),
+                      zoom: 20,
+                    ),
+                    // markers: _markers,
+                    // onTap: _onMapTapped,
+                    onCameraIdle: () {
+                      context.read<LocationBloc>().add(
+                        GetLatLonOnIdleEvent(
+                          latitude: widget.lat!,
+                          longitude: widget.long!,
+                        ),
+                      );
+                    },
+                    onCameraMove: (CameraPosition position) {
+                      debugPrint(position.toString());
+                      context.read<LocationBloc>().add(
+                        GetLatLonEvent(
+                          latitude: position.target.latitude.toString(),
+                          longitude: position.target.longitude.toString(),
+                        ),
+                      );
+                    },
+                  ),
                   Stack(
                     children: [
                       Center(
@@ -214,7 +275,7 @@ class YourLocationScreen extends StatelessWidget {
                                 vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: appColor,
+                                color: Colors.green,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
@@ -296,6 +357,7 @@ class YourLocationScreen extends StatelessWidget {
                                               ],
                                             ),
                                           SizedBox(height: 8),
+
                                           if (iserrorLocation)
                                             Text(
                                               "We are not serviceable at this location. Please try a different location",
@@ -318,26 +380,23 @@ class YourLocationScreen extends StatelessWidget {
                                                       : () {
                                                         debugPrint(latitude);
                                                         debugPrint(longitude);
-                                                        if (screenType ==
+                                                        if (widget.screenType ==
                                                                 "search" ||
-                                                            screenType ==
+                                                            widget.screenType ==
                                                                 "address") {
-                                                          context
-                                                              .read<
-                                                                LocationBloc
-                                                              >()
-                                                              .add(
-                                                                LatLonLocationEvent(
-                                                                  latitude:
-                                                                      latitude,
-                                                                  longitude:
-                                                                      longitude,
-                                                                  screenType:
-                                                                      screenType,
-                                                                  place:
-                                                                      "${place.subLocality.toString()}, ${place.locality}",
-                                                                ),
-                                                              );
+                                                          context.read<LocationBloc>().add(
+                                                            LatLonLocationEvent(
+                                                              latitude:
+                                                                  latitude,
+                                                              longitude:
+                                                                  longitude,
+                                                              screenType:
+                                                                  widget
+                                                                      .screenType,
+                                                              place:
+                                                                  "${place.subLocality.toString()}, ${place.locality}",
+                                                            ),
+                                                          );
                                                         } else {
                                                           context
                                                               .read<
@@ -346,7 +405,8 @@ class YourLocationScreen extends StatelessWidget {
                                                               .add(
                                                                 ContinueLocationEvent(
                                                                   screenType:
-                                                                      screenType,
+                                                                      widget
+                                                                          .screenType,
                                                                   latitude:
                                                                       latitude,
                                                                   longitude:
@@ -422,7 +482,7 @@ class YourLocationScreen extends StatelessWidget {
 class TrianglePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    var paint = Paint()..color = appColor;
+    var paint = Paint()..color = Colors.green;
 
     var path = Path();
     path.moveTo(size.width / 2, size.height);

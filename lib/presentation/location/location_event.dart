@@ -13,6 +13,16 @@ class GetLatLonOnListEvent extends LocationEvent {
 
   GetLatLonOnListEvent({required this.placeId});
 }
+class GetLocationUsingLatLongFromApiEvent extends LocationEvent {
+  final String latitude;
+  final String longitude;
+
+  GetLocationUsingLatLongFromApiEvent({
+    required this.latitude,
+    required this.longitude,
+  });
+}
+
 
 class GetLatLonEvent extends LocationEvent {
   final String latitude;

@@ -373,6 +373,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var result = latLongLocationResponseFromJson(response.body);
+        debugPrint("data:");
+        debugPrint(result.results?.first.formattedAddress);
         emit(LatLongAddressSuccessState(latLongLocationResponse: result));
       } else {
         emit(HomeErrorState(message: "Failed to fetch data"));

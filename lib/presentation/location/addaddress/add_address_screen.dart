@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter_web/google_maps_flutter_web.dart' as WebMap;
 import 'package:selorgweb_main/presentation/address/address_bloc.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_bloc.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_event.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
+import 'package:selorgweb_main/presentation/location/yourlocation/your_location.dart';
 import 'package:selorgweb_main/presentation/location/yourlocation/your_location_screen.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_event.dart';
 import 'package:selorgweb_main/widgets/success_dialog_widget.dart';
@@ -230,88 +232,97 @@ class AddAddress extends StatelessWidget {
                               onPressed: () {
                                 debugPrint(screenType);
                                 if (screenType == "editaddress") {
-                                  // showBottomSheet(
+                                  // Navigator.pop(context);
+                                  // showDialog(
                                   //   context: context,
                                   //   // barrierDismissible: !(location == "No Location Found"),
                                   //   builder: (BuildContext context) {
-                                  //     return Dialog(
-                                  //       shape: RoundedRectangleBorder(
-                                  //         borderRadius: BorderRadius.circular(
-                                  //           10,
-                                  //         ),
+                                  //     return Container(
+                                  //       width: 500,
+                                  //       constraints: BoxConstraints(
+                                  //         maxHeight: 500,
+                                  //         maxWidth: 500,
+                                  //         minHeight: 500,
                                   //       ),
-                                  //       backgroundColor: Colors.white,
-                                  //       child: Container(
-                                  //         width: 500,
-                                  //         constraints: BoxConstraints(
-                                  //           maxHeight: 500,
-                                  //           maxWidth: 500,
-                                  //           minHeight: 500,
+                                  //       child: Padding(
+                                  //         padding: const EdgeInsets.symmetric(
+                                  //           horizontal: 20,
+                                  //           vertical: 8,
                                   //         ),
-                                  //         child: Padding(
-                                  //           padding: const EdgeInsets.symmetric(
-                                  //             horizontal: 20,
-                                  //             vertical: 8,
-                                  //           ),
-                                  //           child: SingleChildScrollView(
-                                  //             child: Column(
-                                  //               spacing: 10,
-                                  //               mainAxisSize: MainAxisSize.min,
+                                  //         child: Column(
+                                  //           spacing: 10,
+                                  //           mainAxisSize: MainAxisSize.min,
 
-                                  //               children: [
-                                  //                 Align(
-                                  //                   alignment:
-                                  //                       Alignment.topRight,
-                                  //                   child: InkWell(
-                                  //                     onTap:
-                                  //                         () => Navigator.pop(
-                                  //                           context,
-                                  //                         ),
-                                  //                     child: CircleAvatar(
-                                  //                       radius: 14,
-                                  //                       backgroundColor:
-                                  //                           appColor,
-                                  //                       child: Icon(
-                                  //                         Icons.close,
-                                  //                         size: 16,
-                                  //                         color: Colors.white,
-                                  //                       ),
+                                  //           children: [
+                                  //             Align(
+                                  //               alignment: Alignment.topRight,
+                                  //               child: InkWell(
+                                  //                 onTap:
+                                  //                     () => Navigator.pop(
+                                  //                       context,
                                   //                     ),
+                                  //                 child: CircleAvatar(
+                                  //                   radius: 14,
+                                  //                   backgroundColor: appColor,
+                                  //                   child: Icon(
+                                  //                     Icons.close,
+                                  //                     size: 16,
+                                  //                     color: Colors.white,
                                   //                   ),
                                   //                 ),
-
-                                  //                 Container(
-                                  //                   width: 300,
-                                  //                   height: 300,
-                                  //                   clipBehavior: Clip.hardEdge,
-                                  //                   decoration: BoxDecoration(),
-                                  //                   child: YourLocationScreen(
-                                  //                     lat: latitude,
-                                  //                     long: longitude,
-                                  //                     screenType: screenType,
-                                  //                   ),
-                                  //                 ),
-                                  //               ],
+                                  //               ),
                                   //             ),
-                                  //           ),
+
+                                  //             Container(
+                                  //               width: 300,
+                                  //               height: 300,
+                                  //               clipBehavior: Clip.hardEdge,
+                                  //               decoration: BoxDecoration(),
+                                  //               child: YourLocationScreen(
+                                  //                 lat: latitude,
+                                  //                 long: longitude,
+                                  //                 screenType: screenType,
+                                  //               ),
+                                  //             ),
+                                  //           ],
                                   //         ),
                                   //       ),
                                   //     );
                                   //   },
                                   // );
-                                  
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return YourLocationScreen(
+
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) => YourLocation(
                                           lat: latitude,
                                           long: longitude,
                                           screenType: screenType,
-                                        );
-                                      },
-                                    ),
+                                        ),
                                   );
+
+                                  // showDialog(
+                                  //   context: context,
+                                  //   builder: (context) => YourLocationScreen(
+                                  //       lat: latitude,
+                                  //       long: longitude,
+                                  //       screenType: screenType,
+                                  //     )
+
+                                  // );
+
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return YourLocationScreen(
+                                  //         lat: latitude,
+                                  //         long: longitude,
+                                  //         screenType: screenType,
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // );
                                 } else {
                                   Navigator.pop(context);
                                 }

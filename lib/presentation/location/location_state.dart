@@ -1,4 +1,5 @@
 import 'package:geocoding/geocoding.dart';
+import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 
 abstract class LocationState {}
@@ -15,6 +16,13 @@ class LocationSuccessState extends LocationState {
   LocationSuccessState(
       {required this.latitude, required this.longitude, required this.place});
 }
+
+class LatLongAddressSuccessState extends LocationState {
+ final LatLongLocationResponse latLongLocationResponse;
+
+  LatLongAddressSuccessState({required this.latLongLocationResponse});
+}
+
 
 class LatLongSuccessState extends LocationState {
   String latitude;
