@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:selorgweb_main/model/location/myplacemark.dart' as p;
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_bloc.dart';
 import 'package:selorgweb_main/presentation/location/location_event.dart';
@@ -103,11 +106,47 @@ class _YourLocationState extends State<YourLocation> {
             place = state.place!;
             iserrorLocation = false;
           } else if (state is LatLongAddressSuccessState) {
+            debugPrint("hi");
             location =
                 "${state.latLongLocationResponse.results![0].addressComponents![1].shortName} - ${state.latLongLocationResponse.results![0].addressComponents![3].shortName}";
             debugPrint(location);
+            // place = state;
+            debugPrint(
+              state.latLongLocationResponse.results?.first.addressComponents
+                  .toString(),
+            );
+            debugPrint(state.latLongLocationResponse.results?.first.placeId);
+
+            // place =
+            //     p.Placemark.fromGooglePlace(
+            //           state.latLongLocationResponse.results?.first
+            //               as Map<String, dynamic>,
+            //         )
+            //         as Placemark;
+            debugPrint("works");
+            debugPrint(place.name);
           } else if (state is LocationContinueSuccessState) {
-            if (state.screenType == 'dialog') {
+            debugPrint(state.toString());
+            if (state.screenType == 'editaddress') {
+              var location = {
+                'latitude': state.latitude,
+                'longitude': state.longitude,
+                'place': {
+                  'name': state.place,
+                  'street': state.placemark.street,
+                  'locality': state.placemark.locality,
+                  'subLocality': state.placemark.subLocality,
+                  'administrativeArea': state.placemark.administrativeArea,
+                  'subAdministrativeArea':
+                      state.placemark.subAdministrativeArea,
+                  'postalCode': state.placemark.postalCode,
+                  'country': state.placemark.country,
+                },
+              };
+              debugPrint("getted location pinned");
+              debugPrint(location.toString());
+              Navigator.pop(context, jsonEncode(location));
+            } else if (state.screenType == 'dialog') {
               location = state.place ?? "";
               Navigator.pop(context);
               Navigator.pop(context, location);
@@ -226,6 +265,7 @@ class _YourLocationState extends State<YourLocation> {
             }
           }
           return Dialog(
+            clipBehavior: Clip.hardEdge,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -248,8 +288,8 @@ class _YourLocationState extends State<YourLocation> {
                     onCameraIdle: () {
                       context.read<LocationBloc>().add(
                         GetLatLonOnIdleEvent(
-                          latitude: widget.lat!,
-                          longitude: widget.long!,
+                          latitude: latitude,
+                          longitude: longitude,
                         ),
                       );
                     },

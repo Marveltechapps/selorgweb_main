@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
@@ -46,8 +48,9 @@ class AddAddress extends StatelessWidget {
   static TextEditingController landmarkController = TextEditingController();
   static String lat = "";
   static String long = "";
+  static Placemark placemark = Placemark();
   final _formKey = GlobalKey<FormState>();
-  final Set<Marker> markers = {};
+  Set<Marker> markers = {};
   void showLocationSelect(BuildContext context) {
     showDialog(
       context: context,
@@ -93,6 +96,8 @@ class AddAddress extends StatelessWidget {
     );
   }
 
+  GoogleMapController? _mapController;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -113,25 +118,52 @@ class AddAddress extends StatelessWidget {
             landmarkController.clear();
           } else if (state is SelectedLabelState) {
             selectedLabel = state.label;
+          } else if (state is LocationSuccessState) {
+            debugPrint('latitude works');
+            debugPrint(state.latitude);
+
+            _mapController!.animateCamera(
+              CameraUpdate.newLatLng(
+                LatLng(
+                  double.parse(state.latitude!),
+                  double.parse(state.longitude!),
+                ),
+              ),
+            );
+
+            lat = state.latitude!;
+            long = state.longitude!;
+            placemark = state.place!;
+            markers = {
+              Marker(
+                markerId: MarkerId('unique_id'),
+                position: LatLng(double.parse(lat), double.parse(long)),
+                infoWindow: InfoWindow(
+                  title: 'Place Your Location',
+                  snippet: 'Some info here',
+                ),
+              ),
+            };
+
+            debugPrint('latitude ends');
           }
         },
         builder: (context, state) {
           if (state is AddAddressInitialState) {
-            lat = "";
-            long = "";
+            placemark = place;
+            // lat = "";
+            // long = "";
             selectedLabel = label ?? "";
             houseNoController.text = houseNo ?? "";
             buildingController.text = building ?? "";
             landmarkController.text = landmark ?? "";
+            debugPrint(latitude.toString());
             lat = latitude;
             long = longitude;
             markers.add(
               Marker(
                 markerId: MarkerId('unique_id'),
-                position: LatLng(
-                  double.parse(latitude),
-                  double.parse(longitude),
-                ),
+                position: LatLng(double.parse(lat), double.parse(long)),
                 infoWindow: InfoWindow(
                   title: 'Place Your Location',
                   snippet: 'Some info here',
@@ -139,6 +171,7 @@ class AddAddress extends StatelessWidget {
               ),
             );
           }
+          debugPrint('lat and long ${lat} ');
           return SingleChildScrollView(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
@@ -161,33 +194,92 @@ class AddAddress extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: GoogleMap(
-                              onTap: (argument) {
+                              onTap: (argument) async {
                                 debugPrint(screenType);
                                 if (screenType == "editaddress") {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return YourLocationScreen(
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return YourLocationScreen(
+                                  //         lat: lat,
+                                  //         long: long,
+                                  //         screenType: screenType,
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // );
+                                  var editeddate = await showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) => YourLocation(
                                           lat: latitude,
                                           long: longitude,
                                           screenType: screenType,
-                                        );
-                                      },
-                                    ),
+                                        ),
                                   );
+                                  if (editeddate != null) {
+                                    debugPrint(editeddate);
+                                    final format = jsonDecode(editeddate);
+                                    final decoded = Map<String, dynamic>.from(
+                                      format,
+                                    );
+                                    debugPrint(decoded.toString());
+                                    debugPrint(decoded['latitude'].toString());
+
+                                    try {
+                                      final placemark1 = Placemark(
+                                        name: decoded['place']['name'] ?? '',
+                                        street:
+                                            decoded['place']['street'] ?? '',
+                                        locality:
+                                            decoded['place']['locality'] ?? '',
+                                        subLocality:
+                                            decoded['place']['subLocality'] ??
+                                            '',
+                                        administrativeArea:
+                                            decoded['place']['administrativeArea'] ??
+                                            '',
+                                        subAdministrativeArea:
+                                            decoded['place']['subAdministrativeArea'] ??
+                                            '',
+                                        postalCode:
+                                            decoded['place']['postalCode'] ??
+                                            '',
+                                        country:
+                                            decoded['place']['country'] ?? '',
+                                      );
+                                      debugPrint(
+                                        '${decoded['latitude'].toString()}-jik ${decoded['longitude'].toString()}',
+                                      );
+                                      // ignore: use_build_context_synchronously
+                                      context.read<AddAddressBloc>().add(
+                                        SetLatLonLocationEvent(
+                                          latitude:
+                                              decoded['latitude'].toString(),
+                                          longitude:
+                                              decoded['longitude'].toString(),
+                                          place: placemark1,
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      debugPrint(e.toString());
+                                    }
+                                  }
                                 } else {
                                   Navigator.pop(context);
                                 }
                               },
                               initialCameraPosition: CameraPosition(
                                 target: LatLng(
-                                  double.parse(latitude),
-                                  double.parse(longitude),
+                                  double.parse(lat),
+                                  double.parse(long),
                                 ),
                                 zoom: 20.0,
                               ),
-                              onMapCreated: (GoogleMapController controller) {},
+                              onMapCreated: (controller) {
+                                _mapController = controller;
+                              },
                               markers: markers,
                               // onCameraIdle: () {
                               //   context.read<LocationBloc>().add(GetLatLonOnIdleEvent(
@@ -212,15 +304,15 @@ class AddAddress extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  place.subLocality == ""
+                                  placemark.subLocality == ""
                                       ? SizedBox()
                                       : Text(
-                                        place.subLocality ?? "",
+                                        placemark.subLocality ?? "",
                                         style:
                                             AddAddressStyles.locationTitleStyle,
                                       ),
                                   Text(
-                                    "${place.name}${place.name == "" ? "" : ","}${place.subLocality}${place.subLocality == "" ? "" : ","} ${place.locality}${place.locality == "" ? "" : ","} ${place.administrativeArea}${place.administrativeArea == "" ? "" : ","} ${place.postalCode}${place.postalCode == "" ? "" : ","} ${place.country}",
+                                    "${placemark.name}${placemark.name == "" ? "" : ","}${placemark.subLocality}${placemark.subLocality == "" ? "" : ","} ${placemark.locality}${placemark.locality == "" ? "" : ","} ${placemark.administrativeArea}${placemark.administrativeArea == "" ? "" : ","} ${placemark.postalCode}${placemark.postalCode == "" ? "" : ","} ${placemark.country}",
                                     style:
                                         AddAddressStyles.locationSubtitleStyle,
                                   ),
@@ -229,7 +321,7 @@ class AddAddress extends StatelessWidget {
                             ),
                             const SizedBox(width: 49),
                             OutlinedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 debugPrint(screenType);
                                 if (screenType == "editaddress") {
                                   // Navigator.pop(context);
@@ -291,15 +383,63 @@ class AddAddress extends StatelessWidget {
                                   //   },
                                   // );
 
-                                  showDialog(
+                                  var editeddate = await showDialog(
                                     context: context,
                                     builder:
                                         (context) => YourLocation(
-                                          lat: latitude,
-                                          long: longitude,
+                                          lat: lat,
+                                          long: long,
                                           screenType: screenType,
                                         ),
                                   );
+                                  if (editeddate != null) {
+                                    debugPrint(editeddate);
+                                    final format = jsonDecode(editeddate);
+                                    final decoded = Map<String, dynamic>.from(
+                                      format,
+                                    );
+                                    debugPrint(decoded.toString());
+                                    debugPrint(decoded['latitude'].toString());
+
+                                    try {
+                                      final placemark1 = Placemark(
+                                        name: decoded['place']['name'] ?? '',
+                                        street:
+                                            decoded['place']['street'] ?? '',
+                                        locality:
+                                            decoded['place']['locality'] ?? '',
+                                        subLocality:
+                                            decoded['place']['subLocality'] ??
+                                            '',
+                                        administrativeArea:
+                                            decoded['place']['administrativeArea'] ??
+                                            '',
+                                        subAdministrativeArea:
+                                            decoded['place']['subAdministrativeArea'] ??
+                                            '',
+                                        postalCode:
+                                            decoded['place']['postalCode'] ??
+                                            '',
+                                        country:
+                                            decoded['place']['country'] ?? '',
+                                      );
+                                      debugPrint(
+                                        '${decoded['latitude'].toString()}-jik ${decoded['longitude'].toString()}',
+                                      );
+                                      // ignore: use_build_context_synchronously
+                                      context.read<AddAddressBloc>().add(
+                                        SetLatLonLocationEvent(
+                                          latitude:
+                                              decoded['latitude'].toString(),
+                                          longitude:
+                                              decoded['longitude'].toString(),
+                                          place: placemark1,
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      debugPrint(e.toString());
+                                    }
+                                  }
 
                                   // showDialog(
                                   //   context: context,
@@ -627,14 +767,14 @@ class AddAddress extends StatelessWidget {
                     building: buildingController.text,
                     landMark: landmarkController.text,
                     area:
-                        place.subLocality == ""
-                            ? place.name.toString()
-                            : place.subLocality.toString(),
-                    city: place.locality.toString(),
-                    state: place.administrativeArea.toString(),
-                    pinCode: place.postalCode.toString(),
-                    latitude: latitude,
-                    longitude: longitude,
+                        placemark.subLocality == ""
+                            ? placemark.name.toString()
+                            : placemark.subLocality.toString(),
+                    city: placemark.locality.toString(),
+                    state: placemark.administrativeArea.toString(),
+                    pinCode: placemark.postalCode.toString(),
+                    latitude: lat,
+                    longitude: long,
                   ),
                 )
                 : addAddressBloc.add(
@@ -645,16 +785,17 @@ class AddAddress extends StatelessWidget {
                     building: buildingController.text,
                     landMark: landmarkController.text,
                     area:
-                        place.subLocality == ""
-                            ? place.name.toString()
-                            : place.subLocality.toString(),
-                    city: place.locality.toString(),
-                    state: place.administrativeArea.toString(),
-                    pinCode: place.postalCode.toString(),
+                        placemark.subLocality == ""
+                            ? placemark.name.toString()
+                            : placemark.subLocality.toString(),
+                    city: placemark.locality.toString(),
+                    state: placemark.administrativeArea.toString(),
+                    pinCode: placemark.postalCode.toString(),
                     latitude: latitude,
                     longitude: longitude,
                   ),
                 );
+            AddAddressBloc().close();
           }
           // showSuccessDialog(context);
           // if (_formKey.currentState!.validate()) {

@@ -1,3 +1,4 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:selorgweb_main/model/addaddress/add_address_save_response_mode.dart';
 
 abstract class AddAddressState {}
@@ -11,7 +12,14 @@ class AddAddressSaveSuccess extends AddAddressState {
 
   AddAddressSaveSuccess({required this.addAddressSaveResponse});
 }
+class LocationSuccessState extends AddAddressState {
+  String? latitude;
+  String? longitude;
+  Placemark? place;
 
+  LocationSuccessState(
+      {required this.latitude, required this.longitude, required this.place});
+}
 class SelectedLabelState extends AddAddressState{
 final String label;
 

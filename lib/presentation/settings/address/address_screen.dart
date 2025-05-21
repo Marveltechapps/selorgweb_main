@@ -66,7 +66,7 @@ class AddressScreen extends StatelessWidget {
     );
   }
 
-  void showAddAddress(BuildContext context, int i) async{
+  void showAddAddress(BuildContext context, int i) async {
     final result = await showDialog(
       context: context,
       barrierDismissible: !(location == "No Location Found"),
@@ -153,12 +153,14 @@ class AddressScreen extends StatelessWidget {
       },
     );
 
-    if(result == true){
-      context.read()<AddressBloc>().add(
-              GetSavedAddressEvent(userId: userId),
-            );
+    if (result == true) {
+      context.read()<AddressBloc>().add(GetSavedAddressEvent(userId: userId));
     }
   }
+
+  static Placemark? placemark;
+  static String latitude = "";
+  static String longitude = "";
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +201,10 @@ class AddressScreen extends StatelessWidget {
             );
 
             // showSuccessDialog(true, successMsg, "" "", "", "", context);
+          } else if (state is LocationSuccessStateFromAPi) {
+            placemark = state.place;
+            latitude = state.latitude!;
+            longitude = state.longitude!;
           } else if (state is AddressErrorState) {
             getSavedAddressResponse.data = [];
           }
@@ -209,6 +215,9 @@ class AddressScreen extends StatelessWidget {
             context.read<AddressBloc>().add(
               (GetSavedAddressEvent(userId: userId)),
             );
+            // context.read<AddressBloc>().add(
+            //   (GetLocationUsingLatLongFromApiEvent()),
+            // );
           }
           return OverlayLoaderWithAppIcon(
             appIconSize: 60,
@@ -296,21 +305,78 @@ class AddressScreen extends StatelessWidget {
                           ),
                           onPressed: () async {
                             // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>YourLocationScreen(screenType: 'listview')));
-                            showLocationMainAlertDialog(context);
-                            /* var res = */
-                            // await Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) {
-                            //       return LocationScreen(screenType: 'address');
-                            //     },
-                            //   ),
-                            // );
-                            //debugPrint(res);
-                            if (!context.mounted) return;
-                            context.read<AddressBloc>().add(
-                              (GetSavedAddressEvent(userId: userId)),
+                            final result = await showDialog(
+                              context: context,
+                              barrierDismissible:
+                                  !(location == "No Location Found"),
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor: Colors.white,
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight: 500,
+                                      maxWidth: 500,
+                                      minHeight: 500,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 8,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          spacing: 10,
+                                          mainAxisSize: MainAxisSize.min,
+
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: InkWell(
+                                                onTap:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                                child: CircleAvatar(
+                                                  radius: 14,
+                                                  backgroundColor: appColor,
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    size: 16,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            AddAddress(
+                                              id: "",
+                                              label: "",
+                                              houseNo: "",
+                                              building: "",
+                                              landmark: "",
+                                              latitude: latitude,
+                                              longitude: longitude,
+                                              isEdit: false,
+                                              place: placemark!,
+                                              screenType: "editaddress",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             );
+
+                            if (result == "success") {
+                              if (!context.mounted) return;
+                              context.read<AddressBloc>().add(
+                                (GetSavedAddressEvent(userId: userId)),
+                              );
+                            }
                           },
 
                           child: Text(
@@ -474,98 +540,152 @@ class AddressScreen extends StatelessWidget {
                                             //   ),
                                             // );
                                             final result = await showDialog(
-      context: context,
-      barrierDismissible: !(location == "No Location Found"),
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 500,
-              maxWidth: 500,
-              minHeight: 500,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: SingleChildScrollView(
-                child: Column(
-                  spacing: 10,
-                  mainAxisSize: MainAxisSize.min,
+                                              context: context,
+                                              barrierDismissible:
+                                                  !(location ==
+                                                      "No Location Found"),
+                                              builder: (BuildContext context) {
+                                                return Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                  child: ConstrainedBox(
+                                                    constraints: BoxConstraints(
+                                                      maxHeight: 500,
+                                                      maxWidth: 500,
+                                                      minHeight: 500,
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 20,
+                                                            vertical: 8,
+                                                          ),
+                                                      child: SingleChildScrollView(
+                                                        child: Column(
+                                                          spacing: 10,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
 
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: CircleAvatar(
-                          radius: 14,
-                          backgroundColor: appColor,
-                          child: Icon(
-                            Icons.close,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                                                          children: [
+                                                            Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topRight,
+                                                              child: InkWell(
+                                                                onTap:
+                                                                    () => Navigator.pop(
+                                                                      context,
+                                                                    ),
+                                                                child: CircleAvatar(
+                                                                  radius: 14,
+                                                                  backgroundColor:
+                                                                      appColor,
+                                                                  child: Icon(
+                                                                    Icons.close,
+                                                                    size: 16,
+                                                                    color:
+                                                                        Colors
+                                                                            .white,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
 
-                    AddAddress(
-                      id: getSavedAddressResponse.data![i].id ?? "",
-                      label: getSavedAddressResponse.data![i].label,
-                      houseNo:
-                          getSavedAddressResponse.data![i].details!.houseNo,
-                      building:
-                          getSavedAddressResponse.data![i].details!.building,
-                      landmark:
-                          getSavedAddressResponse.data![i].details!.landmark,
-                      latitude:
-                          getSavedAddressResponse.data![i].coordinates!.latitude
-                              .toString(),
-                      longitude:
-                          getSavedAddressResponse
-                              .data![i]
-                              .coordinates!
-                              .longitude
-                              .toString(),
-                      isEdit: true,
-                      place: Placemark(
-                        subLocality:
-                            getSavedAddressResponse.data![i].details!.area,
-                        name: "",
-                        administrativeArea:
-                            getSavedAddressResponse.data![i].details!.state,
-                        country: "",
-                        isoCountryCode: "",
-                        locality:
-                            getSavedAddressResponse.data![i].details!.city,
-                        postalCode:
-                            getSavedAddressResponse.data![i].details!.pincode,
-                        street: "",
-                        subAdministrativeArea: "",
-                        subThoroughfare: "",
-                        thoroughfare: "",
-                      ),
-                      screenType: "editaddress",
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+                                                            AddAddress(
+                                                              id:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .id ??
+                                                                  "",
+                                                              label:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .label,
+                                                              houseNo:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .details!
+                                                                      .houseNo,
+                                                              building:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .details!
+                                                                      .building,
+                                                              landmark:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .details!
+                                                                      .landmark,
+                                                              latitude:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .coordinates!
+                                                                      .latitude
+                                                                      .toString(),
+                                                              longitude:
+                                                                  getSavedAddressResponse
+                                                                      .data![i]
+                                                                      .coordinates!
+                                                                      .longitude
+                                                                      .toString(),
+                                                              isEdit: true,
+                                                              place: Placemark(
+                                                                subLocality:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .details!
+                                                                        .area,
+                                                                name: "",
+                                                                administrativeArea:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .details!
+                                                                        .state,
+                                                                country: "",
+                                                                isoCountryCode:
+                                                                    "",
+                                                                locality:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .details!
+                                                                        .city,
+                                                                postalCode:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .details!
+                                                                        .pincode,
+                                                                street: "",
+                                                                subAdministrativeArea:
+                                                                    "",
+                                                                subThoroughfare:
+                                                                    "",
+                                                                thoroughfare:
+                                                                    "",
+                                                              ),
+                                                              screenType:
+                                                                  "editaddress",
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
 
                                             if (result == "success") {
-                                            if (!context.mounted) return;
-                                            context.read<AddressBloc>().add(
-                                              (GetSavedAddressEvent(
-                                                userId: userId,
-                                              )),
-                                            );
+                                              if (!context.mounted) return;
+                                              context.read<AddressBloc>().add(
+                                                (GetSavedAddressEvent(
+                                                  userId: userId,
+                                                )),
+                                              );
                                             }
                                           },
                                           child: Icon(

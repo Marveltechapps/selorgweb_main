@@ -1,3 +1,5 @@
+import 'package:geocoding/geocoding.dart';
+
 abstract class AddAddressEvent {}
 
 class SaveAddressEvent extends AddAddressEvent {
@@ -55,9 +57,21 @@ class UpdateAddressEvent extends AddAddressEvent {
       required this.latitude,
       required this.longitude});
 }
+class GetLocationEvent extends AddAddressEvent {}
 
 class SelectLabelEvent extends AddAddressEvent {
   final String label;
 
   SelectLabelEvent({required this.label});
+}
+
+class SetLatLonLocationEvent extends AddAddressEvent {
+  final String latitude;
+  final String longitude;
+  final Placemark? place;
+
+  SetLatLonLocationEvent(
+      {required this.latitude,
+      required this.longitude,
+      required this.place});
 }

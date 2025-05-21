@@ -1,3 +1,4 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:selorgweb_main/model/addaddress/delete_address_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 
@@ -23,4 +24,13 @@ class AddressErrorState extends AddressState {
   final String errorMsg;
 
   AddressErrorState({required this.errorMsg});
+}
+
+class LocationSuccessStateFromAPi extends AddressState {
+  String? latitude;
+  String? longitude;
+  Placemark? place;
+
+  LocationSuccessStateFromAPi(
+      {required this.latitude, required this.longitude, required this.place});
 }

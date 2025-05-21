@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
@@ -9,6 +11,7 @@ import 'package:selorgweb_main/presentation/location/location_event.dart';
 import 'package:selorgweb_main/presentation/location/location_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:selorgweb_main/model/location/myplacemark.dart' as p;
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   LocationBloc() : super(LocationInitialState()) {
@@ -96,7 +99,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     // Keywords (fallback for odd returns)
     final combined =
-        '${placemark.name} ${placemark.thoroughfare}'.toLowerCase();
+        '${placemark.name} ${placemark.thoroughfare} ${placemark.subLocality} ${placemark.name}'
+            .toLowerCase();
     const waterKeywords = ['ocean', 'lake', 'sea', 'bay', 'harbor', 'water'];
 
     return waterKeywords.any((kw) => combined.contains(kw));
@@ -139,32 +143,74 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     debugPrint("Coordinates");
     debugPrint(event.latitude);
     debugPrint(event.longitude);
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      double.parse(event.latitude),
-      double.parse(event.longitude),
-    );
-    debugPrint("Coordinates2");
+    // List<Placemark> placemarks = await placemarkFromCoordinates(
+    //   double.parse(event.latitude),
+    //   double.parse(event.longitude),
+    // );
+    // debugPrint("Coordinates2");
 
-    if (placemarks.isNotEmpty) {
-      place = placemarks.first;
-      // debugPrint(
-      //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
-    }
-    if (placemarks.isEmpty || looksLikeWater(placemarks.first)) {
+    // if (placemarks.isNotEmpty) {
+    //   place = placemarks.first;
+    //   // debugPrint(
+    //   //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
+    // }
+    String url =
+        "$latlonggetAddressUrl${event.latitude},${event.longitude}&key=AIzaSyAKVumkjaEhGUefBCclE23rivFqPK3LDRQ";
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var result = latLongLocationResponseFromJson(response.body);
+      String placeurl =
+          "${baseUrl}mapLocation/location?placeId=${result.results?.first.placeId}";
+
+      final placeResponse = await http.get(Uri.parse(placeurl));
+      debugPrint("data:");
+      debugPrint(placeResponse.body);
+      final decoded = jsonDecode(placeResponse.body);
+
+      String getComponent(String type) {
+        return decoded['address_components']?.firstWhere(
+              (comp) => (comp['types'] as List).contains(type),
+              orElse: () => null,
+            )?['long_name'] ??
+            '';
+      }
+
+      place = Placemark(
+        name: decoded['name'] ?? '',
+        street: getComponent('route'),
+        locality: getComponent('locality'),
+        subLocality: getComponent('sublocality'),
+        administrativeArea: getComponent('administrative_area_level_3'),
+        subAdministrativeArea: getComponent('administrative_area_level_1'),
+        postalCode: getComponent('postal_code'),
+        country: getComponent('country'),
+        thoroughfare: getComponent('thoroughfare'),
+      );
+      debugPrint(place.postalCode);
+      if (place.name!.isEmpty ||
+          looksLikeWater(place) ||
+          place.postalCode!.isEmpty) {
+        emit(
+          LocationErrorState(
+            error: "Location not found. Please try again later.",
+          ),
+        );
+      } else {
+        emit(
+          LocationSuccessState(
+            latitude: event.latitude.toString(),
+            longitude: event.longitude.toString(),
+            place: place,
+          ),
+        );
+      }
+      debugPrint("Latitude: ${event.latitude}, Longitude: ${event.longitude}");
+    } else {
       emit(
         LocationErrorState(
           error: "Location not found. Please try again later.",
         ),
       );
-    } else {
-      emit(
-        LocationSuccessState(
-          latitude: event.latitude.toString(),
-          longitude: event.longitude.toString(),
-          place: place,
-        ),
-      );
-      debugPrint("Latitude: ${event.latitude}, Longitude: ${event.longitude}");
     }
   }
 
@@ -204,28 +250,50 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       Position position = await Geolocator.getCurrentPosition(
         locationSettings: AndroidSettings(accuracy: LocationAccuracy.high),
       );
+      debugPrint('works current position');
       debugPrint(position.latitude.toString() + position.longitude.toString());
-      List<Placemark> placemarks = [];
+      String url =
+          "$latlonggetAddressUrl${position.latitude},${position.longitude}&key=AIzaSyAKVumkjaEhGUefBCclE23rivFqPK3LDRQ";
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var result = latLongLocationResponseFromJson(response.body);
+        String placeurl =
+            "${baseUrl}mapLocation/location?placeId=${result.results?.first.placeId}";
 
-      placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
+        final placeResponse = await http.get(Uri.parse(placeurl));
+        // debugPrint("data:");
+        // debugPrint(placeResponse.body);
+        final decoded = jsonDecode(placeResponse.body);
 
-      debugPrint(placemarks.length.toString() + ":number of placemarks");
-      if (placemarks.isNotEmpty) {
-        place = placemarks.first;
-        debugPrint(
-          "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}",
+        String getComponent(String type) {
+          return decoded['address_components']?.firstWhere(
+                (comp) => (comp['types'] as List).contains(type),
+                orElse: () => null,
+              )?['long_name'] ??
+              '';
+        }
+
+        emit(
+          LocationSuccessState(
+            latitude: position.latitude.toString(),
+            longitude: position.longitude.toString(),
+            place: Placemark(
+              name: decoded['name'] ?? '',
+              street: getComponent('route'),
+              locality: getComponent('locality'),
+              subLocality: getComponent('sublocality'),
+              administrativeArea: getComponent('administrative_area_level_3'),
+              subAdministrativeArea: getComponent(
+                'administrative_area_level_1',
+              ),
+              postalCode: getComponent('postal_code'),
+              country: getComponent('country'),
+            ),
+          ),
         );
+      } else {
+        emit(LocationErrorState(error: "Failed to fetch data"));
       }
-      emit(
-        LocationSuccessState(
-          latitude: position.latitude.toString(),
-          longitude: position.longitude.toString(),
-          place: place,
-        ),
-      );
       debugPrint(
         "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
       );
@@ -247,9 +315,43 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var result = latLongLocationResponseFromJson(response.body);
-        debugPrint("data:");
-        debugPrint(result.results?.first.toJson().toString());
-        emit(LatLongAddressSuccessState(latLongLocationResponse: result));
+        String placeurl =
+            "${baseUrl}mapLocation/location?placeId=${result.results?.first.placeId}";
+
+        final placeResponse = await http.get(Uri.parse(placeurl));
+        // debugPrint("data:");
+        // debugPrint(placeResponse.body);
+        final decoded = jsonDecode(placeResponse.body);
+
+        String getComponent(String type) {
+          return decoded['address_components']?.firstWhere(
+                (comp) => (comp['types'] as List).contains(type),
+                orElse: () => null,
+              )?['long_name'] ??
+              '';
+        }
+
+        emit(
+          LocationSuccessState(
+            latitude: event.latitude.toString(),
+            longitude: event.longitude.toString(),
+            // place:
+            //     p.Placemark.fromGooglePlace(result.results!.first.toJson())
+            //         as Placemark,
+            place: Placemark(
+              name: decoded['name'] ?? '',
+              street: getComponent('route'),
+              locality: getComponent('locality'),
+              subLocality: getComponent('sublocality'),
+              administrativeArea: getComponent('administrative_area_level_3'),
+              subAdministrativeArea: getComponent(
+                'administrative_area_level_1',
+              ),
+              postalCode: getComponent('postal_code'),
+              country: getComponent('country'),
+            ),
+          ),
+        );
       } else {
         emit(LocationErrorState(error: "Failed to fetch data"));
       }
@@ -309,25 +411,51 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Position position = await Geolocator.getCurrentPosition(
       locationSettings: AndroidSettings(accuracy: LocationAccuracy.best),
     );
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      double.parse(event.latitude),
-      double.parse(event.longitude),
-    );
-    if (placemarks.isNotEmpty) {
-      place =
-          "${placemarks.first.subLocality ?? ''} - ${placemarks.first.locality ?? ''}";
+    String url =
+        "$latlonggetAddressUrl${event.latitude},${event.longitude}&key=AIzaSyAKVumkjaEhGUefBCclE23rivFqPK3LDRQ";
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var result = latLongLocationResponseFromJson(response.body);
+      String placeurl =
+          "${baseUrl}mapLocation/location?placeId=${result.results?.first.placeId}";
+
+      final placeResponse = await http.get(Uri.parse(placeurl));
+      // debugPrint("data:");
+      // debugPrint(placeResponse.body);
+      final decoded = jsonDecode(placeResponse.body);
+
+      String getComponent(String type) {
+        return decoded['address_components']?.firstWhere(
+              (comp) => (comp['types'] as List).contains(type),
+              orElse: () => null,
+            )?['long_name'] ??
+            '';
+      }
+
+      place = "${getComponent('sublocality')} - ${getComponent('locality')}";
       // debugPrint(
       //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
+
+      emit(
+        LocationContinueSuccessState(
+          screenType: event.screenType,
+          latitude: event.latitude.toString(),
+          longitude: event.longitude.toString(),
+          place: place,
+          placemark: Placemark(
+            name: decoded['name'] ?? '',
+            street: getComponent('route'),
+            locality: getComponent('locality'),
+            subLocality: getComponent('sublocality'),
+            administrativeArea: getComponent('administrative_area_level_3'),
+            subAdministrativeArea: getComponent('administrative_area_level_1'),
+            postalCode: getComponent('postal_code'),
+            country: getComponent('country'),
+          ),
+        ),
+      );
     }
-    emit(
-      LocationContinueSuccessState(
-        screenType: event.screenType,
-        latitude: event.latitude.toString(),
-        longitude: event.longitude.toString(),
-        place: place,
-        placemark: placemarks.first,
-      ),
-    );
     debugPrint(
       "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
     );

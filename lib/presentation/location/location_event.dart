@@ -51,6 +51,8 @@ class LatLonLocationEvent extends LocationEvent {
       required this.place});
 }
 
+
+
 class ContinueLocationEvent extends LocationEvent {
   final String latitude;
   final String longitude;

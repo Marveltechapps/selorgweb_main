@@ -34,3 +34,9 @@ class GetSavedAddressEvent extends AddressEvent {
 
   GetSavedAddressEvent({required this.userId});
 }
+
+class GetLocationUsingLatLongFromApiEvent extends AddressEvent {
+  
+}
+
+
