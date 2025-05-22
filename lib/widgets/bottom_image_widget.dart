@@ -22,7 +22,7 @@ class BottomImageWidget extends StatelessWidget {
             ),
             // Content
             Positioned(
-              left: 180,
+              left: 150,
               top: 0,
               bottom: 0,
               child: Padding(
@@ -40,7 +40,7 @@ class BottomImageWidget extends StatelessWidget {
                             'Download the Selorg app',
                             style: TextStyle(
                               color: const Color(0xFF034703),
-                              fontSize: 28,
+                              fontSize: 23,
                               fontWeight: FontWeight.w600,
                               height: 1,
                             ),
@@ -50,7 +50,7 @@ class BottomImageWidget extends StatelessWidget {
                             'Download Selorg app available on Android & iOS',
                             style: TextStyle(
                               color: const Color(0xFF555555),
-                              fontSize: 20,
+                              fontSize: 17,
                               fontWeight: FontWeight.w600,
                               height: 1,
                             ),
@@ -70,11 +70,11 @@ class BottomImageWidget extends StatelessWidget {
                               AppStoreButton(
                                 icon:
                                     'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                topText: 'Download on the',
+                                topText: 'Get it on',
                                 bottomText: 'App Store',
-                                iconSize: const Size(44, 50),
-                                topTextStyle: const TextStyle(fontSize: 19),
-                                bottomTextStyle: const TextStyle(fontSize: 22),
+                                iconSize: const Size(47, 47),
+                                // topTextStyle: const TextStyle(fontSize: 19),
+                                // bottomTextStyle: const TextStyle(fontSize: 22),
                               ),
                             ],
                           ),

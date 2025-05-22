@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Selorg',
         theme: ThemeData(
+          // scaffoldBackgroundColor: Color.fromARGB(255, 235, 233, 233),
           textTheme: GoogleFonts.poppinsTextTheme(),
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),

@@ -128,7 +128,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.25),
-                      blurRadius: 4,
+                      blurRadius: 2,
                     ),
                   ],
                 ),
@@ -156,7 +156,10 @@ class _SettingScreenState extends State<SettingScreen> {
                                 thumbVisibility: true,
                                 child: SingleChildScrollView(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(15),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 20,
+                                    ),
                                     child:
                                         context
                                                     .read<Navigationprovider>()

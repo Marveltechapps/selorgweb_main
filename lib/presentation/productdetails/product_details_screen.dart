@@ -7,6 +7,9 @@ import 'package:selorgweb_main/presentation/productdetails/product_details_event
 import 'package:selorgweb_main/presentation/productdetails/product_details_state.dart';
 import 'package:selorgweb_main/screens/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
 import 'package:selorgweb_main/widgets/network_image.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart' as cart;
@@ -1101,6 +1104,7 @@ class ProductDetailsScreen extends StatelessWidget {
           final isTablet = MediaQuery.of(context).size.width < 991;
           final isMobile = MediaQuery.of(context).size.width < 600;
           return Scaffold(
+            backgroundColor: appbackgroundColor,
             body: SingleChildScrollView(
               child:
                   productDetailResponse.data != null
@@ -2527,6 +2531,10 @@ class ProductDetailsScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                          SizedBox(height: 40),
+                          BottomImageWidget(),
+                          BottomCategoriesBarWidget(),
+                          BottomAppBarWidget(),
                         ],
                       )
                       : Column(
@@ -2549,6 +2557,10 @@ class ProductDetailsScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                          SizedBox(height: 40),
+                          BottomImageWidget(),
+                          BottomCategoriesBarWidget(),
+                          BottomAppBarWidget(),
                         ],
                       ),
             ),

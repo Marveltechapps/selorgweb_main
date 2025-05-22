@@ -15,6 +15,9 @@ import 'package:selorgweb_main/presentation/cart/cart_bloc.dart';
 import 'package:selorgweb_main/presentation/cart/cart_event.dart';
 import 'package:selorgweb_main/presentation/cart/cart_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
 import 'package:selorgweb_main/widgets/cart/delivery_instruction_box.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 
@@ -588,7 +591,7 @@ class CartScreen extends StatelessWidget {
             );
           }
           return Scaffold(
-            backgroundColor: Color(0xFFFAFAFA),
+            // backgroundColor: appbackgroundColor,
             body: SingleChildScrollView(
               child: Column(
                 children: [
@@ -3203,9 +3206,10 @@ class CartScreen extends StatelessWidget {
                               ),
                     ),
                   ),
-                  AppDownloadSection(),
-                  CategoriesSection(),
-                  FooterSection(),
+                  SizedBox(height: 40),
+                  BottomImageWidget(),
+                  BottomCategoriesBarWidget(),
+                  BottomAppBarWidget(),
                 ],
               ),
             ),

@@ -21,6 +21,7 @@ class AppStoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 180,
       decoration: BoxDecoration(
         color: const Color(0xFF444444),
         borderRadius: BorderRadius.circular(9.159),
@@ -31,8 +32,8 @@ class AppStoreButton extends StatelessWidget {
         children: [
           Image.network(
             icon,
-            width: iconSize.width,
-            height: iconSize.height,
+            width: iconSize.width - 10,
+            height: iconSize.height - 10,
             fit: BoxFit.contain,
           ),
           const SizedBox(width: 5),
@@ -48,6 +49,7 @@ class AppStoreButton extends StatelessWidget {
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w400,
                       height: 1,
+                      fontSize: 15,
                     ) ??
                     const TextStyle(
                       color: Colors.white,
@@ -65,11 +67,12 @@ class AppStoreButton extends StatelessWidget {
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w500,
                       height: 1,
+                      fontSize: 17,
                     ) ??
                     const TextStyle(
                       color: Colors.white,
                       fontFamily: 'Poppins',
-                      fontSize: 20,
+                      fontSize: 17,
                       fontWeight: FontWeight.w500,
                       height: 1,
                     ),

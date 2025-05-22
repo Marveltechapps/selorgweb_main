@@ -66,7 +66,7 @@ class AddressScreen extends StatelessWidget {
     );
   }
 
-  void showAddAddress(BuildContext context, int i) async {
+  void showAddAddress(BuildContext context, int i, bool isEdit) async {
     final result = await showDialog(
       context: context,
       barrierDismissible: !(location == "No Location Found"),
@@ -215,9 +215,9 @@ class AddressScreen extends StatelessWidget {
             context.read<AddressBloc>().add(
               (GetSavedAddressEvent(userId: userId)),
             );
-            // context.read<AddressBloc>().add(
-            //   (GetLocationUsingLatLongFromApiEvent()),
-            // );
+            context.read<AddressBloc>().add(
+              (GetLocationUsingLatLongFromApiEvent()),
+            );
           }
           return OverlayLoaderWithAppIcon(
             appIconSize: 60,
@@ -286,7 +286,7 @@ class AddressScreen extends StatelessWidget {
                         Text(
                           'All Saved Addresses',
                           style: GoogleFonts.poppins(
-                            fontSize: 24,
+                            fontSize: 22,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF202020),
                           ),
@@ -294,13 +294,13 @@ class AddressScreen extends StatelessWidget {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 25,
-                              vertical: 12,
+                              horizontal: 28,
+                              vertical: 14,
                             ),
                             foregroundColor: Colors.white,
                             backgroundColor: Color(0xFF034703),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           onPressed: () async {
@@ -382,18 +382,22 @@ class AddressScreen extends StatelessWidget {
                           child: Text(
                             'Add New Address',
                             style: GoogleFonts.poppins(
-                              fontSize: 19,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
+                              height: 1.5,
                             ),
                           ),
                         ),
                       ],
                     ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Divider(color: Color(0xFF034703), thickness: 0.5),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 10,
+                  ),
                   child: SingleChildScrollView(
                     child:
                         getSavedAddressResponse.data!.isEmpty
@@ -411,370 +415,379 @@ class AddressScreen extends StatelessWidget {
                               itemCount: getSavedAddressResponse.data!.length,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (context, i) {
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'icons/mingcute_location-line-dark.svg',
-                                          width: 25,
-                                        ),
-                                        SizedBox(width: 20),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(
-                                                context,
-                                              ).size.width /
-                                              3,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                getSavedAddressResponse
-                                                        .data![i]
-                                                        .label ??
-                                                    "",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Color(0xFF202020),
-                                                ),
-                                                maxLines: 1,
-                                              ),
-                                              Text(
-                                                "${getSavedAddressResponse.data![i].details!.houseNo}, ${getSavedAddressResponse.data![i].details!.building}, ${getSavedAddressResponse.data![i].details!.landmark}, ${getSavedAddressResponse.data![i].details!.area}, ${getSavedAddressResponse.data![i].details!.city}, ${getSavedAddressResponse.data![i].details!.state}, ${getSavedAddressResponse.data![i].details!.pincode}",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w300,
-                                                  color: Color(0xFF444444),
-                                                ),
-                                                maxLines: 1,
-                                              ),
-                                            ],
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 20.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            'icons/mingcute_location-line-dark.svg',
+                                            width: 24,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () async {
-                                            // showAddAddress(context, i);
-                                            // var res = await Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //     builder: (context) {
-                                            //       return AddAddress(
-                                            //         id:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .id ??
-                                            //             "",
-                                            //         label:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .label,
-                                            //         houseNo:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .details!
-                                            //                 .houseNo,
-                                            //         building:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .details!
-                                            //                 .building,
-                                            //         landmark:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .details!
-                                            //                 .landmark,
-                                            //         latitude:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .coordinates!
-                                            //                 .latitude
-                                            //                 .toString(),
-                                            //         longitude:
-                                            //             getSavedAddressResponse
-                                            //                 .data![i]
-                                            //                 .coordinates!
-                                            //                 .longitude
-                                            //                 .toString(),
-                                            //         isEdit: true,
-                                            //         place: Placemark(
-                                            //           subLocality:
-                                            //               getSavedAddressResponse
-                                            //                   .data![i]
-                                            //                   .details!
-                                            //                   .area,
-                                            //           name: "",
-                                            //           administrativeArea:
-                                            //               getSavedAddressResponse
-                                            //                   .data![i]
-                                            //                   .details!
-                                            //                   .state,
-                                            //           country: "",
-                                            //           isoCountryCode: "",
-                                            //           locality:
-                                            //               getSavedAddressResponse
-                                            //                   .data![i]
-                                            //                   .details!
-                                            //                   .city,
-                                            //           postalCode:
-                                            //               getSavedAddressResponse
-                                            //                   .data![i]
-                                            //                   .details!
-                                            //                   .pincode,
-                                            //           street: "",
-                                            //           subAdministrativeArea: "",
-                                            //           subThoroughfare: "",
-                                            //           thoroughfare: "",
-                                            //         ),
-                                            //         screenType: "editaddress",
-                                            //       );
-                                            //     },
-                                            //   ),
-                                            // );
-                                            final result = await showDialog(
-                                              context: context,
-                                              barrierDismissible:
-                                                  !(location ==
-                                                      "No Location Found"),
-                                              builder: (BuildContext context) {
-                                                return Dialog(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          10,
-                                                        ),
+                                          SizedBox(width: 20),
+                                          Container(
+                                            width:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width /
+                                                3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  getSavedAddressResponse
+                                                          .data![i]
+                                                          .label ??
+                                                      "",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Color(0xFF202020),
                                                   ),
-                                                  backgroundColor: Colors.white,
-                                                  child: ConstrainedBox(
-                                                    constraints: BoxConstraints(
-                                                      maxHeight: 500,
-                                                      maxWidth: 500,
-                                                      minHeight: 500,
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            horizontal: 20,
-                                                            vertical: 8,
+                                                  maxLines: 1,
+                                                ),
+                                                Text(
+                                                  "${getSavedAddressResponse.data![i].details!.houseNo}, ${getSavedAddressResponse.data![i].details!.building}, ${getSavedAddressResponse.data![i].details!.landmark}, ${getSavedAddressResponse.data![i].details!.area}, ${getSavedAddressResponse.data![i].details!.city}, ${getSavedAddressResponse.data![i].details!.state}, ${getSavedAddressResponse.data![i].details!.pincode}",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w300,
+                                                    color: Color(0xFF444444),
+                                                  ),
+                                                  maxLines: 1,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              // showAddAddress(context, i);
+                                              // var res = await Navigator.push(
+                                              //   context,
+                                              //   MaterialPageRoute(
+                                              //     builder: (context) {
+                                              //       return AddAddress(
+                                              //         id:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .id ??
+                                              //             "",
+                                              //         label:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .label,
+                                              //         houseNo:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .details!
+                                              //                 .houseNo,
+                                              //         building:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .details!
+                                              //                 .building,
+                                              //         landmark:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .details!
+                                              //                 .landmark,
+                                              //         latitude:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .coordinates!
+                                              //                 .latitude
+                                              //                 .toString(),
+                                              //         longitude:
+                                              //             getSavedAddressResponse
+                                              //                 .data![i]
+                                              //                 .coordinates!
+                                              //                 .longitude
+                                              //                 .toString(),
+                                              //         isEdit: true,
+                                              //         place: Placemark(
+                                              //           subLocality:
+                                              //               getSavedAddressResponse
+                                              //                   .data![i]
+                                              //                   .details!
+                                              //                   .area,
+                                              //           name: "",
+                                              //           administrativeArea:
+                                              //               getSavedAddressResponse
+                                              //                   .data![i]
+                                              //                   .details!
+                                              //                   .state,
+                                              //           country: "",
+                                              //           isoCountryCode: "",
+                                              //           locality:
+                                              //               getSavedAddressResponse
+                                              //                   .data![i]
+                                              //                   .details!
+                                              //                   .city,
+                                              //           postalCode:
+                                              //               getSavedAddressResponse
+                                              //                   .data![i]
+                                              //                   .details!
+                                              //                   .pincode,
+                                              //           street: "",
+                                              //           subAdministrativeArea: "",
+                                              //           subThoroughfare: "",
+                                              //           thoroughfare: "",
+                                              //         ),
+                                              //         screenType: "editaddress",
+                                              //       );
+                                              //     },
+                                              //   ),
+                                              // );
+                                              final result = await showDialog(
+                                                context: context,
+                                                barrierDismissible:
+                                                    !(location ==
+                                                        "No Location Found"),
+                                                builder: (
+                                                  BuildContext context,
+                                                ) {
+                                                  return Dialog(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
                                                           ),
-                                                      child: SingleChildScrollView(
-                                                        child: Column(
-                                                          spacing: 10,
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    child: ConstrainedBox(
+                                                      constraints:
+                                                          BoxConstraints(
+                                                            maxHeight: 500,
+                                                            maxWidth: 500,
+                                                            minHeight: 500,
+                                                          ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 8,
+                                                            ),
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            spacing: 10,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
 
-                                                          children: [
-                                                            Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .topRight,
-                                                              child: InkWell(
-                                                                onTap:
-                                                                    () => Navigator.pop(
-                                                                      context,
+                                                            children: [
+                                                              Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topRight,
+                                                                child: InkWell(
+                                                                  onTap:
+                                                                      () => Navigator.pop(
+                                                                        context,
+                                                                      ),
+                                                                  child: CircleAvatar(
+                                                                    radius: 14,
+                                                                    backgroundColor:
+                                                                        appColor,
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .close,
+                                                                      size: 16,
+                                                                      color:
+                                                                          Colors
+                                                                              .white,
                                                                     ),
-                                                                child: CircleAvatar(
-                                                                  radius: 14,
-                                                                  backgroundColor:
-                                                                      appColor,
-                                                                  child: Icon(
-                                                                    Icons.close,
-                                                                    size: 16,
-                                                                    color:
-                                                                        Colors
-                                                                            .white,
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
 
-                                                            AddAddress(
-                                                              id:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .id ??
-                                                                  "",
-                                                              label:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .label,
-                                                              houseNo:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .details!
-                                                                      .houseNo,
-                                                              building:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .details!
-                                                                      .building,
-                                                              landmark:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .details!
-                                                                      .landmark,
-                                                              latitude:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .coordinates!
-                                                                      .latitude
-                                                                      .toString(),
-                                                              longitude:
-                                                                  getSavedAddressResponse
-                                                                      .data![i]
-                                                                      .coordinates!
-                                                                      .longitude
-                                                                      .toString(),
-                                                              isEdit: true,
-                                                              place: Placemark(
-                                                                subLocality:
+                                                              AddAddress(
+                                                                id:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .id ??
+                                                                    "",
+                                                                label:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .label,
+                                                                houseNo:
                                                                     getSavedAddressResponse
                                                                         .data![i]
                                                                         .details!
-                                                                        .area,
-                                                                name: "",
-                                                                administrativeArea:
+                                                                        .houseNo,
+                                                                building:
                                                                     getSavedAddressResponse
                                                                         .data![i]
                                                                         .details!
-                                                                        .state,
-                                                                country: "",
-                                                                isoCountryCode:
-                                                                    "",
-                                                                locality:
+                                                                        .building,
+                                                                landmark:
                                                                     getSavedAddressResponse
                                                                         .data![i]
                                                                         .details!
-                                                                        .city,
-                                                                postalCode:
+                                                                        .landmark,
+                                                                latitude:
                                                                     getSavedAddressResponse
                                                                         .data![i]
-                                                                        .details!
-                                                                        .pincode,
-                                                                street: "",
-                                                                subAdministrativeArea:
-                                                                    "",
-                                                                subThoroughfare:
-                                                                    "",
-                                                                thoroughfare:
-                                                                    "",
+                                                                        .coordinates!
+                                                                        .latitude
+                                                                        .toString(),
+                                                                longitude:
+                                                                    getSavedAddressResponse
+                                                                        .data![i]
+                                                                        .coordinates!
+                                                                        .longitude
+                                                                        .toString(),
+                                                                isEdit: true,
+                                                                place: Placemark(
+                                                                  subLocality:
+                                                                      getSavedAddressResponse
+                                                                          .data![i]
+                                                                          .details!
+                                                                          .area,
+                                                                  name: "",
+                                                                  administrativeArea:
+                                                                      getSavedAddressResponse
+                                                                          .data![i]
+                                                                          .details!
+                                                                          .state,
+                                                                  country: "",
+                                                                  isoCountryCode:
+                                                                      "",
+                                                                  locality:
+                                                                      getSavedAddressResponse
+                                                                          .data![i]
+                                                                          .details!
+                                                                          .city,
+                                                                  postalCode:
+                                                                      getSavedAddressResponse
+                                                                          .data![i]
+                                                                          .details!
+                                                                          .pincode,
+                                                                  street: "",
+                                                                  subAdministrativeArea:
+                                                                      "",
+                                                                  subThoroughfare:
+                                                                      "",
+                                                                  thoroughfare:
+                                                                      "",
+                                                                ),
+                                                                screenType:
+                                                                    "editaddress",
                                                               ),
-                                                              screenType:
-                                                                  "editaddress",
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-
-                                            if (result == "success") {
-                                              if (!context.mounted) return;
-                                              context.read<AddressBloc>().add(
-                                                (GetSavedAddressEvent(
-                                                  userId: userId,
-                                                )),
+                                                  );
+                                                },
                                               );
-                                            }
-                                          },
-                                          child: Icon(
-                                            Icons.edit,
-                                            color: Color(0xFF034703),
-                                            size: 25,
+
+                                              if (result == "success") {
+                                                if (!context.mounted) return;
+                                                context.read<AddressBloc>().add(
+                                                  (GetSavedAddressEvent(
+                                                    userId: userId,
+                                                  )),
+                                                );
+                                              }
+                                            },
+                                            child: Icon(
+                                              Icons.edit,
+                                              color: Color(0xFF034703),
+                                              size: 25,
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        InkWell(
-                                          onTap: () {
-                                            context.read<AddressBloc>().add(
-                                              DeleteSavedAddressEvent(
-                                                area:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .area ??
-                                                    "",
-                                                building:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .building ??
-                                                    "",
-                                                city:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .city ??
-                                                    "",
-                                                houseNo:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .houseNo ??
-                                                    "",
-                                                label:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .label ??
-                                                    "",
-                                                landMark:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .landmark ??
-                                                    "",
-                                                state:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .state ??
-                                                    "",
-                                                pinCode:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .details!
-                                                        .pincode ??
-                                                    "",
-                                                latitude:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .coordinates!
-                                                        .latitude
-                                                        .toString(),
-                                                longitude:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .coordinates!
-                                                        .longitude
-                                                        .toString(),
-                                                id:
-                                                    getSavedAddressResponse
-                                                        .data![i]
-                                                        .id ??
-                                                    "",
-                                              ),
-                                            );
-                                          },
-                                          child: Icon(
-                                            Icons.delete_rounded,
-                                            color: Color(0xFF034703),
-                                            size: 25,
+                                          SizedBox(width: 10),
+                                          InkWell(
+                                            onTap: () {
+                                              context.read<AddressBloc>().add(
+                                                DeleteSavedAddressEvent(
+                                                  area:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .area ??
+                                                      "",
+                                                  building:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .building ??
+                                                      "",
+                                                  city:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .city ??
+                                                      "",
+                                                  houseNo:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .houseNo ??
+                                                      "",
+                                                  label:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .label ??
+                                                      "",
+                                                  landMark:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .landmark ??
+                                                      "",
+                                                  state:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .state ??
+                                                      "",
+                                                  pinCode:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .details!
+                                                          .pincode ??
+                                                      "",
+                                                  latitude:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .coordinates!
+                                                          .latitude
+                                                          .toString(),
+                                                  longitude:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .coordinates!
+                                                          .longitude
+                                                          .toString(),
+                                                  id:
+                                                      getSavedAddressResponse
+                                                          .data![i]
+                                                          .id ??
+                                                      "",
+                                                ),
+                                              );
+                                            },
+                                            child: Icon(
+                                              Icons.delete_rounded,
+                                              color: Color(0xFF034703),
+                                              size: 25,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 );
                               },
                             ),

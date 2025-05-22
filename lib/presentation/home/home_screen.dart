@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_network/image_network.dart';
+// import 'package:image_network/image_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
@@ -68,105 +68,114 @@ class HomeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           backgroundColor: Colors.white,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-              child: Column(
-                spacing: 10,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: CircleAvatar(
-                        radius: 14,
-                        backgroundColor: appColor,
-                        child: Icon(Icons.close, size: 16, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Image.asset(locationImage, width: 100, height: 100),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Please Enable Location permission",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "for better delivery experience",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: greyColor),
-                  ),
-                  const SizedBox(height: 28),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        homebloc.add(ContinueLocationEvent());
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: appColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        "Continue",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        showSearchLocationAlertDialog(context, homebloc);
-                        searchLocationController.clear();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Color(0xFF004D00),
-                          width: 2,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.search, color: Color(0xFF004D00)),
-                          SizedBox(width: 8),
-                          Text(
-                            "Search your location",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF004D00),
-                              fontSize: 16,
-                            ),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 30,
+                ),
+                child: Column(
+                  spacing: 10,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: CircleAvatar(
+                          radius: 14,
+                          backgroundColor: appColor,
+                          child: Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.white,
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Image.asset(locationImage, width: 100, height: 100),
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Please Enable Location permission",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "for better delivery experience",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: greyColor),
+                    ),
+                    const SizedBox(height: 28),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          homebloc.add(ContinueLocationEvent());
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: appColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          "Continue",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          showSearchLocationAlertDialog(context, homebloc);
+                          searchLocationController.clear();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                            color: Color(0xFF004D00),
+                            width: 2,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.search, color: Color(0xFF004D00)),
+                            SizedBox(width: 8),
+                            Text(
+                              "Search your location",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF004D00),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -785,283 +794,279 @@ class HomeScreen extends StatelessWidget {
                       Container(
                         constraints: BoxConstraints(maxHeight: 300),
                         color: appbackgroundColor,
-                        height: MediaQuery.of(context).size.height * 0.45,
+                        height:
+                            isMobile
+                                ? 160
+                                : isTablet
+                                ? 220
+                                : 260,
                         child: Stack(
                           children: [
                             Container(
                               constraints: BoxConstraints(maxHeight: 150),
-                              height: MediaQuery.of(context).size.height * 0.2,
+                              height:
+                                  isMobile
+                                      ? 100
+                                      : isTablet
+                                      ? 160
+                                      : 160,
                               width: MediaQuery.of(context).size.width,
                               decoration: const BoxDecoration(
                                 color: Color(0xFF052E16),
                               ),
                               child: const Row(children: []),
                             ),
-                            Positioned.fill(
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(height: 0),
-                                    Text(
-                                      'Grab & Go essentials for you!',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 24,
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
+                            Align(
+                              alignment: Alignment.center,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 0),
+                                  Text(
+                                    'Grab & Go essentials for you!',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 24,
+                                      color: Colors.white,
                                     ),
-                                    const SizedBox(height: 10),
-                                    Visibility(
-                                      visible: !(grabandEssential.data == null),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          spacing:
-                                              MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.03,
-                                          children: [
-                                            if (grabandEssential.data != null)
-                                              for (
-                                                int i = 0;
-                                                i <
-                                                    grabandEssential
-                                                        .data!
-                                                        .length;
-                                                i++
-                                              )
-                                                InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (
-                                                              context,
-                                                            ) => ProductListMenuScreen(
-                                                              title:
-                                                                  grabandEssential
-                                                                      .data![i]
-                                                                      .name ??
-                                                                  "",
-                                                              id:
-                                                                  grabandEssential
-                                                                      .data![i]
-                                                                      .id ??
-                                                                  "",
-                                                              isMainCategory:
-                                                                  i == 2
-                                                                      ? false
-                                                                      : true,
-                                                              mainCatId:
-                                                                  i == 0
-                                                                      ? "676431a2edae32578ae6d220"
-                                                                      : i == 1
-                                                                      ? "676431ddedae32578ae6d222"
-                                                                      : "",
-                                                              isCategory:
-                                                                  i == 2
-                                                                      ? true
-                                                                      : false,
-                                                              catId:
-                                                                  "6759448c66818180ad94a960",
-                                                            ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Stack(
-                                                    alignment: Alignment.center,
-                                                    // clipBehavior: Clip.hardEdge,
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          Navigator.push(
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Visibility(
+                                    visible: !(grabandEssential.data == null),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        spacing:
+                                            MediaQuery.of(context).size.width *
+                                            0.03,
+                                        children: [
+                                          if (grabandEssential.data != null)
+                                            for (
+                                              int i = 0;
+                                              i < grabandEssential.data!.length;
+                                              i++
+                                            )
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder:
+                                                          (
                                                             context,
-                                                            MaterialPageRoute(
-                                                              builder:
-                                                                  (
-                                                                    context,
-                                                                  ) => ProductListMenuScreen(
-                                                                    title:
-                                                                        grabandEssential
-                                                                            .data![i]
-                                                                            .name ??
-                                                                        "",
-                                                                    id:
-                                                                        grabandEssential
-                                                                            .data![i]
-                                                                            .id ??
-                                                                        "",
-                                                                    isMainCategory:
-                                                                        i == 2
-                                                                            ? false
-                                                                            : true,
-                                                                    mainCatId:
-                                                                        i == 0
-                                                                            ? "676431a2edae32578ae6d220"
-                                                                            : i ==
-                                                                                1
-                                                                            ? "676431ddedae32578ae6d222"
-                                                                            : "",
-                                                                    isCategory:
-                                                                        i == 2
-                                                                            ? true
-                                                                            : false,
-                                                                    catId:
-                                                                        "6759448c66818180ad94a960",
-                                                                  ),
-                                                            ),
-                                                          );
-                                                        },
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                5,
-                                                              ),
-                                                          child: Container(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                  0,
-                                                                ),
-                                                            clipBehavior:
-                                                                Clip.hardEdge,
-                                                            width:
-                                                                isMobile
-                                                                    ? MediaQuery.of(
-                                                                          context,
-                                                                        ).size.width *
-                                                                        0.3
-                                                                    : isTablet
-                                                                    ? MediaQuery.of(
-                                                                          context,
-                                                                        ).size.width *
-                                                                        0.25
-                                                                    : 256,
-                                                            height:
-                                                                isMobile
-                                                                    ? 100
-                                                                    : constraints
-                                                                            .maxWidth <
-                                                                        991
-                                                                    ? 120
-                                                                    : 200,
-                                                            decoration: BoxDecoration(
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color:
-                                                                      Colors
-                                                                          .grey,
-                                                                  offset:
-                                                                      Offset(
-                                                                        1,
-                                                                        3,
-                                                                      ),
-                                                                  blurRadius:
-                                                                      10,
-                                                                ),
-                                                              ],
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    5,
-                                                                  ),
-                                                              image: DecorationImage(
-                                                                fit:
-                                                                    BoxFit
-                                                                        .fitWidth,
-                                                                image: NetworkImage(
-                                                                  grabandEssential
-                                                                          .data![i]
-                                                                          .imageUrl ??
-                                                                      "",
-                                                                  // width: 256,
-                                                                  // height:
-                                                                  //     double
-                                                                  //         .infinity,
-                                                                  // height:
-                                                                  //     constraints.maxWidth <
-                                                                  //             1124
-                                                                  //         ? 150
-                                                                  //         : 200,
-                                                                  // fit: BoxFit.cover,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            child: SizedBox(),
+                                                          ) => ProductListMenuScreen(
+                                                            title:
+                                                                grabandEssential
+                                                                    .data![i]
+                                                                    .name ??
+                                                                "",
+                                                            id:
+                                                                grabandEssential
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "",
+                                                            isMainCategory:
+                                                                i == 2
+                                                                    ? false
+                                                                    : true,
+                                                            mainCatId:
+                                                                i == 0
+                                                                    ? "676431a2edae32578ae6d220"
+                                                                    : i == 1
+                                                                    ? "676431ddedae32578ae6d222"
+                                                                    : "",
+                                                            isCategory:
+                                                                i == 2
+                                                                    ? true
+                                                                    : false,
+                                                            catId:
+                                                                "6759448c66818180ad94a960",
                                                           ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        bottom: 0,
-                                                        left: 0,
-                                                        right: 0,
+                                                    ),
+                                                  );
+                                                },
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  // clipBehavior: Clip.hardEdge,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder:
+                                                                (
+                                                                  context,
+                                                                ) => ProductListMenuScreen(
+                                                                  title:
+                                                                      grabandEssential
+                                                                          .data![i]
+                                                                          .name ??
+                                                                      "",
+                                                                  id:
+                                                                      grabandEssential
+                                                                          .data![i]
+                                                                          .id ??
+                                                                      "",
+                                                                  isMainCategory:
+                                                                      i == 2
+                                                                          ? false
+                                                                          : true,
+                                                                  mainCatId:
+                                                                      i == 0
+                                                                          ? "676431a2edae32578ae6d220"
+                                                                          : i ==
+                                                                              1
+                                                                          ? "676431ddedae32578ae6d222"
+                                                                          : "",
+                                                                  isCategory:
+                                                                      i == 2
+                                                                          ? true
+                                                                          : false,
+                                                                  catId:
+                                                                      "6759448c66818180ad94a960",
+                                                                ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              5,
+                                                            ),
                                                         child: Container(
+                                                          padding:
+                                                              EdgeInsets.all(0),
+                                                          clipBehavior:
+                                                              Clip.hardEdge,
                                                           width:
-                                                              double.infinity,
-                                                          height: 50,
-
+                                                              isMobile
+                                                                  ? MediaQuery.of(
+                                                                        context,
+                                                                      ).size.width *
+                                                                      0.25
+                                                                  : isTablet
+                                                                  ? MediaQuery.of(
+                                                                        context,
+                                                                      ).size.width *
+                                                                      0.22
+                                                                  : 256,
+                                                          height:
+                                                              isMobile
+                                                                  ? 100
+                                                                  : constraints
+                                                                          .maxWidth <
+                                                                      991
+                                                                  ? 160
+                                                                  : 200,
                                                           decoration: BoxDecoration(
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color:
+                                                                    Colors.grey,
+                                                                offset: Offset(
+                                                                  1,
+                                                                  3,
+                                                                ),
+                                                                blurRadius: 10,
+                                                              ),
+                                                            ],
                                                             color: Colors.white,
                                                             borderRadius:
                                                                 BorderRadius.circular(
                                                                   5,
                                                                 ),
-                                                          ),
-                                                          child: Center(
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets.only(
-                                                                    top: 4,
-                                                                    bottom: 4,
-                                                                    left: 15,
-                                                                    right: 15,
-                                                                  ),
-                                                              child: Text(
+                                                            image: DecorationImage(
+                                                              fit:
+                                                                  BoxFit
+                                                                      .fitWidth,
+                                                              image: NetworkImage(
                                                                 grabandEssential
                                                                         .data![i]
-                                                                        .name ??
+                                                                        .imageUrl ??
                                                                     "",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      isMobile
-                                                                          ? 8
-                                                                          : isTablet
-                                                                          ? 12
-                                                                          : 15,
-                                                                  color:
-                                                                      Colors
-                                                                          .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
+                                                                // width: 256,
+                                                                // height:
+                                                                //     double
+                                                                //         .infinity,
+                                                                // height:
+                                                                //     constraints.maxWidth <
+                                                                //             1124
+                                                                //         ? 150
+                                                                //         : 200,
+                                                                // fit: BoxFit.cover,
                                                               ),
+                                                            ),
+                                                          ),
+                                                          child: SizedBox(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      bottom: 0,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        height: 50,
+
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                5,
+                                                              ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                  top: 4,
+                                                                  bottom: 4,
+                                                                  left: 15,
+                                                                  right: 15,
+                                                                ),
+                                                            child: Text(
+                                                              grabandEssential
+                                                                      .data![i]
+                                                                      .name ??
+                                                                  "",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                fontSize:
+                                                                    isMobile
+                                                                        ? 8
+                                                                        : isTablet
+                                                                        ? 12
+                                                                        : 15,
+                                                                color:
+                                                                    Colors
+                                                                        .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
-                                          ],
-                                        ),
+                                              ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -1069,7 +1074,10 @@ class HomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       Container(
-                        constraints: BoxConstraints(maxWidth: 1280),
+                        constraints: BoxConstraints(
+                          maxWidth: 1280,
+                          // maxHeight: 300,
+                        ),
                         child: Column(
                           // spacing: 20,
                           children: [
@@ -1084,18 +1092,18 @@ class HomeScreen extends StatelessWidget {
                                     child: CarouselSlider.builder(
                                       itemCount: festivalbanners.length,
                                       options: CarouselOptions(
-                                        aspectRatio: 16 / 9,
+                                        // aspectRatio: 16 / 9,
                                         height:
                                             isMobile
                                                 ? MediaQuery.of(
                                                       context,
-                                                    ).size.height *
-                                                    0.6
+                                                    ).size.height /
+                                                    2.2
                                                 : isTablet
                                                 ? MediaQuery.of(
                                                       context,
                                                     ).size.height *
-                                                    0.6
+                                                    0.5
                                                 : MediaQuery.of(
                                                       context,
                                                     ).size.height *
@@ -1112,10 +1120,10 @@ class HomeScreen extends StatelessWidget {
                                             true, // Gives a nice zoom effect
                                         viewportFraction:
                                             isMobile
-                                                ? 0.7
+                                                ? 0.8
                                                 : isTablet
-                                                ? 0.4
-                                                : 0.4, // Makes items slightly smaller than screen width
+                                                ? 0.6
+                                                : 0.6, // Makes items slightly smaller than screen width
                                         scrollDirection: Axis.horizontal,
                                         enableInfiniteScroll:
                                             true, // Allows continuous looping
@@ -1127,6 +1135,7 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                       itemBuilder: (context, index, realIndex) {
                                         return InkWell(
+                                          hoverColor: Colors.transparent,
                                           onTap: () {
                                             // Navigator.push(
                                             //   context,
@@ -1165,42 +1174,19 @@ class HomeScreen extends StatelessWidget {
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: ImageNetwork(
-                                                image:
+                                              child: ImageNetworkWidget(
+                                                url:
                                                     festivalbanners[index]
                                                         .imageUrl ??
                                                     "",
                                                 width:
                                                     isMobile
-                                                        ? MediaQuery.of(
-                                                              context,
-                                                            ).size.width *
-                                                            0.6
+                                                        ? double.infinity
                                                         : isTablet
-                                                        ? MediaQuery.of(
-                                                              context,
-                                                            ).size.width *
-                                                            0.3
-                                                        : MediaQuery.of(
-                                                              context,
-                                                            ).size.width *
-                                                            0.3,
-                                                height:
-                                                    isMobile
-                                                        ? MediaQuery.of(
-                                                              context,
-                                                            ).size.height *
-                                                            0.6
-                                                        : isTablet
-                                                        ? MediaQuery.of(
-                                                              context,
-                                                            ).size.height *
-                                                            0.5
-                                                        : MediaQuery.of(
-                                                              context,
-                                                            ).size.height *
-                                                            0.6,
-                                                fitWeb: BoxFitWeb.cover,
+                                                        ? double.infinity
+                                                        : double.infinity,
+
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
                                           ),
@@ -1416,6 +1402,9 @@ class HomeScreen extends StatelessWidget {
                                                     )
                                                       Expanded(
                                                         child: InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
                                                           onTap: () {
                                                             debugPrint(
                                                               "*******",
@@ -1503,6 +1492,9 @@ class HomeScreen extends StatelessWidget {
                                                                     .stretch,
                                                             children: [
                                                               InkWell(
+                                                                hoverColor:
+                                                                    Colors
+                                                                        .transparent,
                                                                 onTap: () {
                                                                   debugPrint(
                                                                     "******",
@@ -1699,6 +1691,9 @@ class HomeScreen extends StatelessWidget {
                                                     )
                                                       Expanded(
                                                         child: InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
                                                           onTap: () {
                                                             debugPrint(
                                                               "*******",
@@ -1876,6 +1871,9 @@ class HomeScreen extends StatelessWidget {
                                                     for (int i = 0; i < 3; i++)
                                                       Expanded(
                                                         child: InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
                                                           onTap: () {
                                                             debugPrint(
                                                               categories[i]
@@ -2053,76 +2051,162 @@ class HomeScreen extends StatelessWidget {
                                                   if (categories.isNotEmpty)
                                                     for (int i = 3; i < 6; i++)
                                                       Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              // width: 130,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE5EEC3,
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            debugPrint(
+                                                              "*******",
+                                                            );
+                                                            title =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                true;
+                                                            mainCatId =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "";
+                                                            isCategory = false;
+                                                            catId = "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMenuScreen(
+                                                                      title:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          true,
+                                                                      mainCatId:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isCategory:
+                                                                          false,
+                                                                      catId: "",
                                                                     ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
+                                                              ),
+                                                            ).then((value) {
+                                                              if (!context
+                                                                  .mounted) {
+                                                                return;
+                                                              }
+                                                              context
+                                                                  .read<
+                                                                    HomeBloc
+                                                                  >()
+                                                                  .add(
+                                                                    GetCartCountEvent(
+                                                                      userId:
+                                                                          userId,
                                                                     ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
-                                                                        ),
+                                                                  );
+                                                              // context
+                                                              //     .read<CounterCubit>()
+                                                              //     .decrement(cartCount);
+                                                              context
+                                                                  .read<
+                                                                    CounterCubit
+                                                                  >()
+                                                                  .increment(
+                                                                    cartCount,
+                                                                  );
+                                                              noOfIteminCart =
+                                                                  cartCount;
+                                                            });
+                                                          },
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                // width: 130,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        categories[i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              categories[i]
-                                                                      .name ??
-                                                                  "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
+                                                                      ),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                            0,
+                                                                            1,
+                                                                          ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          categories[i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                categories[i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -2146,76 +2230,162 @@ class HomeScreen extends StatelessWidget {
                                                       i++
                                                     )
                                                       Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 130,
-                                                              // width: 130,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE5EEC3,
+                                                        child: InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          onTap: () {
+                                                            debugPrint(
+                                                              "*******",
+                                                            );
+                                                            title =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                true;
+                                                            mainCatId =
+                                                                mainCategory
+                                                                    .data![i]
+                                                                    .id ??
+                                                                "";
+                                                            isCategory = false;
+                                                            catId = "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMenuScreen(
+                                                                      title:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          true,
+                                                                      mainCatId:
+                                                                          mainCategory
+                                                                              .data![i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isCategory:
+                                                                          false,
+                                                                      catId: "",
                                                                     ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
+                                                              ),
+                                                            ).then((value) {
+                                                              if (!context
+                                                                  .mounted) {
+                                                                return;
+                                                              }
+                                                              context
+                                                                  .read<
+                                                                    HomeBloc
+                                                                  >()
+                                                                  .add(
+                                                                    GetCartCountEvent(
+                                                                      userId:
+                                                                          userId,
                                                                     ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        greyColor,
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                          0,
-                                                                          1,
-                                                                        ),
+                                                                  );
+                                                              // context
+                                                              //     .read<CounterCubit>()
+                                                              //     .decrement(cartCount);
+                                                              context
+                                                                  .read<
+                                                                    CounterCubit
+                                                                  >()
+                                                                  .increment(
+                                                                    cartCount,
+                                                                  );
+                                                              noOfIteminCart =
+                                                                  cartCount;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                // width: 130,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ImageNetworkWidget(
-                                                                    url:
-                                                                        categories[i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              categories[i]
-                                                                      .name ??
-                                                                  "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
+                                                                      ),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                            0,
+                                                                            1,
+                                                                          ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          categories[i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                categories[i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                 ],
@@ -2243,6 +2413,9 @@ class HomeScreen extends StatelessWidget {
                                                     for (int i = 3; i < 6; i++)
                                                       Expanded(
                                                         child: InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
                                                           onTap: () {
                                                             debugPrint(
                                                               categories[i]
@@ -2416,6 +2589,9 @@ class HomeScreen extends StatelessWidget {
                                                     )
                                                       Expanded(
                                                         child: InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
                                                           onTap: () {
                                                             title =
                                                                 categories[i]
@@ -2677,6 +2853,7 @@ class HomeScreen extends StatelessWidget {
                                               i++
                                             )
                                               InkWell(
+                                                hoverColor: Colors.transparent,
                                                 onTap: () {
                                                   Navigator.push(
                                                     context,
@@ -2922,6 +3099,8 @@ class HomeScreen extends StatelessWidget {
                                                                           0
                                                                       ? Expanded(
                                                                         child: InkWell(
+                                                                          hoverColor:
+                                                                              Colors.transparent,
                                                                           onTap: () {
                                                                             context
                                                                                 .read<
@@ -2986,6 +3165,8 @@ class HomeScreen extends StatelessWidget {
                                                                                 MainAxisAlignment.spaceAround,
                                                                             children: [
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -3039,6 +3220,8 @@ class HomeScreen extends StatelessWidget {
                                                                                 ),
                                                                               ),
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -3123,6 +3306,7 @@ class HomeScreen extends StatelessWidget {
                                               i++
                                             )
                                               InkWell(
+                                                hoverColor: Colors.transparent,
                                                 onTap: () {
                                                   Navigator.push(
                                                     context,
@@ -3364,6 +3548,8 @@ class HomeScreen extends StatelessWidget {
                                                                           0
                                                                       ? Expanded(
                                                                         child: InkWell(
+                                                                          hoverColor:
+                                                                              Colors.transparent,
                                                                           onTap: () {
                                                                             context
                                                                                 .read<
@@ -3428,6 +3614,8 @@ class HomeScreen extends StatelessWidget {
                                                                                 MainAxisAlignment.spaceAround,
                                                                             children: [
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -3481,6 +3669,8 @@ class HomeScreen extends StatelessWidget {
                                                                                 ),
                                                                               ),
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -3565,6 +3755,8 @@ class HomeScreen extends StatelessWidget {
                                               i++
                                             )
                                               InkWell(
+                                                hoverColor: Colors.transparent,
+
                                                 onTap: () {
                                                   Navigator.push(
                                                     context,
@@ -3806,6 +3998,9 @@ class HomeScreen extends StatelessWidget {
                                                                           0
                                                                       ? Expanded(
                                                                         child: InkWell(
+                                                                          hoverColor:
+                                                                              Colors.transparent,
+
                                                                           onTap: () {
                                                                             context
                                                                                 .read<
@@ -3870,6 +4065,9 @@ class HomeScreen extends StatelessWidget {
                                                                                 MainAxisAlignment.spaceAround,
                                                                             children: [
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
+
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -3923,6 +4121,9 @@ class HomeScreen extends StatelessWidget {
                                                                                 ),
                                                                               ),
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
+
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -4007,6 +4208,8 @@ class HomeScreen extends StatelessWidget {
                                               i++
                                             )
                                               InkWell(
+                                                hoverColor: Colors.transparent,
+
                                                 onTap: () {
                                                   Navigator.push(
                                                     context,
@@ -4250,6 +4453,9 @@ class HomeScreen extends StatelessWidget {
                                                                           0
                                                                       ? Expanded(
                                                                         child: InkWell(
+                                                                          hoverColor:
+                                                                              Colors.transparent,
+
                                                                           onTap: () {
                                                                             context
                                                                                 .read<
@@ -4314,6 +4520,9 @@ class HomeScreen extends StatelessWidget {
                                                                                 MainAxisAlignment.spaceAround,
                                                                             children: [
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
+
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<
@@ -4367,6 +4576,9 @@ class HomeScreen extends StatelessWidget {
                                                                                 ),
                                                                               ),
                                                                               InkWell(
+                                                                                hoverColor:
+                                                                                    Colors.transparent,
+
                                                                                 onTap: () {
                                                                                   context
                                                                                       .read<

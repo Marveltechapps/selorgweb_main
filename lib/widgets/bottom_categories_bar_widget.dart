@@ -8,16 +8,17 @@ class BottomCategoriesBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
+      constraints: BoxConstraints(maxWidth: 1280),
       width: double.infinity,
       color: whiteColor,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 150,
+          horizontal: isMobile ? 20 : 60,
           vertical: 50,
         ),
         child: Column(
           spacing: 20,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
@@ -28,9 +29,148 @@ class BottomCategoriesBarWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Row(
+            SizedBox(height: 5),
+            // Wrap(
+            //   spacing: 4,
+            //   children: [
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Fruits & Vegitables",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Groceries", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Fresh Fruits",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Fresh Veggies",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Leafy Herbs & Seasonings",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Dry Fruits & Nuts",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Dal", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Millets", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Rice & Cereals",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Grains & Pulses",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Seeds", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Whole spices & Seasoning",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Oil", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Honey & Spreads",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Sugar & Jaggery",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Attas & Flours",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Masalas & Powders",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Ghee", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Honey & Spreads",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Salts", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text("Beverages", style: TextStyle(color: blackColor)),
+            //     ),
+            //     Container(
+            //       width: MediaQuery.of(context).size.width / 5,
+            //       child: Text(
+            //         "Noodles & Vermicelli",
+            //         style: TextStyle(color: blackColor),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            Wrap(
               spacing: 20,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              runSpacing: 20,
+              direction: Axis.horizontal,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              alignment: WrapAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: SizedBox(

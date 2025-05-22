@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/order/screens/my_account_orders.dart';
 import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
+import 'package:selorgweb_main/presentation/home/home_screen.dart';
 import 'package:selorgweb_main/presentation/settings/setting_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
@@ -26,33 +28,45 @@ class HeaderWidget extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    SvgPicture.asset(appTextImage),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      },
+                      child: SvgPicture.asset(appTextImage, height: 15),
+                    ),
                     Container(
                       width: 2,
-                      height: 40,
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      height: 30,
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
                       color: Colors.white,
                     ),
                     InkWell(
                       onTap: onClick,
-                      child: Row(
-                        children: [
-                          Text(
-                            location,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
+                      child: Expanded(
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: constraints.maxWidth < 500 ? 130 : null,
+                              child: Text(
+                                location,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.white,
-                            // size: 24,
-                          ),
-                        ],
+                            const SizedBox(width: 2),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                              // size: 24,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -61,11 +75,11 @@ class HeaderWidget extends StatelessWidget {
                 Container(
                   width:
                       constraints.maxWidth < 991
-                          ? 524
+                          ? double.infinity
                           : MediaQuery.of(context).size.width / 3,
                   height: 40,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 36,
+                    horizontal: 15,
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
@@ -78,10 +92,9 @@ class HeaderWidget extends StatelessWidget {
                       const SizedBox(width: 14),
                       Text(
                         'Search For Products...',
-                        style: TextStyle(
-                          fontSize: 16,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
                           color: Color(0xFF666666),
-                          fontFamily: 'Poppins',
                         ),
                       ),
                     ],
@@ -102,17 +115,16 @@ class HeaderWidget extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'My Account',
-                        style: TextStyle(
-                          fontSize: 20,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontFamily: 'Poppins',
                         ),
                       ),
                     ),
-                    const SizedBox(width: 28),
+                    // const SizedBox(width: 28),
                     InkWell(
                       onTap: () {
                         Navigator.push(
@@ -125,8 +137,8 @@ class HeaderWidget extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        width: 127,
-                        height: 37,
+                        width: 100,
+                        height: 40,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(6),
@@ -142,11 +154,10 @@ class HeaderWidget extends StatelessWidget {
                         child: Center(
                           child: Text(
                             'My Cart',
-                            style: TextStyle(
-                              fontSize: 16,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF052E16),
-                              fontFamily: 'Poppins',
                             ),
                           ),
                         ),
@@ -170,7 +181,16 @@ class HeaderWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      SvgPicture.asset(appTextImage, height: 20),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
+                        },
+                        child: SvgPicture.asset(appTextImage, height: 20),
+                      ),
                       Container(
                         width: 2,
                         height: 40,
@@ -183,11 +203,10 @@ class HeaderWidget extends StatelessWidget {
                           children: [
                             Text(
                               location,
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                fontFamily: 'Poppins',
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -218,10 +237,9 @@ class HeaderWidget extends StatelessWidget {
                         const SizedBox(width: 14),
                         Text(
                           'Search For Products...',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 16,
                             color: Color(0xFF666666),
-                            fontFamily: 'Poppins',
                           ),
                         ),
                       ],
@@ -241,13 +259,12 @@ class HeaderWidget extends StatelessWidget {
                             ),
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           'My Account',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            fontFamily: 'Poppins',
                           ),
                         ),
                       ),
@@ -281,11 +298,10 @@ class HeaderWidget extends StatelessWidget {
                           child: Center(
                             child: Text(
                               'My Cart',
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF052E16),
-                                fontFamily: 'Poppins',
                               ),
                             ),
                           ),
