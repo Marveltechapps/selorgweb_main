@@ -252,24 +252,80 @@ class AddressScreen extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            /* var res = */
-                            // await Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) {
-                            //       return LocationScreen(screenType: 'address');
-                            //     },
-                            //   ),
-                            // );
-                            showLocationMainAlertDialog(context);
-                            //debugPrint(res);
-                            if (!context.mounted) return;
-                            context.read<AddressBloc>().add(
-                              (GetSavedAddressEvent(userId: userId)),
-                            );
                             // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>YourLocationScreen(screenType: 'listview')));
-                          },
+                            final result = await showDialog(
+                              context: context,
+                              barrierDismissible:
+                                  !(location == "No Location Found"),
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor: Colors.white,
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                      maxHeight: 500,
+                                      maxWidth: 500,
+                                      minHeight: 500,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 8,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          spacing: 10,
+                                          mainAxisSize: MainAxisSize.min,
 
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: InkWell(
+                                                onTap:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                                child: CircleAvatar(
+                                                  radius: 14,
+                                                  backgroundColor: appColor,
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    size: 16,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            AddAddress(
+                                              id: "",
+                                              label: "",
+                                              houseNo: "",
+                                              building: "",
+                                              landmark: "",
+                                              latitude: latitude,
+                                              longitude: longitude,
+                                              isEdit: false,
+                                              place: placemark!,
+                                              screenType: "editaddress",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+
+                            if (result == "success") {
+                              if (!context.mounted) return;
+                              context.read<AddressBloc>().add(
+                                (GetSavedAddressEvent(userId: userId)),
+                              );
+                            }
+                          },
                           child: Text(
                             'Add New Address',
                             style: GoogleFonts.poppins(

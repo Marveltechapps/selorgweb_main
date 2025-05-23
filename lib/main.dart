@@ -5,6 +5,10 @@ import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import 'package:selorgweb_main/presentation/home/home_screen.dart';
 
 void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    debugPrint('💥 Flutter error: ${details.exception}');
+    debugPrint('📌 Stack trace: ${details.stack}');
+  };
   runApp(const MyApp());
 }
 

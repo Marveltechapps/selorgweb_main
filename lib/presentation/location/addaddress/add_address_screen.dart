@@ -703,14 +703,17 @@ class AddAddress extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            _buildLabelButton('Home', addAddressBloc),
-            const SizedBox(width: 24),
-            _buildLabelButton('Work', addAddressBloc),
-            const SizedBox(width: 24),
-            _buildLabelButton('Other', addAddressBloc),
-          ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              _buildLabelButton('Home', addAddressBloc),
+              const SizedBox(width: 20),
+              _buildLabelButton('Work', addAddressBloc),
+              const SizedBox(width: 20),
+              _buildLabelButton('Other', addAddressBloc),
+            ],
+          ),
         ),
       ],
     );

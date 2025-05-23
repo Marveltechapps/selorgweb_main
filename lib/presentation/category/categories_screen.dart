@@ -191,258 +191,254 @@ class CategoriesScreen extends StatelessWidget {
                               spacing: 20,
                               runSpacing: 20,
                               children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    // height: 150,
-                                    // width: 130,
-                                    //  color: redColor,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      spacing: 16,
-                                      children: [
-                                        if (mainCategory.data != null)
-                                          for (
-                                            int i = 0;
-                                            i < mainCategory.data!.length;
-                                            i++
-                                          )
-                                            Expanded(
-                                              child: InkWell(
-                                                onTap: () {
-                                                  title =
-                                                      mainCategory
-                                                          .data![i]
-                                                          .name ??
-                                                      "";
-                                                  id =
-                                                      mainCategory
-                                                          .data![i]
-                                                          .id ??
-                                                      "";
-                                                  isMainCategory = true;
-                                                  mainCatId =
-                                                      mainCategory
-                                                          .data![i]
-                                                          .id ??
-                                                      "";
-                                                  isCategory = false;
-                                                  catId = "";
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder:
-                                                          (
-                                                            context,
-                                                          ) => ProductListMenuScreen(
-                                                            title:
-                                                                mainCategory
-                                                                    .data![i]
-                                                                    .name ??
-                                                                "",
-                                                            id:
-                                                                mainCategory
-                                                                    .data![i]
-                                                                    .id ??
-                                                                "",
-                                                            isMainCategory:
-                                                                true,
-                                                            mainCatId:
-                                                                mainCategory
-                                                                    .data![i]
-                                                                    .id ??
-                                                                "",
-                                                            isCategory: false,
-                                                            catId: "",
-                                                          ),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
-                                                  children: [
-                                                    Container(
-                                                      height: 130,
-                                                      width: null,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                          0xFFE5EEC3,
+                                SizedBox(
+                                  // height: 150,
+                                  // width: 130,
+                                  //  color: redColor,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 16,
+                                    children: [
+                                      if (mainCategory.data != null)
+                                        for (
+                                          int i = 0;
+                                          i < mainCategory.data!.length;
+                                          i++
+                                        )
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                title =
+                                                    mainCategory
+                                                        .data![i]
+                                                        .name ??
+                                                    "";
+                                                id =
+                                                    mainCategory
+                                                        .data![i]
+                                                        .id ??
+                                                    "";
+                                                isMainCategory = true;
+                                                mainCatId =
+                                                    mainCategory
+                                                        .data![i]
+                                                        .id ??
+                                                    "";
+                                                isCategory = false;
+                                                catId = "";
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (
+                                                          context,
+                                                        ) => ProductListMenuScreen(
+                                                          title:
+                                                              mainCategory
+                                                                  .data![i]
+                                                                  .name ??
+                                                              "",
+                                                          id:
+                                                              mainCategory
+                                                                  .data![i]
+                                                                  .id ??
+                                                              "",
+                                                          isMainCategory:
+                                                              true,
+                                                          mainCatId:
+                                                              mainCategory
+                                                                  .data![i]
+                                                                  .id ??
+                                                              "",
+                                                          isCategory: false,
+                                                          catId: "",
                                                         ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              5,
-                                                            ),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: greyColor,
-                                                            blurRadius: 3,
-                                                            offset:
-                                                                const Offset(
-                                                                  0,
-                                                                  1,
-                                                                ),
-                                                          ),
-                                                        ],
+                                                  ),
+                                                );
+                                              },
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .stretch,
+                                                children: [
+                                                  Container(
+                                                    height: 130,
+                                                    width: null,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                        0xFFE5EEC3,
                                                       ),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          ImageNetworkWidget(
-                                                            url:
-                                                                mainCategory
-                                                                    .data![i]
-                                                                    .imageUrl ??
-                                                                "",
-                                                            height: 100,
-                                                            width:
-                                                                double.infinity,
-                                                            fit: BoxFit.contain,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            5,
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      mainCategory
-                                                              .data![i]
-                                                              .name ??
-                                                          "",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Color(
-                                                          0xFF222222,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: greyColor,
+                                                          blurRadius: 3,
+                                                          offset:
+                                                              const Offset(
+                                                                0,
+                                                                1,
+                                                              ),
                                                         ),
+                                                      ],
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ImageNetworkWidget(
+                                                          url:
+                                                              mainCategory
+                                                                  .data![i]
+                                                                  .imageUrl ??
+                                                              "",
+                                                          height: 100,
+                                                          width:
+                                                              double.infinity,
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    mainCategory
+                                                            .data![i]
+                                                            .name ??
+                                                        "",
+                                                    textAlign:
+                                                        TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Color(
+                                                        0xFF222222,
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                      ],
-                                    ),
+                                          ),
+                                    ],
                                   ),
                                 ),
-                                Expanded(
-                                  child: SizedBox(
-                                    // height: 150,
-                                    // width: 130,
-                                    // color: redColor,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      spacing: 20,
-                                      children: [
-                                        if (categories.isNotEmpty)
-                                          for (int i = 0; i < 3; i++)
-                                            Expanded(
-                                              child: InkWell(
-                                                onTap: () {
-                                                  title =
-                                                      categories[i].name ?? "";
-                                                  id = categories[i].id ?? "";
-                                                  isMainCategory = false;
-                                                  mainCatId = "";
-                                                  isCategory = true;
-                                                  catId =
-                                                      categories[i].id ?? "";
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder:
-                                                          (
-                                                            context,
-                                                          ) => ProductListMenuScreen(
-                                                            title:
-                                                                categories[i]
-                                                                    .name ??
-                                                                "",
-                                                            id:
-                                                                categories[i]
-                                                                    .id ??
-                                                                "",
-                                                            isMainCategory:
-                                                                false,
-                                                            mainCatId: "",
-                                                            isCategory: true,
-                                                            catId:
-                                                                categories[i]
-                                                                    .id ??
-                                                                "",
-                                                          ),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      height: 130,
-                                                      width: null,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                          0xFFE5EEC3,
+                                SizedBox(
+                                  // height: 150,
+                                  // width: 130,
+                                  // color: redColor,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 20,
+                                    children: [
+                                      if (categories.isNotEmpty)
+                                        for (int i = 0; i < 3; i++)
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                title =
+                                                    categories[i].name ?? "";
+                                                id = categories[i].id ?? "";
+                                                isMainCategory = false;
+                                                mainCatId = "";
+                                                isCategory = true;
+                                                catId =
+                                                    categories[i].id ?? "";
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (
+                                                          context,
+                                                        ) => ProductListMenuScreen(
+                                                          title:
+                                                              categories[i]
+                                                                  .name ??
+                                                              "",
+                                                          id:
+                                                              categories[i]
+                                                                  .id ??
+                                                              "",
+                                                          isMainCategory:
+                                                              false,
+                                                          mainCatId: "",
+                                                          isCategory: true,
+                                                          catId:
+                                                              categories[i]
+                                                                  .id ??
+                                                              "",
                                                         ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              5,
-                                                            ),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: greyColor,
-                                                            blurRadius: 3,
-                                                            offset:
-                                                                const Offset(
-                                                                  0,
-                                                                  1,
-                                                                ),
-                                                          ),
-                                                        ],
+                                                  ),
+                                                );
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 130,
+                                                    width: null,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                        0xFFE5EEC3,
                                                       ),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          ImageNetworkWidget(
-                                                            url:
-                                                                categories[i]
-                                                                    .imageUrl ??
-                                                                "",
-                                                            height: 100,
-                                                            width:
-                                                                double.infinity,
-                                                            fit: BoxFit.contain,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            5,
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      categories[i].name ?? "",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Color(
-                                                          0xFF222222,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: greyColor,
+                                                          blurRadius: 3,
+                                                          offset:
+                                                              const Offset(
+                                                                0,
+                                                                1,
+                                                              ),
                                                         ),
+                                                      ],
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ImageNetworkWidget(
+                                                          url:
+                                                              categories[i]
+                                                                  .imageUrl ??
+                                                              "",
+                                                          height: 100,
+                                                          width:
+                                                              double.infinity,
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    categories[i].name ?? "",
+                                                    textAlign:
+                                                        TextAlign.center,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Color(
+                                                        0xFF222222,
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                      ],
-                                    ),
+                                          ),
+                                    ],
                                   ),
                                 ),
                               ],

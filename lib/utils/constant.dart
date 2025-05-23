@@ -26,6 +26,7 @@ int cartCount = 0;
 
 // colors
 var whiteColor = Colors.white;
+var whitecolor = Colors.white;
 var appbackgroundColor = Color(0xfff8f8f8);
 var blackColor = Colors.black;
 var appColor = Color(0xFF034703);

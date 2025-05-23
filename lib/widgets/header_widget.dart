@@ -44,29 +44,27 @@ class HeaderWidget extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: onClick,
-                      child: Expanded(
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: constraints.maxWidth < 500 ? 130 : null,
-                              child: Text(
-                                location,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: constraints.maxWidth < 500 ? 130 : null,
+                            child: Text(
+                              location,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(width: 2),
-                            Icon(
-                              Icons.arrow_drop_down,
-                              color: Colors.white,
-                              // size: 24,
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 2),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.white,
+                            // size: 24,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -110,7 +108,7 @@ class HeaderWidget extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return MyAccountOrders();
+                              return SettingScreen();
                             },
                           ),
                         );
@@ -131,7 +129,7 @@ class HeaderWidget extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return SettingScreen();
+                              return CartScreen();
                             },
                           ),
                         );
