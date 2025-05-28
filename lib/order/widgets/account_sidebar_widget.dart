@@ -68,29 +68,29 @@ class AccountSidebarWidget extends StatelessWidget {
             3,
             context,
           ),
-          const SizedBox(height: 27),
-          Center(
-            child: Container(
-              width: 133,
-              height: 46,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(37),
-                border: Border.all(color: AppColors.red),
-              ),
-              child: Center(
-                child: Text(
-                  'Log Out',
-                  style: GoogleFonts.poppins(
-                    color: AppColors.red,
-                    fontSize: 16,
+          // const SizedBox(height: 27),
+          // Center(
+          //   child: Container(
+          //     width: 133,
+          //     height: 46,
+          //     decoration: BoxDecoration(
+          //       color: AppColors.white,
+          //       borderRadius: BorderRadius.circular(37),
+          //       border: Border.all(color: AppColors.red),
+          //     ),
+          //     child: Center(
+          //       child: Text(
+          //         'Log Out',
+          //         style: GoogleFonts.poppins(
+          //           color: AppColors.red,
+          //           fontSize: 16,
 
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          //           fontWeight: FontWeight.w500,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

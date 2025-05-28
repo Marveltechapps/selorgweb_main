@@ -59,28 +59,28 @@ class SideNavigation extends StatelessWidget {
             'https://cdn.builder.io/api/v1/image/assets/06096b941d4746ae854b71463e363371/a7ee372dc5fe3260d0f408901e367ae8d64b00bc?placeholderIfAbsent=true',
             false,
           ),
-          const SizedBox(height: 27),
-          Center(
-            child: Container(
-              width: 133,
-              height: 46,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(37),
-                border: Border.all(color: const Color(0xFFCE1717)),
-              ),
-              child: Center(
-                child: Text(
-                  'Log Out',
-                  style: GoogleFonts.poppins(
-                    color: const Color(0xFFCE1717),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // const SizedBox(height: 27),
+          // Center(
+          //   child: Container(
+          //     width: 133,
+          //     height: 46,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(37),
+          //       border: Border.all(color: const Color(0xFFCE1717)),
+          //     ),
+          //     child: Center(
+          //       child: Text(
+          //         'Log Out',
+          //         style: GoogleFonts.poppins(
+          //           color: const Color(0xFFCE1717),
+          //           fontSize: 16,
+          //           fontWeight: FontWeight.w500,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
