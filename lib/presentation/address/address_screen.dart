@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/presentation/home/home_bloc.dart';
-import 'package:selorgweb_main/presentation/home/home_event.dart';
-import 'package:selorgweb_main/presentation/location/location_screen.dart';
 import 'package:selorgweb_main/presentation/location/yourlocation/your_location_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class AddressScreen extends StatelessWidget {
+  const AddressScreen({super.key});
+
   void showLocationMainAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -151,7 +150,7 @@ class AddressScreen extends StatelessWidget {
                       width: 25,
                     ),
                     SizedBox(width: 20),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

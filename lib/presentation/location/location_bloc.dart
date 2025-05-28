@@ -11,7 +11,6 @@ import 'package:selorgweb_main/presentation/location/location_event.dart';
 import 'package:selorgweb_main/presentation/location/location_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/model/location/myplacemark.dart' as p;
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   LocationBloc() : super(LocationInitialState()) {
@@ -219,7 +218,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       emit(LocationLoadingState());
       bool serviceEnabled;
       LocationPermission permission;
-      Placemark? place;
+    //  Placemark? place;
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
       permission = await Geolocator.checkPermission();

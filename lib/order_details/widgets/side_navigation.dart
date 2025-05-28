@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SideNavigation extends StatelessWidget {
-  const SideNavigation({Key? key}) : super(key: key);
+  const SideNavigation({super.key});
 
   @override
   Widget build(BuildContext context) {

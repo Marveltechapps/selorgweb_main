@@ -4,14 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_flutter_web/google_maps_flutter_web.dart' as WebMap;
-import 'package:selorgweb_main/presentation/address/address_bloc.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_bloc.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_event.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
 import 'package:selorgweb_main/presentation/location/yourlocation/your_location.dart';
-import 'package:selorgweb_main/presentation/location/yourlocation/your_location_screen.dart';
-import 'package:selorgweb_main/presentation/settings/address/address_event.dart';
 import 'package:selorgweb_main/widgets/success_dialog_widget.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/cart/add_address_styles.dart';
@@ -171,7 +167,7 @@ class AddAddress extends StatelessWidget {
               ),
             );
           }
-          debugPrint('lat and long ${lat} ');
+          debugPrint('lat and long $lat ');
           return SingleChildScrollView(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
@@ -507,116 +503,7 @@ class AddAddress extends StatelessWidget {
     );
   }
 
-  Widget _buildMapPreview(context) {
-    return Container(
-      height: 323,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: GoogleMap(
-          onTap: (argument) {
-            debugPrint(screenType);
-            if (screenType == "editaddress") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return YourLocationScreen(
-                      lat: latitude,
-                      long: longitude,
-                      screenType: screenType,
-                    );
-                  },
-                ),
-              );
-            } else {
-              Navigator.pop(context);
-            }
-          },
-          initialCameraPosition: CameraPosition(
-            target: LatLng(double.parse(latitude), double.parse(longitude)),
-            zoom: 20.0,
-          ),
-          onMapCreated: (GoogleMapController controller) {},
-          markers: markers,
-          // onCameraIdle: () {
-          //   context.read<LocationBloc>().add(GetLatLonOnIdleEvent(
-          //       latitude: latitude, longitude: longitude));
-          // },
-          // onCameraMove: (CameraPosition position) {
-          //   context.read<LocationBloc>().add(GetLatLonEvent(
-          //       latitude: position.target.latitude.toString(),
-          //       longitude: position.target.longitude.toString()));
-          // },
-        ) /*   ImageNetwork(url:
-          "https://cdn.builder.io/api/v1/image/assets/TEMP/08c56c190f2fda8733801f3fb8dd6154df55c0368b56a26bb54f2a751577ff14?placeholderIfAbsent=true&apiKey=479ee9553c984302af0d67c8f0a948e9",
-          fit: BoxFit.cover,
-          width: double.infinity,
-        ), */,
-      ),
-    );
-  }
 
-  Widget _buildLocationInfo(Placemark place, BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              place.subLocality == ""
-                  ? SizedBox()
-                  : Text(
-                    place.subLocality ?? "",
-                    style: AddAddressStyles.locationTitleStyle,
-                  ),
-              Text(
-                "${place.name}${place.name == "" ? "" : ","}${place.subLocality}${place.subLocality == "" ? "" : ","} ${place.locality}${place.locality == "" ? "" : ","} ${place.administrativeArea}${place.administrativeArea == "" ? "" : ","} ${place.postalCode}${place.postalCode == "" ? "" : ","} ${place.country}",
-                style: AddAddressStyles.locationSubtitleStyle,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 49),
-        OutlinedButton(
-          onPressed: () {
-            debugPrint(screenType);
-            if (screenType == "editaddress") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return YourLocationScreen(
-                      lat: latitude,
-                      long: longitude,
-                      screenType: screenType,
-                    );
-                  },
-                ),
-              );
-            } else {
-              Navigator.pop(context);
-            }
-          },
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: AddAddressStyles.primaryGreen),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-          ),
-          child: const Text(
-            'Change',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildAddressForm(AddAddressBloc addAddressBloc, context) {
     return Form(

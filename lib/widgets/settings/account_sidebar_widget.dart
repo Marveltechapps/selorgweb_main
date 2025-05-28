@@ -4,10 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import './constants/colors.dart';
-import './constants/styles.dart';
 
 class AccountSidebarWidget extends StatelessWidget {
-  const AccountSidebarWidget({Key? key}) : super(key: key);
+  const AccountSidebarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +32,15 @@ class AccountSidebarWidget extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Text(
-            '+91 944444999',
-            style: GoogleFonts.poppins(
-              color: const Color.fromRGBO(255, 255, 255, 0.8),
-              fontSize: 21,
+          // Text(
+          //   '+91 944444999',
+          //   style: GoogleFonts.poppins(
+          //     color: const Color.fromRGBO(255, 255, 255, 0.8),
+          //     fontSize: 21,
 
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          //     fontWeight: FontWeight.w500,
+          //   ),
+          // ),
           const Divider(color: AppColors.white),
           const SizedBox(height: 29),
           _buildMenuItem(

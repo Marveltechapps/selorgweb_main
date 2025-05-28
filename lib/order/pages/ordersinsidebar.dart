@@ -35,7 +35,7 @@ class _OrdersListState extends State<OrdersList> {
   ];
   @override
   Widget build(BuildContext context) {
-    return ordersList.length > 0
+    return ordersList.isNotEmpty
         ? Column(
           children:
               ordersList.map((e) {

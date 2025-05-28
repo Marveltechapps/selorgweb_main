@@ -8,12 +8,12 @@ class BottomCategoriesBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
-      constraints: BoxConstraints(maxWidth: 1280),
+      //  constraints: BoxConstraints(maxWidth: 1280),
       width: double.infinity,
       color: whiteColor,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 60,
+          horizontal: isMobile ? 20 : 150,
           vertical: 50,
         ),
         child: Column(

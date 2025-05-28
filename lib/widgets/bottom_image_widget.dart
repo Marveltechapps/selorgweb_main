@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/app_store_button_widget.dart';
 
 class BottomImageWidget extends StatelessWidget {
@@ -14,7 +15,7 @@ class BottomImageWidget extends StatelessWidget {
           children: [
             // Background Image
             Image.asset(
-              'download_banner.png',
+              bannerimage,
               fit: BoxFit.cover,
               alignment: Alignment.center,
               width: double.infinity,

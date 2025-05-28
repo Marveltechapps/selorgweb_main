@@ -214,7 +214,7 @@ class LocationScreen extends StatelessWidget {
               if (controller.text.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
+                  child: SizedBox(
                     height: 300,
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,

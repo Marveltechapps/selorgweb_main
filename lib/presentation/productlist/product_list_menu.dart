@@ -9,6 +9,7 @@ import 'package:selorgweb_main/presentation/productdetails/product_details_scree
 import 'package:selorgweb_main/presentation/productlist/product_bloc.dart';
 import 'package:selorgweb_main/presentation/productlist/product_event.dart';
 import 'package:selorgweb_main/presentation/productlist/product_state.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
@@ -88,7 +89,7 @@ class ProductListMenuScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                name ?? "",
+                                name,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
 
@@ -979,7 +980,7 @@ class ProductListMenuScreen extends StatelessWidget {
                               crossAxisAlignment: WrapCrossAlignment.start,
                               spacing: 25,
                               children: [
-                                Container(
+                                SizedBox(
                                   // color: appColor,
                                   width: MediaQuery.of(context).size.width - 40,
                                   height: 70,
@@ -1059,33 +1060,34 @@ class ProductListMenuScreen extends StatelessWidget {
                                     },
                                   ),
                                 ),
-                                Container(
-                                  color: appbackgroundColor,
+                                SizedBox(
+                                  // color: appbackgroundColor,
                                   width: MediaQuery.of(context).size.width - 40,
-                                  height: MediaQuery.of(context).size.height,
+                                  height:
+                                      productStyleResponse.data == null
+                                          ? null
+                                          : MediaQuery.of(context).size.height,
                                   child: Column(
                                     children: [
                                       if (productStyleResponse.data == null)
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(
-                                                  20.0,
-                                                ),
-                                                child: Text(
-                                                  errorMsg,
-                                                  textAlign: TextAlign.center,
-                                                  style:
-                                                      Theme.of(
-                                                        context,
-                                                      ).textTheme.titleMedium,
-                                                ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(
+                                                20.0,
                                               ),
-                                            ],
-                                          ),
+                                              child: Text(
+                                                errorMsg,
+                                                textAlign: TextAlign.center,
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.titleMedium,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       if (productStyleResponse.data != null)
                                         Expanded(

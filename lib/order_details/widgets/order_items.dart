@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrderItems extends StatelessWidget {
-  const OrderItems({Key? key}) : super(key: key);
+  const OrderItems({super.key});
 
   @override
   Widget build(BuildContext context) {

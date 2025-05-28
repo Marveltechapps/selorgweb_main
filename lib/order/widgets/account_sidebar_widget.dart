@@ -4,10 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import '../constants/colors.dart';
-import '../constants/styles.dart';
 
 class AccountSidebarWidget extends StatelessWidget {
-  const AccountSidebarWidget({Key? key}) : super(key: key);
+  const AccountSidebarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

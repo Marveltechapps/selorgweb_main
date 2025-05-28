@@ -484,7 +484,7 @@ class AddressScreen extends StatelessWidget {
                                             width: 24,
                                           ),
                                           SizedBox(width: 20),
-                                          Container(
+                                          SizedBox(
                                             width:
                                                 MediaQuery.of(
                                                   context,

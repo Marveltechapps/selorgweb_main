@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/order/screens/my_account_orders.dart';
 import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_screen.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/presentation/settings/setting_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
@@ -70,32 +70,44 @@ class HeaderWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  width:
-                      constraints.maxWidth < 991
-                          ? double.infinity
-                          : MediaQuery.of(context).size.width / 3,
-                  height: 40,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.search, color: Color(0xFF666666), size: 20),
-                      const SizedBox(width: 14),
-                      Text(
-                        'Search For Products...',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Color(0xFF666666),
-                        ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return SearchScreen();
+                        },
                       ),
-                    ],
+                    );
+                  },
+                  child: Container(
+                    width:
+                        constraints.maxWidth < 991
+                            ? double.infinity
+                            : MediaQuery.of(context).size.width / 3,
+                    height: 40,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.search, color: Color(0xFF666666), size: 20),
+                        const SizedBox(width: 14),
+                        Text(
+                          'Search For Products...',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Color(0xFF666666),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -218,29 +230,45 @@ class HeaderWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: 40,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 36,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search, color: Color(0xFF666666), size: 20),
-                        const SizedBox(width: 14),
-                        Text(
-                          'Search For Products...',
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Color(0xFF666666),
-                          ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SearchScreen();
+                          },
                         ),
-                      ],
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      height: 40,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 36,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            color: Color(0xFF666666),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 14),
+                          Text(
+                            'Search For Products...',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Color(0xFF666666),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Row(

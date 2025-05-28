@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:selorgweb_main/model/location/myplacemark.dart' as p;
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_bloc.dart';
 import 'package:selorgweb_main/presentation/location/location_event.dart';
@@ -29,34 +28,13 @@ class YourLocation extends StatefulWidget {
 class _YourLocationState extends State<YourLocation> {
   late GoogleMapController mapController;
   final LatLng _initialPosition = const LatLng(12.9715987, 77.5945627);
-  LatLng _currentPosition = const LatLng(12.9715987, 77.5945627);
-  LatLng? _selectedPosition;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   static String latitude = "";
   static String longitude = "";
   static Placemark place = Placemark();
   static bool iserrorLocation = false;
-  void _onCameraMove(CameraPosition position) {
-    setState(() {
-      _currentPosition = position.target;
-    });
-  }
 
-  void _onCameraIdle() {
-    _updateMarker(_currentPosition);
-  }
 
-  void _updateMarker(LatLng position) {
-    setState(() {
-      _markers = {
-        Marker(
-          markerId: const MarkerId('selected-location'),
-          position: _initialPosition,
-          // infoWindow: InfoWindow(title: 'Initial Position'),
-        ),
-      };
-    });
-  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -71,22 +49,9 @@ class _YourLocationState extends State<YourLocation> {
     });
   }
 
-  void _onMapTapped(LatLng position) {
-    setState(() {
-      _selectedPosition = position;
-      _markers = {
-        Marker(
-          markerId: const MarkerId('selected-location'),
-          position: position,
-          // infoWindow: InfoWindow(title: 'Selected Position'),
-        ),
-      };
-    });
-  }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     debugPrint(widget.lat);
     debugPrint(widget.long);

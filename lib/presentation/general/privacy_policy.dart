@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 
 class PrivacyPolicy extends StatelessWidget {
@@ -8,7 +9,7 @@ class PrivacyPolicy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width < 991;
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    // final isMobile = MediaQuery.of(context).size.width < 600;
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -38,8 +39,8 @@ class PrivacyPolicy extends StatelessWidget {
                 constraints: BoxConstraints(maxWidth: 1280),
 
                 child: Padding(
-                  padding:  EdgeInsets.symmetric(
-                    horizontal: isTablet? 20.0:60,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isTablet ? 20.0 : 60,
                     vertical: 10,
                   ),
                   child: buildTermsText(),

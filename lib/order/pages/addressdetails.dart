@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Addressdetails extends StatefulWidget {
+  const Addressdetails({super.key});
+
   @override
   State<Addressdetails> createState() => _AddressdetailsState();
 }
@@ -100,7 +102,7 @@ class _AddressdetailsState extends State<Addressdetails> {
                       width: 25,
                     ),
                     SizedBox(width: 20),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Profilesection extends StatefulWidget {
-  const Profilesection({Key? key}) : super(key: key);
+  const Profilesection({super.key});
 
   @override
   State<Profilesection> createState() => _ProfilesectionState();
@@ -17,10 +17,10 @@ class _ProfilesectionState extends State<Profilesection> {
   void _handleSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
       // Handle form submission
-      print('Form submitted with:');
-      print('Name: $_name');
-      print('Mobile: $_mobile');
-      print('Email: $_email');
+      debugPrint('Form submitted with:');
+      debugPrint('Name: $_name');
+      debugPrint('Mobile: $_mobile');
+      debugPrint('Email: $_email');
     }
   }
 
@@ -122,13 +122,13 @@ class CustomInputField extends StatelessWidget {
   final String? Function(String?)? validator;
 
   const CustomInputField({
-    Key? key,
+    super.key,
     required this.label,
     this.helperText,
     required this.keyboardType,
     this.onChanged,
     this.validator,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

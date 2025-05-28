@@ -37,7 +37,7 @@ var redColor = Color(0xFFD92626);
 var hometopColor = Color(0xFFD7FCA7);
 
 // icons // svg
-
+var bannerimage = "assets/download_banner.png";
 // search screen
 var closesvg = "assets/icons/close.svg";
 var backsvg = "assets/icons/back.svg";
@@ -136,7 +136,14 @@ var loadGif = "assets/loadgif.gif";
 
 var getLatLonUrl =
     "https://maps.googleapis.com/maps/api/place/details/json?place_id=";
-var baseUrl = "http://43.204.144.74:3000/v1/";
+
+bool isLive = true;
+
+var devUrl = "http://43.204.144.74:3000/v1/";
+var liveUrl = "http://www.selorg.com/api/v1/";
+
+var baseUrl = isLive ? liveUrl : devUrl;
+
 var otpUrl = "${baseUrl}otp/send-otp";
 var verifyOtpUrl = "${baseUrl}otp/verify-otp";
 var resendOtpUrl = "${baseUrl}otp/resend-otp";

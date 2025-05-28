@@ -9,7 +9,7 @@ import 'delivery_instruction_widget.dart';
 import 'bill_summary_widget.dart';
 
 class CartWithNoAddress extends StatelessWidget {
-  const CartWithNoAddress({Key? key}) : super(key: key);
+  const CartWithNoAddress({super.key});
 
   @override
   Widget build(BuildContext context) {
