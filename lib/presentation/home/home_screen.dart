@@ -60,6 +60,7 @@ class HomeScreen extends StatelessWidget {
       TextEditingController();
 
   void showLocationMainAlertDialog(BuildContext context, HomeBloc homebloc) {
+    final isMobile = MediaQuery.of(context).size.width <= 500;
     showDialog(
       context: context,
       barrierDismissible: !(location == "No Location Found"),
@@ -73,12 +74,12 @@ class HomeScreen extends StatelessWidget {
             child: ConstrainedBox(
               constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 30,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 20 : 40,
+                  vertical: isMobile ? 15 : 30,
                 ),
                 child: Column(
-                  spacing: 10,
+                  spacing: isMobile ? 8 : 10,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Align(
@@ -97,27 +98,39 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Image.asset(locationImage, width: 100, height: 100),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Please Enable Location permission",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
+                    Image.asset(
+                      locationImage,
+                      width: isMobile ? 80 : 100,
+                      height: isMobile ? 80 : 100,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "for better delivery experience",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: greyColor),
+                    const SizedBox(height: 15),
+                    Column(
+                      children: [
+                        Text(
+                          "Please Enable Location permission",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: isMobile ? 12 : 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "for better delivery experience",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: isMobile ? 11 : 16,
+                            color: greyColor2,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: isMobile ? 8 : 12),
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: isMobile ? 38 : 50,
                       child: ElevatedButton(
                         onPressed: () {
                           homebloc.add(ContinueLocationEvent());
@@ -129,20 +142,20 @@ class HomeScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           "Continue",
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: isMobile ? 14 : 16,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: isMobile ? 0 : 5),
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: isMobile ? 38 : 50,
                       child: OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -160,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.search, color: Color(0xFF004D00)),
                             SizedBox(width: 8),
                             Text(
@@ -168,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF004D00),
-                                fontSize: 16,
+                                fontSize: isMobile ? 14 : 16,
                               ),
                             ),
                           ],

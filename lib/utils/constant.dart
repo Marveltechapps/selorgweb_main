@@ -32,6 +32,7 @@ var blackColor = Colors.black;
 var appColor = Color(0xFF034703);
 var greenColor = Color(0xFF67C33C);
 var greyColor = Color(0x40000000);
+var greyColor2 = Color(0xbb000000);
 var otpColor = Color(0xFF52764E);
 var redColor = Color(0xFFD92626);
 var hometopColor = Color(0xFFD7FCA7);
