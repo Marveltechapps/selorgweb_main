@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/order_details/screens/order_delivered_details.dart';
 import '../constants/colors.dart';
 import '../constants/styles.dart';
 
@@ -11,11 +10,11 @@ class OrderCardWidget extends StatelessWidget {
   final double amount;
 
   const OrderCardWidget({
-    Key? key,
+    super.key,
     required this.productImages,
     required this.date,
     required this.amount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +85,7 @@ class OrderCardWidget extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '₹' + amount.toString(),
+                            '₹$amount',
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 23,
@@ -160,7 +159,7 @@ class OrderCardWidget extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '₹' + amount.toString(),
+                            '₹$amount',
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 23,

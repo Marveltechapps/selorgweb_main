@@ -7,22 +7,20 @@ import 'package:selorgweb_main/order/pages/orderdetails.dart';
 import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
 import 'package:selorgweb_main/order/pages/profilesection.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import '../constants/colors.dart';
-import '../constants/styles.dart';
-import '../widgets/top_navigation_widget.dart';
 import '../widgets/account_sidebar_widget.dart';
-import '../widgets/order_card_widget.dart';
 
 class MyAccountOrders extends StatefulWidget {
-  const MyAccountOrders({Key? key}) : super(key: key);
+  const MyAccountOrders({super.key});
 
   @override
   State<MyAccountOrders> createState() => _MyAccountOrdersState();
 }
 
 class _MyAccountOrdersState extends State<MyAccountOrders> {
-  List<Widget> _pages = [
+  final List<Widget> pages = [
     Center(child: OrdersList()),
     FAQScreen(),
     Addressdetails(),
@@ -32,7 +30,6 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (MediaQuery.of(context).size.width < 991) {
@@ -40,7 +37,6 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
       } else {
         context.read<Navigationprovider>().updatesectionId(0);
       }
-      // or call Provider.of(context), Navigator, etc.
     });
   }
 
@@ -68,7 +64,7 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
                       borderRadius: BorderRadius.all(Radius.zero),
                     ),
                     elevation: 4,
-                    child: Container(
+                    child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -159,8 +155,8 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
                                                     .read<Navigationprovider>()
                                                     .sectionId ==
                                                 6
-                                            ? _pages[0]
-                                            : _pages[context
+                                            ? pages[0]
+                                            : pages[context
                                                 .watch<Navigationprovider>()
                                                 .sectionId],
                                   ),
@@ -196,7 +192,7 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
                                         : Padding(
                                           padding: const EdgeInsets.all(15),
                                           child:
-                                              _pages[context
+                                              pages[context
                                                   .watch<Navigationprovider>()
                                                   .sectionId],
                                         ),

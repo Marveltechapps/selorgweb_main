@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DeliveryInstructionWidget extends StatelessWidget {
-  const DeliveryInstructionWidget({Key? key}) : super(key: key);
+  const DeliveryInstructionWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -19,8 +19,6 @@ class Placemark {
 
   factory Placemark.fromGooglePlace(Map<String, dynamic> json) {
     debugPrint('function started');
-    String getType(List types, String target) =>
-        types.contains(target) ? target : '';
 
     String getComponent(String type) {
       return json['address_components']?.firstWhere(

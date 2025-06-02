@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
-import '../constants/styles.dart';
 
 class TopNavigationWidget extends StatelessWidget {
-  const TopNavigationWidget({Key? key}) : super(key: key);
+  const TopNavigationWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

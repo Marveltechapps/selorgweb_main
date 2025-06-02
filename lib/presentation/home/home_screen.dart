@@ -19,6 +19,7 @@ import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_menu.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
@@ -1151,32 +1152,36 @@ class HomeScreen extends StatelessWidget {
                                         return InkWell(
                                           hoverColor: Colors.transparent,
                                           onTap: () {
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //     builder:
-                                            //         (context) => BannerScreen(
-                                            //           bannerId:
-                                            //               festivalbanners[index]
-                                            //                   .id ??
-                                            //               "",
-                                            //         ),
-                                            //   ),
-                                            // ).then((value) {
-                                            //   if (!context.mounted) return;
-                                            //   context.read<HomeBloc>().add(
-                                            //     GetCartCountEvent(
-                                            //       userId: userId,
-                                            //     ),
-                                            //   );
-                                            //   // context
-                                            //   //     .read<CounterCubit>()
-                                            //   //     .decrement(cartCount);
-                                            //   context
-                                            //       .read<CounterCubit>()
-                                            //       .increment(cartCount);
-                                            //   noOfIteminCart = cartCount;
-                                            // });
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) => BannerScreen(
+                                                      bannerId:
+                                                          festivalbanners[index]
+                                                              .id ??
+                                                          "",
+                                                    ),
+                                              ),
+                                            ).then((value) {
+                                              if (!context.mounted) return;
+                                              context.read<HomeBloc>().add(
+                                                GetCartCountEvent(
+                                                  userId: userId,
+                                                ),
+                                              );
+                                              // context
+                                              //     .read<CounterCubit>()
+                                              //     .decrement(cartCount);
+                                              context
+                                                  .read<CounterCubit>()
+                                                  .increment(cartCount);
+                                              noOfIteminCart = cartCount;
+                                            });
+                                            debugPrint(
+                                              festivalbanners[index].id,
+                                            );
+
                                             debugPrint(
                                               festivalbanners[index].id,
                                             );
@@ -1195,7 +1200,10 @@ class HomeScreen extends StatelessWidget {
                                                     "",
                                                 width:
                                                     isMobile
-                                                        ? double.infinity
+                                                        ? MediaQuery.of(
+                                                              context,
+                                                            ).size.width /
+                                                            2
                                                         : isTablet
                                                         ? double.infinity
                                                         : MediaQuery.of(
@@ -1379,89 +1387,6 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  // Row(
-                                  //   spacing: 16,
-                                  //   children: [
-                                  //     if (mainCategory.data != null)
-                                  //       for (
-                                  //         int i = 0;
-                                  //         i < mainCategory.data!.length;
-                                  //         i++
-                                  //       )
-                                  //         Expanded(
-                                  //           child: InkWell(
-                                  //             onTap: () {
-                                  //               // Navigator.push(
-                                  //               //   context,
-                                  //               //   MaterialPageRoute(
-                                  //               //     builder:
-                                  //               //         (context) =>
-                                  //               //             ProductListMenuScreen(
-                                  //               //               title:
-                                  //               //                   mainCategory
-                                  //               //                       .data![i]
-                                  //               //                       .name ??
-                                  //               //                   "",
-                                  //               //               id:
-                                  //               //                   mainCategory
-                                  //               //                       .data![i]
-                                  //               //                       .id ??
-                                  //               //                   "",
-                                  //               //               isMainCategory:
-                                  //               //                   true,
-                                  //               //               mainCatId:
-                                  //               //                   mainCategory
-                                  //               //                       .data![i]
-                                  //               //                       .id ??
-                                  //               //                   "",
-                                  //               //               isCategory: false,
-                                  //               //               catId: "",
-                                  //               //             ),
-                                  //               //   ),
-                                  //               // );
-                                  //             },
-                                  //             child: Column(
-                                  //               children: [
-                                  //                 Container(
-                                  //                   height: 130,
-                                  //                   decoration: BoxDecoration(
-                                  //                     color: const Color(0xFFE5EEC3),
-                                  //                     borderRadius:
-                                  //                         BorderRadius.circular(5),
-                                  //                     boxShadow: [
-                                  //                       BoxShadow(
-                                  //                         color: greyColor,
-                                  //                         blurRadius: 4,
-                                  //                         offset: const Offset(0, 0),
-                                  //                       ),
-                                  //                     ],
-                                  //                   ),
-                                  //                   // child: Center(
-                                  //                   //   child: Image.network(
-                                  //                   //     mainCategory
-                                  //                   //             .data![i]
-                                  //                   //             .imageUrl ??
-                                  //                   //         "",
-                                  //                   //     fit: BoxFit.contain,
-                                  //                   //   ),
-                                  //                   // ),
-                                  //                 ),
-                                  //                 const SizedBox(height: 8),
-                                  //                 Text(
-                                  //                   mainCategory.data![i].name ?? "",
-                                  //                   textAlign: TextAlign.center,
-                                  //                   style: const TextStyle(
-                                  //                     fontSize: 13,
-                                  //                     fontWeight: FontWeight.w600,
-                                  //                     color: Color(0xFF222222),
-                                  //                   ),
-                                  //                 ),
-                                  //               ],
-                                  //             ),
-                                  //           ),
-                                  //         ),
-                                  //   ],
-                                  // ),
                                   isTablet
                                       ? Wrap(
                                         crossAxisAlignment:
@@ -1492,7 +1417,6 @@ class HomeScreen extends StatelessWidget {
                                                         hoverColor:
                                                             Colors.transparent,
                                                         onTap: () {
-                                                          debugPrint("*******");
                                                           title =
                                                               mainCategory
                                                                   .data![i]
@@ -1574,62 +1498,52 @@ class HomeScreen extends StatelessWidget {
                                                               CrossAxisAlignment
                                                                   .stretch,
                                                           children: [
-                                                            InkWell(
-                                                              hoverColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              onTap: () {
-                                                                debugPrint(
-                                                                  "******",
-                                                                );
-                                                              },
-                                                              child: Container(
-                                                                height: 130,
-                                                                width: null,
-                                                                decoration: BoxDecoration(
-                                                                  color: const Color(
-                                                                    0xFFE5EEC3,
+                                                            Container(
+                                                              height: 130,
+                                                              width: null,
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    const Color(
+                                                                      0xFFE5EEC3,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      5,
+                                                                    ),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color:
+                                                                        greyColor,
+                                                                    blurRadius:
+                                                                        3,
+                                                                    offset:
+                                                                        const Offset(
+                                                                          0,
+                                                                          1,
+                                                                        ),
                                                                   ),
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        5,
-                                                                      ),
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                      color:
-                                                                          greyColor,
-                                                                      blurRadius:
-                                                                          3,
-                                                                      offset:
-                                                                          const Offset(
-                                                                            0,
-                                                                            1,
-                                                                          ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    ImageNetworkWidget(
-                                                                      url:
-                                                                          mainCategory
-                                                                              .data![i]
-                                                                              .imageUrl ??
-                                                                          "",
-                                                                      height:
-                                                                          100,
-                                                                      width:
-                                                                          double
-                                                                              .infinity,
-                                                                      fit:
-                                                                          BoxFit
-                                                                              .contain,
-                                                                    ),
-                                                                  ],
-                                                                ),
+                                                                ],
+                                                              ),
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  ImageNetworkWidget(
+                                                                    url:
+                                                                        mainCategory
+                                                                            .data![i]
+                                                                            .imageUrl ??
+                                                                        "",
+                                                                    height: 100,
+                                                                    width:
+                                                                        double
+                                                                            .infinity,
+                                                                    fit:
+                                                                        BoxFit
+                                                                            .contain,
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
                                                             SizedBox(
@@ -1868,7 +1782,7 @@ class HomeScreen extends StatelessWidget {
                                                                   .transparent,
                                                           onTap: () {
                                                             debugPrint(
-                                                              "*******",
+                                                              "0000000000",
                                                             );
                                                             title =
                                                                 mainCategory

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_flutter_web/google_maps_flutter_web.dart' as WebMap;
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_bloc.dart';
 import 'package:selorgweb_main/presentation/location/location_state.dart';
@@ -25,7 +24,7 @@ class YourLocationScreen extends StatelessWidget {
   static Placemark place = Placemark();
   static bool iserrorLocation = false;
   late GoogleMapController mapController;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
 

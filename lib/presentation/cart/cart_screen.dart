@@ -3,10 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_network/image_network.dart';
-import 'package:selorgweb_main/cart/widgets/cart_with_no_address.dart';
-import 'package:selorgweb_main/footer/widgets/app_download_section.dart';
-import 'package:selorgweb_main/footer/widgets/categories_section.dart';
-import 'package:selorgweb_main/footer/widgets/footer_section.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/cart/update_cart_response_model.dart';
@@ -14,12 +10,14 @@ import 'package:selorgweb_main/order/screens/order_status.dart';
 import 'package:selorgweb_main/presentation/cart/cart_bloc.dart';
 import 'package:selorgweb_main/presentation/cart/cart_event.dart';
 import 'package:selorgweb_main/presentation/cart/cart_state.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
 import 'package:selorgweb_main/widgets/cart/delivery_instruction_box.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/widgets/network_image.dart';
 
 class AddressItem {
   final String title;
@@ -260,229 +258,228 @@ class CartScreen extends StatelessWidget {
     ) /* .whenComplete(() => context.read<BottomSheetBloc>().add(HideBottomSheetEvent())) */; // Hide when dismissed
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Widget buildBillItem({
-      required String title,
-      required String price,
-      String? originalPrice,
-      bool showInfo = false,
-    }) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontSize: showInfo ? 17 : 16,
-                    fontWeight: showInfo ? FontWeight.w500 : FontWeight.w400,
-                    color:
-                        showInfo
-                            ? const Color(0xFF222222)
-                            : const Color(0xFF666666),
-                  ),
+  Widget buildBillItem({
+    required String title,
+    required String price,
+    String? originalPrice,
+    bool showInfo = false,
+    context,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: showInfo ? 17 : 16,
+                  fontWeight: showInfo ? FontWeight.w500 : FontWeight.w400,
+                  color:
+                      showInfo
+                          ? const Color(0xFF222222)
+                          : const Color(0xFF666666),
                 ),
-                if (showInfo)
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            backgroundColor: Colors.white,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  spacing: 20,
-                                  mainAxisSize:
-                                      MainAxisSize
-                                          .min, // Prevent unnecessary height
-                                  children: [
-                                    Text(
-                                      "Selorg has no role to play in the taxes and charges being levied by the government",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
+              ),
+              if (showInfo)
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          backgroundColor: Colors.white,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                spacing: 20,
+                                mainAxisSize:
+                                    MainAxisSize
+                                        .min, // Prevent unnecessary height
+                                children: [
+                                  Text(
+                                    "Selorg has no role to play in the taxes and charges being levied by the government",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Item Total",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black54,
+                                        ),
                                       ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Item Total",
-                                          style: TextStyle(
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '₹',
+                                          style: const TextStyle(
                                             fontSize: 12,
-                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
                                           ),
-                                        ),
-                                        RichText(
-                                          text: TextSpan(
-                                            text: '₹',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    cartResponse
-                                                        .billSummary!
-                                                        .itemTotal
-                                                        .toString(),
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  cartResponse
+                                                      .billSummary!
+                                                      .itemTotal
+                                                      .toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "GST on Handling Charge",
-                                          style: TextStyle(
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "GST on Handling Charge",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '₹',
+                                          style: const TextStyle(
                                             fontSize: 12,
-                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
                                           ),
-                                        ),
-                                        RichText(
-                                          text: TextSpan(
-                                            text: '₹',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    cartResponse
-                                                        .billSummary!
-                                                        .gst
-                                                        .toString(),
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  cartResponse.billSummary!.gst
+                                                      .toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    Divider(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Item Total & GST",
-                                          style: TextStyle(
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Item Total & GST",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '₹',
+                                          style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
                                           ),
-                                        ),
-                                        RichText(
-                                          text: TextSpan(
-                                            text: '₹',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    cartResponse
-                                                        .billSummary!
-                                                        .subtotalWithGst
-                                                        .toString(),
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  cartResponse
+                                                      .billSummary!
+                                                      .subtotalWithGst
+                                                      .toString(),
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      width: 11,
-                      height: 11,
-                      margin: const EdgeInsets.only(left: 2),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFA9D046),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'i',
-                          style: TextStyle(fontSize: 7, color: Colors.white),
-                        ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: 11,
+                    height: 11,
+                    margin: const EdgeInsets.only(left: 2),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFA9D046),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'i',
+                        style: TextStyle(fontSize: 7, color: Colors.white),
                       ),
                     ),
-                  ),
-              ],
-            ),
-            Row(
-              children: [
-                if (originalPrice != null) ...[
-                  Text(
-                    originalPrice,
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF777777),
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                  const SizedBox(width: 7),
-                ],
-                Text(
-                  price,
-                  style: GoogleFonts.inter(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w400,
-                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
+            ],
+          ),
+          Row(
+            children: [
+              if (originalPrice != null) ...[
+                Text(
+                  originalPrice,
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF777777),
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+                const SizedBox(width: 7),
               ],
-            ),
-          ],
-        ),
-      );
-    }
+              Text(
+                price,
+                style: GoogleFonts.inter(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width >= 1090;
     final isMobile = MediaQuery.of(context).size.width < 700;
     return BlocProvider(
@@ -554,7 +551,7 @@ class CartScreen extends StatelessWidget {
           } else if (state is AddressFetchedSuccessState) {
             locationType = state.loctionType;
             address = state.address;
-            print("Address : ${address.toString()}");
+            debugPrint("Address : ${address.toString()}");
           } else if (state is PayExpantionState) {
             expantion = state.isExpand;
           } else if (state is DelivaryInstructionSelectState) {
@@ -709,8 +706,8 @@ class CartScreen extends StatelessWidget {
                                                                           .imageUrl ==
                                                                       ""
                                                                   ? SizedBox()
-                                                                  : ImageNetwork(
-                                                                    image:
+                                                                  : ImageNetworkWidget(
+                                                                    url:
                                                                         cartResponse
                                                                             .items![index]
                                                                             .imageUrl ??
@@ -723,8 +720,8 @@ class CartScreen extends StatelessWidget {
                                                                         isMobile
                                                                             ? 70
                                                                             : 90,
-                                                                    fitWeb:
-                                                                        BoxFitWeb
+                                                                    fit:
+                                                                        BoxFit
                                                                             .cover,
                                                                   ),
                                                               // Image.network('image', width: isMobile ? 70 : 90),
@@ -776,8 +773,7 @@ class CartScreen extends StatelessWidget {
                                                                   Row(
                                                                     children: [
                                                                       Text(
-                                                                        '₹ ' +
-                                                                            cartResponse.items![index].discountPrice.toString(),
+                                                                        '₹ ${cartResponse.items![index].discountPrice}',
                                                                         style: GoogleFonts.inter(
                                                                           fontSize:
                                                                               isMobile
@@ -795,8 +791,7 @@ class CartScreen extends StatelessWidget {
                                                                             8,
                                                                       ),
                                                                       Text(
-                                                                        '₹ ' +
-                                                                            cartResponse.items![index].price.toString(),
+                                                                        '₹ ${cartResponse.items![index].price}',
                                                                         style: GoogleFonts.inter(
                                                                           fontSize:
                                                                               isMobile
@@ -1543,23 +1538,27 @@ class CartScreen extends StatelessWidget {
                                                 price:
                                                     '₹${cartResponse.billSummary!.itemTotal! + cartResponse.billSummary!.gst!.toInt()}',
                                                 showInfo: true,
+                                                context: context,
                                               ),
                                               buildBillItem(
                                                 title: 'Handling charge',
                                                 // originalPrice: '₹15',
                                                 price:
                                                     '₹${cartResponse.billSummary?.handlingCharges}',
+                                                context: context,
                                               ),
                                               buildBillItem(
                                                 title: 'Delivery Fee',
                                                 // originalPrice: '₹35',
                                                 price:
                                                     '₹${cartResponse.billSummary?.deliveryFee}',
+                                                context: context,
                                               ),
                                               buildBillItem(
                                                 title: 'Delivery Tip',
                                                 price:
                                                     '₹${cartResponse.billSummary?.deliveryTip}',
+                                                context: context,
                                               ),
                                               Container(
                                                 height: 1,
@@ -1672,9 +1671,6 @@ class CartScreen extends StatelessWidget {
                       ''',
                                                                 width: 20,
                                                                 height: 22,
-                                                                color: Color(
-                                                                  0xFF034703,
-                                                                ),
                                                               ),
                                                               Text(
                                                                 'Change',
@@ -1840,9 +1836,6 @@ class CartScreen extends StatelessWidget {
                                                                 isMobile
                                                                     ? 24
                                                                     : 26,
-                                                            color: Color(
-                                                              0xFF034703,
-                                                            ),
                                                           ),
                                                           Text(
                                                             'Enter your Delivery Address',
@@ -2096,11 +2089,7 @@ class CartScreen extends StatelessWidget {
                                                                 Row(
                                                                   children: [
                                                                     Text(
-                                                                      '₹ ' +
-                                                                          cartResponse
-                                                                              .items![index]
-                                                                              .discountPrice
-                                                                              .toString(),
+                                                                      '₹ ${cartResponse.items![index].discountPrice}',
                                                                       style: GoogleFonts.inter(
                                                                         fontSize:
                                                                             isMobile
@@ -2117,11 +2106,7 @@ class CartScreen extends StatelessWidget {
                                                                       width: 8,
                                                                     ),
                                                                     Text(
-                                                                      '₹ ' +
-                                                                          cartResponse
-                                                                              .items![index]
-                                                                              .price
-                                                                              .toString(),
+                                                                      '₹ ${cartResponse.items![index].price}',
                                                                       style: GoogleFonts.inter(
                                                                         fontSize:
                                                                             isMobile
@@ -2606,23 +2591,27 @@ class CartScreen extends StatelessWidget {
                                               price:
                                                   '₹${cartResponse.billSummary?.itemTotal + cartResponse.billSummary?.gst}',
                                               showInfo: true,
+                                              context: context,
                                             ),
                                             buildBillItem(
                                               title: 'Handling charge',
                                               // originalPrice: '₹15',
                                               price:
                                                   '₹${cartResponse.billSummary?.handlingCharges}',
+                                              context: context,
                                             ),
                                             buildBillItem(
                                               title: 'Delivery Fee',
                                               // originalPrice: '₹35',
                                               price:
                                                   '₹${cartResponse.billSummary?.deliveryFee}',
+                                              context: context,
                                             ),
                                             buildBillItem(
                                               title: 'Delivery Tip',
                                               price:
                                                   '₹${cartResponse.billSummary?.deliveryTip}',
+                                              context: context,
                                             ),
                                             Container(
                                               height: 1,
@@ -2896,9 +2885,6 @@ class CartScreen extends StatelessWidget {
                                                   ''',
                                                               width: 20,
                                                               height: 22,
-                                                              color: Color(
-                                                                0xFF034703,
-                                                              ),
                                                             ),
                                                             Text(
                                                               'Change',
@@ -3065,9 +3051,6 @@ class CartScreen extends StatelessWidget {
                                                               isMobile
                                                                   ? 24
                                                                   : 26,
-                                                          color: Color(
-                                                            0xFF034703,
-                                                          ),
                                                         ),
                                                         Text(
                                                           'Enter your Delivery Address',
@@ -3153,40 +3136,6 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTipButton(int amount, String imageUrl) {
-    final bool isSelected = tipAmount == amount.toString();
-    return GestureDetector(
-      onTap: () {
-        tipAmount = amount.toString();
-
-        // widget.onTipSelected?.call(amount);
-      },
-      child: Container(
-        width: 83,
-        height: 41,
-        decoration:
-            isSelected
-                ? DeliveryTipStyles.tipAmountDecoration
-                : DeliveryTipStyles.tipButtonDecoration,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!isSelected) ...[
-              Image.network(
-                imageUrl,
-                width: 22,
-                height: 22,
-                fit: BoxFit.contain,
-              ),
-              SizedBox(width: 7),
-            ],
-            Text('₹$amount', style: DeliveryTipStyles.tipAmountStyle),
-          ],
-        ),
-      ),
-    );
-  }
-
   void showAddressPopup(BuildContext context) {
     showDialog(
       context: context,
@@ -3253,7 +3202,7 @@ class CartScreen extends StatelessWidget {
                           return ListTile(
                             leading: SvgPicture.asset(
                               'icons/location.svg',
-                              color: Color(0xFF034703),
+
                               width: 30,
                             ),
                             title: Text(
@@ -3355,7 +3304,7 @@ class CartScreen extends StatelessWidget {
 
 class ResponsiveRowColumn extends StatelessWidget {
   final List<Widget> children;
-  ResponsiveRowColumn({required this.children});
+  const ResponsiveRowColumn({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -3371,49 +3320,6 @@ class ResponsiveRowColumn extends StatelessWidget {
           children: children,
         );
   }
-}
-
-Widget _buildInstructionBox({
-  required String title,
-  required String description,
-  required String iconUrl,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(13),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: const Color(0xFFAAAAAA)),
-    ),
-    child: Row(
-      spacing: 12,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SvgPicture.network(iconUrl, width: 30),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF222222),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF666666),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
 }
 
 class DeliveryTipStyles {

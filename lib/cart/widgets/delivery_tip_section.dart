@@ -5,14 +5,13 @@ class DeliveryTipWidget extends StatefulWidget {
   final Function(int)? onTipSelected;
   final Function()? onCancel;
 
-  const DeliveryTipWidget({Key? key, this.onTipSelected, this.onCancel})
-    : super(key: key);
+  const DeliveryTipWidget({super.key, this.onTipSelected, this.onCancel});
 
   @override
-  _DeliveryTipWidgetState createState() => _DeliveryTipWidgetState();
+  DeliveryTipWidgetState createState() => DeliveryTipWidgetState();
 }
 
-class _DeliveryTipWidgetState extends State<DeliveryTipWidget> {
+class DeliveryTipWidgetState extends State<DeliveryTipWidget> {
   int selectedTip = 50;
 
   Widget _buildTipButton(int amount, String imageUrl) {
@@ -93,7 +92,7 @@ class _DeliveryTipWidgetState extends State<DeliveryTipWidget> {
                       ),
                       decoration: DeliveryTipStyles.tippedIndicatorDecoration,
                       child: Text(
-                        'Rs.${selectedTip}\nTipped',
+                        'Rs.$selectedTip\nTipped',
                         style: DeliveryTipStyles.tippedTextStyle,
                         textAlign: TextAlign.center,
                       ),

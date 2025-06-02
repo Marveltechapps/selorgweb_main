@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:selorgweb_main/order/pages/addressdetails.dart';
 import 'package:selorgweb_main/order/pages/faqscreen.dart';
 import 'package:selorgweb_main/order/pages/orderdetails.dart';
 import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
-import 'package:selorgweb_main/order/pages/profilesection.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_screen.dart';
 import 'package:selorgweb_main/presentation/settings/profile/profile_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import './constants/colors.dart';
-import './constants/styles.dart';
-import '../../widgets/settings/top_navigation_widget.dart';
 import '../../widgets/settings/account_sidebar_widget.dart';
-import '../../widgets/settings/order_card_widget.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({Key? key}) : super(key: key);
+  const SettingScreen({super.key});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  List<Widget> _pages = [
+  final List<Widget> _pages = [
     Center(child: OrdersList()),
     FAQScreen(),
     AddressScreen(),
@@ -35,7 +31,6 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (MediaQuery.of(context).size.width < 991) {
@@ -71,7 +66,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       borderRadius: BorderRadius.all(Radius.zero),
                     ),
                     elevation: 4,
-                    child: Container(
+                    child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),

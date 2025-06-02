@@ -18,7 +18,7 @@ class BottomAppBarWidget extends StatelessWidget {
       color: appColor,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 60,
+          horizontal: isMobile ? 20 : 150,
           vertical: 50,
         ),
         child: Container(

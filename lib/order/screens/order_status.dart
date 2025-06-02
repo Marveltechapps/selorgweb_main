@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import '../constants/colors.dart';
 
 class OrderStatus extends StatelessWidget {
-  const OrderStatus({Key? key}) : super(key: key);
+  const OrderStatus({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class OrderStatus extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        Container(
+                        SizedBox(
                           width: 258,
                           height: 295,
                           child: Stack(
@@ -169,7 +170,7 @@ class OrderStatus extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 5),
-                        Container(
+                        SizedBox(
                           width: 223,
                           height: 40.83,
                           child: ElevatedButton(

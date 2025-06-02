@@ -5,6 +5,7 @@ import 'package:selorgweb_main/model/category/similar_product_response_model.dar
 import 'package:selorgweb_main/presentation/productdetails/product_details_bloc.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_event.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_state.dart';
+import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/screens/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
@@ -1129,7 +1130,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                         spacing: 20,
                                         children: [
                                           Expanded(
-                                            child: Container(
+                                            child: SizedBox(
                                               //   color: greenColor,
                                               width:
                                                   MediaQuery.of(
@@ -1145,12 +1146,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                                         .variants![0]
                                                         .imageUrl ??
                                                     "",
-                                                fit: BoxFit.fitHeight,
+                                                fit: BoxFit.fill,
                                               ),
                                             ),
                                           ),
                                           Expanded(
-                                            child: Container(
+                                            child: SizedBox(
                                               //  color: whiteColor,
                                               width: double.infinity,
                                               // height: 500,
@@ -1172,7 +1173,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   Expanded(
-                                                    child: Container(
+                                                    child: SizedBox(
                                                       //  color: greenColor,
                                                       width: double.infinity,
                                                       child: ListView.builder(
@@ -1525,7 +1526,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                         spacing: 20,
                                         children: [
                                           Expanded(
-                                            child: Container(
+                                            child: SizedBox(
                                               //   color: greenColor,
                                               width: 200,
                                               height: 400,
@@ -1542,7 +1543,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                             ),
                                           ),
                                           Expanded(
-                                            child: Container(
+                                            child: SizedBox(
                                               //  color: whiteColor,
                                               width: 200,
                                               height: 400,
@@ -1564,7 +1565,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   Expanded(
-                                                    child: Container(
+                                                    child: SizedBox(
                                                       //  color: greenColor,
                                                       width: double.infinity,
                                                       child: ListView.builder(

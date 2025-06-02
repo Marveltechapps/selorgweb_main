@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BillSummary extends StatelessWidget {
-  const BillSummary({Key? key}) : super(key: key);
+  const BillSummary({super.key});
 
   @override
   Widget build(BuildContext context) {

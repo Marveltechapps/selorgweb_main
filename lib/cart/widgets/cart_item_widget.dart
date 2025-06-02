@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CartItemWidget extends StatelessWidget {
-  const CartItemWidget({Key? key}) : super(key: key);
+  const CartItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +173,7 @@ class CartItemWidget extends StatelessWidget {
 
 class ResponsiveRowColumn extends StatelessWidget {
   final List<Widget> children;
-  ResponsiveRowColumn({required this.children});
+  const ResponsiveRowColumn({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) {
