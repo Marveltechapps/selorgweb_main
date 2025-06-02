@@ -52,7 +52,7 @@ class HeaderWidget extends StatelessWidget {
                               location,
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -203,7 +203,7 @@ class HeaderWidget extends StatelessWidget {
                       ),
                       Container(
                         width: 2,
-                        height: 40,
+                        height: 30,
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                         color: Colors.white,
                       ),
@@ -214,12 +214,12 @@ class HeaderWidget extends StatelessWidget {
                             Text(
                               location,
                               style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 8),
                             Icon(
                               Icons.arrow_drop_down,
                               color: Colors.white,
@@ -272,7 +272,7 @@ class HeaderWidget extends StatelessWidget {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
                         onTap: () {
@@ -288,13 +288,13 @@ class HeaderWidget extends StatelessWidget {
                         child: Text(
                           'My Account',
                           style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 28),
+                      const SizedBox(width: 25),
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -326,7 +326,7 @@ class HeaderWidget extends StatelessWidget {
                               'My Cart',
                               style: GoogleFonts.poppins(
                                 fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                                 color: Color(0xFF052E16),
                               ),
                             ),
