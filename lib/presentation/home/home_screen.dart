@@ -18,8 +18,7 @@ import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
-import 'package:selorgweb_main/presentation/productlist/product_list_menu.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
 
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
@@ -871,7 +870,7 @@ class HomeScreen extends StatelessWidget {
                                                       builder:
                                                           (
                                                             context,
-                                                          ) => ProductListMenuScreen(
+                                                          ) => ProductListMainScreen(
                                                             title:
                                                                 grabandEssential
                                                                     .data![i]
@@ -914,7 +913,7 @@ class HomeScreen extends StatelessWidget {
                                                             builder:
                                                                 (
                                                                   context,
-                                                                ) => ProductListMenuScreen(
+                                                                ) => ProductListMainScreen(
                                                                   title:
                                                                       grabandEssential
                                                                           .data![i]
@@ -1441,7 +1440,7 @@ class HomeScreen extends StatelessWidget {
                                                               builder:
                                                                   (
                                                                     context,
-                                                                  ) => ProductListMenuScreen(
+                                                                  ) => ProductListMainScreen(
                                                                     title:
                                                                         mainCategory
                                                                             .data![i]
@@ -1623,7 +1622,7 @@ class HomeScreen extends StatelessWidget {
                                                               builder:
                                                                   (
                                                                     context,
-                                                                  ) => ProductListMenuScreen(
+                                                                  ) => ProductListMainScreen(
                                                                     title:
                                                                         categories[i]
                                                                             .name ??
@@ -1809,7 +1808,7 @@ class HomeScreen extends StatelessWidget {
                                                                 builder:
                                                                     (
                                                                       context,
-                                                                    ) => ProductListMenuScreen(
+                                                                    ) => ProductListMainScreen(
                                                                       title:
                                                                           mainCategory
                                                                               .data![i]
@@ -1988,7 +1987,7 @@ class HomeScreen extends StatelessWidget {
                                                                 builder:
                                                                     (
                                                                       context,
-                                                                    ) => ProductListMenuScreen(
+                                                                    ) => ProductListMainScreen(
                                                                       title:
                                                                           categories[i]
                                                                               .name ??
@@ -2165,7 +2164,7 @@ class HomeScreen extends StatelessWidget {
                                                               builder:
                                                                   (
                                                                     context,
-                                                                  ) => ProductListMenuScreen(
+                                                                  ) => ProductListMainScreen(
                                                                     title:
                                                                         categories[i]
                                                                             .name ??
@@ -2340,7 +2339,7 @@ class HomeScreen extends StatelessWidget {
                                                               builder:
                                                                   (
                                                                     context,
-                                                                  ) => ProductListMenuScreen(
+                                                                  ) => ProductListMainScreen(
                                                                     title:
                                                                         categories[i]
                                                                             .name ??
@@ -2518,7 +2517,7 @@ class HomeScreen extends StatelessWidget {
                                                                 builder:
                                                                     (
                                                                       context,
-                                                                    ) => ProductListMenuScreen(
+                                                                    ) => ProductListMainScreen(
                                                                       title:
                                                                           categories[i]
                                                                               .name ??
@@ -2689,7 +2688,7 @@ class HomeScreen extends StatelessWidget {
                                                                 builder:
                                                                     (
                                                                       context,
-                                                                    ) => ProductListMenuScreen(
+                                                                    ) => ProductListMainScreen(
                                                                       title:
                                                                           categories[i]
                                                                               .name ??

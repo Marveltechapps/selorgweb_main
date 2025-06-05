@@ -162,57 +162,6 @@ class BottomAppBarWidget extends StatelessWidget {
                       ),
                     ],
                   )
-<<<<<<< Updated upstream
-                  : Container(
-                    constraints: BoxConstraints(maxWidth: 1280),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 20,
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => HomeScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: SvgPicture.asset(appLogo),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => HomeScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Home",
-                                    style: TextStyle(color: whiteColor),
-=======
                   : Row(
                     spacing: 20,
                     children: [
@@ -339,105 +288,111 @@ class BottomAppBarWidget extends StatelessWidget {
                                     topText: 'Get it On',
                                     bottomText: 'Google Play',
                                     iconSize: const Size(47, 47),
->>>>>>> Stashed changes
                                   ),
-                                ),
-                                Text(
-                                  "Career",
-                                  style: TextStyle(color: whiteColor),
-                                ),
-                                Text(
-                                  "Customer Support",
-                                  style: TextStyle(color: whiteColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => PrivacyPolicy(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Privacy Policy",
+
+                                  Text(
+                                    "Career",
                                     style: TextStyle(color: whiteColor),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => TermsConditions(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Terms & Conditions",
+                                  Text(
+                                    "Customer Support",
                                     style: TextStyle(color: whiteColor),
                                   ),
+                                ],
+                              ),
+
+                              Expanded(
+                                child: SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Column(
+                                    spacing: 20,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => PrivacyPolicy(),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          "Privacy Policy",
+                                          style: TextStyle(color: whiteColor),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                      TermsConditions(),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          "Terms & Conditions",
+                                          style: TextStyle(color: whiteColor),
+                                        ),
+                                      ),
+                                      Text(
+                                        "Delivery Areas",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  "Delivery Areas",
-                                  style: TextStyle(color: whiteColor),
+                              ),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Column(
+                                    spacing: 20,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Download App",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                      Column(
+                                        spacing: 20,
+                                        // runSpacing: 20,
+                                        children: [
+                                          AppStoreButton(
+                                            icon:
+                                                'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                            topText: 'Get it On',
+                                            bottomText: 'Google Play',
+                                            iconSize: const Size(47, 47),
+                                          ),
+                                          AppStoreButton(
+                                            icon:
+                                                'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                            topText: 'Get it On',
+                                            bottomText: 'App Store',
+                                            iconSize: const Size(47, 47),
+                                            // topTextStyle: const TextStyle(fontSize: 19),
+                                            // bottomTextStyle: const TextStyle(fontSize: 22),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                        Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Download App",
-                                  style: TextStyle(color: whiteColor),
-                                ),
-                                Column(
-                                  spacing: 20,
-                                  // runSpacing: 20,
-                                  children: [
-                                    AppStoreButton(
-                                      icon:
-                                          'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                      topText: 'Get it On',
-                                      bottomText: 'Google Play',
-                                      iconSize: const Size(47, 47),
-                                    ),
-                                    AppStoreButton(
-                                      icon:
-                                          'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                      topText: 'Get it On',
-                                      bottomText: 'App Store',
-                                      iconSize: const Size(47, 47),
-                                      // topTextStyle: const TextStyle(fontSize: 19),
-                                      // bottomTextStyle: const TextStyle(fontSize: 22),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
         ),
       ),
