@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,7 +19,8 @@ import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
-import 'package:selorgweb_main/presentation/location/location_screen.dart';
+import 'package:selorgweb_main/presentation/location/location_desktop_screen.dart';
+import 'package:selorgweb_main/presentation/location/location_main_screen.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
 import 'package:selorgweb_main/presentation/search/search_main_screen.dart';
@@ -141,7 +143,7 @@ class HomeMobileScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return LocationScreen(screenType: 'dialog');
+                              return LocationMainScreen(screenType: 'dialog');
                             },
                           ),
                         );
@@ -561,14 +563,7 @@ class HomeMobileScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return SettingMainScreen();
-                                      },
-                                    ),
-                                  );
+                                  context.go('/settings');
                                   //   Navigator.pushNamed(context, '/settings');
                                 },
                                 child: SvgPicture.asset(
@@ -581,15 +576,16 @@ class HomeMobileScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => SearchMainScreen(
-                                        searchTitle: "Orange",
-                                      ),
-                                ),
-                              );
+                              context.go('/search');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder:
+                              //         (context) => SearchMainScreen(
+                              //           searchTitle: "Orange",
+                              //         ),
+                              //   ),
+                              // );
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 16),

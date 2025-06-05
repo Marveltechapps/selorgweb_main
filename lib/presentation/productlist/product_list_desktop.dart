@@ -316,13 +316,13 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
-                                                                  // style:
-                                                                  //     GoogleFonts.poppins(
-                                                                  //   color: appColor,
-                                                                  //   fontSize: 12,
-                                                                  //   fontWeight:
-                                                                  //       FontWeight.w500,
-                                                                  // ),
+                                                                  style:
+                                                                      GoogleFonts.poppins(
+                                                                    color: appColor,
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight.w500,
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),
@@ -435,14 +435,16 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
-                                                                    // style:
-                                                                    //     GoogleFonts.poppins(
-                                                                    //   color: const Color(
-                                                                    //       0xFF326A32),
-                                                                    //   fontSize: 14,
-                                                                    //   fontWeight:
-                                                                    //       FontWeight.w500,
-                                                                    // ),
+                                                                    style: GoogleFonts.poppins(
+                                                                      color: const Color(
+                                                                        0xFF326A32,
+                                                                      ),
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 Expanded(

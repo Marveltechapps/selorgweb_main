@@ -12,7 +12,7 @@ class SearchMainScreen extends StatelessWidget {
     return Scaffold(
       body: Responsive(
         mobile: SearchMobileScreen(searchTitle: searchTitle),
-        desktop: SearchDesktopScreen(),
+        desktop: SearchDesktopScreen(searchTitle: searchTitle ?? ''),
       ),
     );
   }

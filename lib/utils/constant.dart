@@ -10,7 +10,7 @@ var catId = "";
 
 // svgs
 var appTextImage = 'assets/appIcon.svg';
-
+var locationSvg = 'assets/icons/location.svg';
 // pngs
 var orangeImage = 'assets/orange.png';
 
@@ -71,7 +71,7 @@ var drbsvg = "assets/icons/drb.svg";
 var ncdsvg = "assets/icons/ncd.svg";
 
 // address
-var editsvg = "assets/icons/edit.svg";
+// var editsvg = "assets/icons/edit.svg";
 var deletesvg = "assets/icons/delete.svg";
 var addaddresssvg = "assets/icons/add_address.svg";
 //
@@ -89,17 +89,16 @@ var placeHolderImage = "assets/placeholder.png";
 var appLogo = "assets/applogo.svg";
 var bgImage = "assets/bgimage.png";
 var homeTop = "assets/hometop.png";
-var profileImage = "assets/profile.png";
+// var profileImage = "assets/profile.png";
 var homeImage = "assets/home.png";
 var homesImage = "assets/home_s.png";
-var categoryImage = "assets/category.png";
-var categorysImage = "assets/category_s.png";
-var cartImage = "assets/cart.png";
-var cartsImage = "assets/cart_s.png";
+// var categoryImage = "assets/category.png";
+// var categorysImage = "assets/category_s.png";
+// var cartImage = "assets/cart.png";
+// var cartsImage = "assets/cart_s.png";
 var locationImage = "assets/locationimage.png";
 var locationIcon = "assets/location_icon.png";
 var couponImage = "assets/coupon.svg";
-var ncdImage = "assets/ncd.png";
 var drbImage = "assets/drb.png";
 var productImage = "assets/product.png";
 var verfiedImage = "assets/verified.png";
@@ -117,19 +116,19 @@ var fiveIcon = "assets/five.png";
 var sixIcon = "assets/six.png";
 var rateBanner = "assets/rate.png";
 var crossIcon = "assets/cross.png";
-var paymentIcon = "assets/payment.png";
+// var paymentIcon = "assets/payment.png";
 var tipsImage = "assets/tips.png";
 // icons
 var gstIcon = "assets/gst.png";
-var orderIcon = "assets/icons/order.png";
-var customerIcon = "assets/icons/customer.png";
-var addressIcon = "assets/icons/address.png";
-var forwardIcon = "assets/icons/forward.png";
-var generalInfoIcon = "assets/icons/info.png";
-var notificationIcon = "assets/icons/notification.png";
-var profileIcon = "assets/icons/profile.png";
-var refundsIcon = "assets/icons/refunds.png";
-var suggestIcon = "assets/icons/suggest.png";
+// var orderIcon = "assets/icons/order.png";
+// var customerIcon = "assets/icons/customer.png";
+// var addressIcon = "assets/icons/address.png";
+// var forwardIcon = "assets/icons/forward.png";
+// var generalInfoIcon = "assets/icons/info.png";
+// var notificationIcon = "assets/icons/notification.png";
+// var profileIcon = "assets/icons/profile.png";
+// var refundsIcon = "assets/icons/refunds.png";
+// var suggestIcon = "assets/icons/suggest.png";
 
 // gif
 

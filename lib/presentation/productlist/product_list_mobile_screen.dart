@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
@@ -960,15 +961,16 @@ class ProductListMobileScreen extends StatelessWidget {
                   actions: [
                     IconButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => SearchMainScreen(
-                                  //   searchTitle: title,
-                                ),
-                          ),
-                        );
+                        context.go('/search');
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder:
+                        //         (context) => SearchMainScreen(
+                        //           //   searchTitle: title,
+                        //         ),
+                        //   ),
+                        // );
                       },
                       icon: Icon(Icons.search),
                     ),

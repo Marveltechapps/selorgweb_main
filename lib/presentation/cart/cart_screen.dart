@@ -10,6 +10,7 @@ import 'package:selorgweb_main/order/screens/order_status.dart';
 import 'package:selorgweb_main/presentation/cart/cart_bloc.dart';
 import 'package:selorgweb_main/presentation/cart/cart_event.dart';
 import 'package:selorgweb_main/presentation/cart/cart_state.dart';
+import 'package:selorgweb_main/presentation/category/categories_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
@@ -639,7 +640,8 @@ class CartScreen extends StatelessWidget {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder:
-                                                  (context) => HomeDesktopScreen(),
+                                                  (context) =>
+                                                      CategoriesScreen(),
                                             ),
                                           );
                                           // Navigator.pop(context);
@@ -731,7 +733,7 @@ class CartScreen extends StatelessWidget {
                                                                             : 90,
                                                                     fit:
                                                                         BoxFit
-                                                                            .cover,
+                                                                            .fitHeight,
                                                                   ),
                                                               // Image.network('image', width: isMobile ? 70 : 90),
                                                               const SizedBox(
@@ -1152,7 +1154,7 @@ class CartScreen extends StatelessWidget {
                                                 Row(
                                                   children: [
                                                     SvgPicture.asset(
-                                                      'icons/coupons.svg',
+                                                      couponImage,
                                                       width: 39,
                                                     ),
                                                     const SizedBox(width: 10),
@@ -1959,7 +1961,7 @@ class CartScreen extends StatelessWidget {
                                               Row(
                                                 children: [
                                                   SvgPicture.asset(
-                                                    'icons/coupons.svg',
+                                                    couponImage,
                                                     width: 39,
                                                   ),
                                                   const SizedBox(width: 10),
@@ -3182,14 +3184,32 @@ class CartScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 5),
-                  TextField(
+                  TextFormField(
+                    style: TextStyle(color: Colors.black, fontSize: 16),
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search, color: Colors.grey),
-                      hintText: "Search a new address",
+                      hintText: "Search a address",
+                      hintStyle: TextStyle(color: Colors.black54, fontSize: 14),
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Color(0xFFAAAAAA)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Color(0xFFAAAAAA),
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Color(
+                            0xFFAAAAAA,
+                          ), // Change this to whatever highlight color you want
+                          width: 2.0,
+                        ),
                       ),
                     ),
                   ),
@@ -3209,19 +3229,22 @@ class CartScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final item = addressList[index];
                           return ListTile(
-                            leading: SvgPicture.asset(
-                              'icons/location.svg',
-
-                              width: 30,
-                            ),
+                            leading: SvgPicture.asset(locationSvg, width: 30),
                             title: Text(
                               item.title,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Text(
                               item.subtitle,
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontSize: 14,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),

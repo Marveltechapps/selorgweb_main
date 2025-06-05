@@ -7,7 +7,8 @@ import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_screen.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
-import 'package:selorgweb_main/presentation/location/location_screen.dart';
+import 'package:selorgweb_main/presentation/location/location_desktop_screen.dart';
+import 'package:selorgweb_main/presentation/location/location_main_screen.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_bloc.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_event.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_state.dart';
@@ -21,6 +22,7 @@ class AddressScreen extends StatelessWidget {
       GetSavedAddressResponse();
 
   static String successMsg = "";
+
   void showLocationMainAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -56,7 +58,7 @@ class AddressScreen extends StatelessWidget {
                     ),
                   ),
 
-                  LocationScreen(screenType: 'address'),
+                  LocationMainScreen(screenType: 'address'),
                 ],
               ),
             ),

@@ -343,7 +343,10 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      // style: Theme.of(context).textTheme.displayMedium,
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.displayMedium,
                                     ),
                                   ),
                                 ),

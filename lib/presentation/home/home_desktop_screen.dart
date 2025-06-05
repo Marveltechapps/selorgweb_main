@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:image_network/image_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
 import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
-
 import 'package:selorgweb_main/model/home/banner_model.dart';
-
 import 'package:selorgweb_main/model/home/grab_essentials_model.dart';
 import 'package:selorgweb_main/presentation/banner/banner_screen.dart';
 import 'package:selorgweb_main/presentation/category/categories_screen.dart';
@@ -17,12 +15,9 @@ import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_mobile_screen.dart';
-// import 'package:selorgweb_main/presentation/home/home_mobile_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
-import 'package:selorgweb_main/presentation/productlist/product_list_desktop.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
-
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
@@ -111,11 +106,11 @@ class HomeDesktopScreen extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    // const SizedBox(height: 4),
                     Text(
                       "for better delivery experience",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: greyColor),
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
                     ),
                     const SizedBox(height: 28),
                     SizedBox(
@@ -333,7 +328,10 @@ class HomeDesktopScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      // style: Theme.of(context).textTheme.displayMedium,
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.displayMedium,
                                     ),
                                   ),
                                 ),
@@ -801,24 +799,14 @@ class HomeDesktopScreen extends StatelessWidget {
                             },
                           ),
                           Container(
-                            constraints: BoxConstraints(maxHeight: 300),
+                            // constraints: BoxConstraints(maxHeight: 300),
                             color: appbackgroundColor,
-                            height:
-                                isMobile
-                                    ? 160
-                                    : isTablet
-                                    ? 220
-                                    : 260,
+                            height: 300,
                             child: Stack(
                               children: [
                                 Container(
-                                  constraints: BoxConstraints(maxHeight: 150),
-                                  height:
-                                      isMobile
-                                          ? 100
-                                          : isTablet
-                                          ? 160
-                                          : 160,
+                                  constraints: BoxConstraints(maxHeight: 160),
+                                  height: 200,
                                   width: MediaQuery.of(context).size.width,
                                   decoration: const BoxDecoration(
                                     color: Color(0xFF052E16),
@@ -831,11 +819,14 @@ class HomeDesktopScreen extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      const SizedBox(height: 0),
+                                      const SizedBox(height: 20),
                                       Text(
                                         'Grab & Go essentials for you!',
                                         style: GoogleFonts.poppins(
                                           fontSize: 24,
+                                          fontWeight: FontWeight.w600,
+                                          wordSpacing: 2,
+                                          letterSpacing: 2,
                                           color: Colors.white,
                                         ),
                                         textAlign: TextAlign.center,
@@ -864,231 +855,222 @@ class HomeDesktopScreen extends StatelessWidget {
                                                           .length;
                                                   i++
                                                 )
-                                                  InkWell(
-                                                    onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                              ) => ProductListMainScreen(
-                                                                title:
+                                                  Stack(
+                                                    alignment: Alignment.center,
+                                                    // clipBehavior: Clip.hardEdge,
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          context.go(
+                                                            Uri(
+                                                              path:
+                                                                  '/productslistscreen',
+                                                              queryParameters: {
+                                                                'title':
                                                                     grabandEssential
                                                                         .data![i]
                                                                         .name ??
-                                                                    "",
-                                                                id:
+                                                                    '',
+                                                                'id':
                                                                     grabandEssential
                                                                         .data![i]
                                                                         .id ??
-                                                                    "",
-                                                                isMainCategory:
-                                                                    i == 2
-                                                                        ? false
-                                                                        : true,
-                                                                mainCatId:
+                                                                    '',
+                                                                'isMainCategory':
+                                                                    (i == 2
+                                                                            ? false
+                                                                            : true)
+                                                                        .toString(),
+                                                                'mainCatId':
                                                                     i == 0
                                                                         ? "676431a2edae32578ae6d220"
                                                                         : i == 1
                                                                         ? "676431ddedae32578ae6d222"
-                                                                        : "",
-                                                                isCategory:
-                                                                    i == 2
-                                                                        ? true
-                                                                        : false,
-                                                                catId:
+                                                                        : '',
+                                                                'isCategory':
+                                                                    (i == 2
+                                                                            ? true
+                                                                            : false)
+                                                                        .toString(),
+                                                                'catId':
                                                                     "6759448c66818180ad94a960",
+                                                              },
+                                                            ).toString(),
+                                                          );
+                                                          // Navigator.push(
+                                                          //   context,
+                                                          //   MaterialPageRoute(
+                                                          //     builder:
+                                                          //         (
+                                                          //           context,
+                                                          //         ) => ProductListMainScreen(
+                                                          //           title:
+                                                          //               grabandEssential
+                                                          //                   .data![i]
+                                                          //                   .name ??
+                                                          //               "",
+                                                          //           id:
+                                                          //               grabandEssential
+                                                          //                   .data![i]
+                                                          //                   .id ??
+                                                          //               "",
+                                                          //           isMainCategory:
+                                                          //               i == 2
+                                                          //                   ? false
+                                                          //                   : true,
+                                                          //           mainCatId:
+                                                          //               i == 0
+                                                          //                   ? "676431a2edae32578ae6d220"
+                                                          //                   : i ==
+                                                          //                       1
+                                                          //                   ? "676431ddedae32578ae6d222"
+                                                          //                   : "",
+                                                          //           isCategory:
+                                                          //               i == 2
+                                                          //                   ? true
+                                                          //                   : false,
+                                                          //           catId:
+                                                          //               "6759448c66818180ad94a960",
+                                                          //         ),
+                                                          //   ),
+                                                          // );
+                                                        },
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                5,
                                                               ),
+                                                          child: Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  0,
+                                                                ),
+                                                            clipBehavior:
+                                                                Clip.hardEdge,
+                                                            width:
+                                                                isMobile
+                                                                    ? MediaQuery.of(
+                                                                          context,
+                                                                        ).size.width *
+                                                                        0.25
+                                                                    : isTablet
+                                                                    ? MediaQuery.of(
+                                                                          context,
+                                                                        ).size.width *
+                                                                        0.22
+                                                                    : 256,
+                                                            height:
+                                                                isMobile
+                                                                    ? 100
+                                                                    : constraints
+                                                                            .maxWidth <
+                                                                        991
+                                                                    ? 160
+                                                                    : 200,
+                                                            decoration: BoxDecoration(
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color:
+                                                                      Colors
+                                                                          .grey,
+                                                                  offset:
+                                                                      Offset(
+                                                                        1,
+                                                                        3,
+                                                                      ),
+                                                                  blurRadius:
+                                                                      10,
+                                                                ),
+                                                              ],
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    5,
+                                                                  ),
+                                                              image: DecorationImage(
+                                                                fit:
+                                                                    BoxFit
+                                                                        .cover,
+                                                                image: NetworkImage(
+                                                                  grabandEssential
+                                                                          .data![i]
+                                                                          .imageUrl ??
+                                                                      "",
+                                                                  // width: 256,
+                                                                  // height:
+                                                                  //     double
+                                                                  //         .infinity,
+                                                                  // height:
+                                                                  //     constraints.maxWidth <
+                                                                  //             1124
+                                                                  //         ? 150
+                                                                  //         : 200,
+                                                                  // fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            child: SizedBox(),
+                                                          ),
                                                         ),
-                                                      );
-                                                    },
-                                                    child: Stack(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      // clipBehavior: Clip.hardEdge,
-                                                      children: [
-                                                        InkWell(
-                                                          onTap: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (
-                                                                      context,
-                                                                    ) => ProductListMainScreen(
-                                                                      title:
-                                                                          grabandEssential
-                                                                              .data![i]
-                                                                              .name ??
-                                                                          "",
-                                                                      id:
-                                                                          grabandEssential
-                                                                              .data![i]
-                                                                              .id ??
-                                                                          "",
-                                                                      isMainCategory:
-                                                                          i == 2
-                                                                              ? false
-                                                                              : true,
-                                                                      mainCatId:
-                                                                          i == 0
-                                                                              ? "676431a2edae32578ae6d220"
-                                                                              : i ==
-                                                                                  1
-                                                                              ? "676431ddedae32578ae6d222"
-                                                                              : "",
-                                                                      isCategory:
-                                                                          i == 2
-                                                                              ? true
-                                                                              : false,
-                                                                      catId:
-                                                                          "6759448c66818180ad94a960",
-                                                                    ),
-                                                              ),
-                                                            );
-                                                          },
-                                                          child: ClipRRect(
+                                                      ),
+                                                      Positioned(
+                                                        bottom: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        child: Container(
+                                                          width:
+                                                              double.infinity,
+                                                          height: 50,
+
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
                                                             borderRadius:
                                                                 BorderRadius.circular(
                                                                   5,
                                                                 ),
-                                                            child: Container(
-                                                              padding:
-                                                                  EdgeInsets.all(
-                                                                    0,
-                                                                  ),
-                                                              clipBehavior:
-                                                                  Clip.hardEdge,
-                                                              width:
-                                                                  isMobile
-                                                                      ? MediaQuery.of(
-                                                                            context,
-                                                                          ).size.width *
-                                                                          0.25
-                                                                      : isTablet
-                                                                      ? MediaQuery.of(
-                                                                            context,
-                                                                          ).size.width *
-                                                                          0.22
-                                                                      : 256,
-                                                              height:
-                                                                  isMobile
-                                                                      ? 100
-                                                                      : constraints
-                                                                              .maxWidth <
-                                                                          991
-                                                                      ? 160
-                                                                      : 200,
-                                                              decoration: BoxDecoration(
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        Colors
-                                                                            .grey,
-                                                                    offset:
-                                                                        Offset(
-                                                                          1,
-                                                                          3,
-                                                                        ),
-                                                                    blurRadius:
-                                                                        10,
-                                                                  ),
-                                                                ],
-                                                                color:
-                                                                    Colors
-                                                                        .white,
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      5,
-                                                                    ),
-                                                                image: DecorationImage(
-                                                                  fit:
-                                                                      BoxFit
-                                                                          .cover,
-                                                                  image: NetworkImage(
-                                                                    grabandEssential
-                                                                            .data![i]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    // width: 256,
-                                                                    // height:
-                                                                    //     double
-                                                                    //         .infinity,
-                                                                    // height:
-                                                                    //     constraints.maxWidth <
-                                                                    //             1124
-                                                                    //         ? 150
-                                                                    //         : 200,
-                                                                    // fit: BoxFit.cover,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              child: SizedBox(),
-                                                            ),
                                                           ),
-                                                        ),
-                                                        Positioned(
-                                                          bottom: 0,
-                                                          left: 0,
-                                                          right: 0,
-                                                          child: Container(
-                                                            width:
-                                                                double.infinity,
-                                                            height: 50,
-
-                                                            decoration:
-                                                                BoxDecoration(
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsets.only(
+                                                                    top: 4,
+                                                                    bottom: 4,
+                                                                    left: 15,
+                                                                    right: 15,
+                                                                  ),
+                                                              child: Text(
+                                                                grabandEssential
+                                                                        .data![i]
+                                                                        .name ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      isMobile
+                                                                          ? 8
+                                                                          : isTablet
+                                                                          ? 12
+                                                                          : 15,
                                                                   color:
                                                                       Colors
-                                                                          .white,
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        5,
-                                                                      ),
+                                                                          .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
                                                                 ),
-                                                            child: Center(
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets.only(
-                                                                      top: 4,
-                                                                      bottom: 4,
-                                                                      left: 15,
-                                                                      right: 15,
-                                                                    ),
-                                                                child: Text(
-                                                                  grabandEssential
-                                                                          .data![i]
-                                                                          .name ??
-                                                                      "",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        isMobile
-                                                                            ? 8
-                                                                            : isTablet
-                                                                            ? 12
-                                                                            : 15,
-                                                                    color:
-                                                                        Colors
-                                                                            .black,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
+                                                                maxLines: 1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
                                             ],
                                           ),

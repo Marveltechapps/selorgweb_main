@@ -22,6 +22,14 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<GetLatLonOnListEvent>(getlatlon);
     on<LatLonLocationEvent>(latlonloction);
     on<GetLocationUsingLatLongFromApiEvent>(getlatlongfromapi);
+    on<PlaceLocaitonEvent>(placelocatiovalue);
+    on<ContinueGetLocationEvent>(locationContinueGet);
+    on<GetLocationUsingLatLongFromApiTwoEvent>(getlatlongfromapitwo);
+  }
+
+  placelocatiovalue(PlaceLocaitonEvent event, Emitter<LocationState> emit) {
+    emit(LocationLoadingState());
+    emit(PlaceLocaitonState(locationText: event.locationText));
   }
 
   getlatlon(GetLatLonOnListEvent event, Emitter<LocationState> emit) async {
@@ -218,7 +226,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       emit(LocationLoadingState());
       bool serviceEnabled;
       LocationPermission permission;
-    //  Placemark? place;
+      //  Placemark? place;
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
       permission = await Geolocator.checkPermission();
@@ -303,6 +311,68 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     //     "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
   }
 
+  locationContinueGet(
+    ContinueGetLocationEvent event,
+    Emitter<LocationState> emit,
+  ) async {
+    emit(LocationLoadingState());
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      permission = await Geolocator.requestPermission();
+      debugPrint("Location services are disabled.");
+      // return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // locationMessage = "Location permission denied.";
+        debugPrint("Location permission denied.");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      debugPrint(
+        "Location permission permanently denied. Enable from settings.",
+      );
+      // locationMessage =
+      //     "Location permission permanently denied. Enable from settings.";
+      return;
+    }
+
+    // Get current location
+    Position position = await Geolocator.getCurrentPosition(
+      locationSettings: AndroidSettings(accuracy: LocationAccuracy.high),
+    );
+    // List<Placemark> placemarks = await placemarkFromCoordinates(
+    //   position.latitude,
+    //   position.longitude,
+    // );
+    // if (placemarks.isNotEmpty) {
+    //   place =
+    //       "${placemarks.first.subLocality ?? ''} - ${placemarks.first.locality ?? ''}";
+    //   // debugPrint(
+    //   //     "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}");
+    // }
+    emit(
+      LocationContinueGetSuccessState(
+        latitude: position.latitude.toString(),
+        longitude: position.longitude.toString(),
+        place: "place",
+      ),
+    );
+
+    debugPrint(
+      "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+    );
+    // locationMessage =
+    //     "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
+  }
+
   getlatlongfromapi(
     GetLocationUsingLatLongFromApiEvent event,
     Emitter<LocationState> emit,
@@ -351,6 +421,33 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             ),
           ),
         );
+      } else {
+        emit(LocationErrorState(error: "Failed to fetch data"));
+      }
+    } catch (e) {
+      emit(LocationErrorState(error: e.toString()));
+    }
+  }
+
+  getlatlongfromapitwo(
+    GetLocationUsingLatLongFromApiTwoEvent event,
+    Emitter<LocationState> emit,
+  ) async {
+    emit(LocationLoadingState());
+    String url =
+        "$latlonggetAddressUrl${event.latitude},${event.longitude}&key=AIzaSyAKVumkjaEhGUefBCclE23rivFqPK3LDRQ";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var result = latLongLocationResponseFromJson(response.body);
+        // String placeurl =
+        //     "${baseUrl}mapLocation/location?placeId=${result.results?.first.placeId}";
+
+        //  final placeResponse = await http.get(Uri.parse(placeurl));
+        // debugPrint("data:");
+        // debugPrint(placeResponse.body);
+
+        emit(LatLongAddressSuccessState(latLongLocationResponse: result));
       } else {
         emit(LocationErrorState(error: "Failed to fetch data"));
       }

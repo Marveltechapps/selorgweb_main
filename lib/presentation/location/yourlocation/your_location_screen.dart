@@ -8,6 +8,7 @@ import 'package:selorgweb_main/presentation/location/location_state.dart';
 import 'package:selorgweb_main/presentation/location/location_event.dart';
 import '../../../utils/constant.dart';
 
+// ignore: must_be_immutable
 class YourLocationScreen extends StatelessWidget {
   final String screenType;
   final String? lat;

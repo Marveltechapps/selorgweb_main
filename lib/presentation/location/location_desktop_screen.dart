@@ -5,19 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/presentation/location/location_bloc.dart';
 import 'package:selorgweb_main/presentation/location/location_event.dart';
+import 'package:selorgweb_main/presentation/location/location_main_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_state.dart';
 import 'package:selorgweb_main/presentation/location/yourlocation/your_location_screen.dart';
 
 import '../../utils/constant.dart';
 
-class LocationScreen extends StatelessWidget {
+class LocationDesktopScreen extends StatelessWidget {
   final String screenType;
-  const LocationScreen({super.key, required this.screenType});
+  const LocationDesktopScreen({super.key, required this.screenType});
 
   static TextEditingController controller = TextEditingController();
   static List<SearchedLocationResponse> searchedLocations = [];
   static Timer? debounce;
   static bool isLocationshow = false;
+
   void showLocationMainAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -53,7 +55,7 @@ class LocationScreen extends StatelessWidget {
                     ),
                   ),
 
-                  LocationScreen(screenType: 'address'),
+                  LocationMainScreen(screenType: 'address'),
                 ],
               ),
             ),
@@ -205,9 +207,11 @@ class LocationScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.displayMedium?.copyWith(fontSize: 20),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ),
               ),

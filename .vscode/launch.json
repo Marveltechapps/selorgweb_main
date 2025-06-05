@@ -12,13 +12,8 @@
             "flutterMode": "debug",
             "args": [
                 "--web-port=8080",
-<<<<<<< Updated upstream
-                "--verbose",
-                // "--release",
-=======
                 //"--verbose",
                 "--debug",
->>>>>>> Stashed changes
             ],
             "program": "lib/main.dart",
             "cwd": "${workspaceFolder}",

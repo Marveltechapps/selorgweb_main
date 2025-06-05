@@ -17,6 +17,24 @@ class LocationSuccessState extends LocationState {
       {required this.latitude, required this.longitude, required this.place});
 }
 
+class LocationContinueGetSuccessState extends LocationState {
+  String? latitude;
+  String? longitude;
+  String? place;
+
+  LocationContinueGetSuccessState({
+    required this.latitude,
+    required this.longitude,
+    required this.place,
+  });
+}
+
+class PlaceLocaitonState extends LocationState {
+  final String locationText;
+
+  PlaceLocaitonState({required this.locationText});
+}
+
 class LatLongAddressSuccessState extends LocationState {
  final LatLongLocationResponse latLongLocationResponse;
 

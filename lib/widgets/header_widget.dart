@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
-import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
-import 'package:selorgweb_main/presentation/search/search_main_screen.dart';
-import 'package:selorgweb_main/presentation/settings/setting_desktop_screen.dart';
 import 'package:selorgweb_main/presentation/settings/setting_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
@@ -36,13 +34,9 @@ class HeaderWidget extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => HomeDesktopScreen(),
-                              ),
-                            );
+                            context.go('/');
                           },
-                          child: SvgPicture.asset(appTextImage, height: 15),
+                          child: SvgPicture.asset(appTextImage, height: 12),
                         ),
                         Container(
                           width: 2,
@@ -80,14 +74,15 @@ class HeaderWidget extends StatelessWidget {
                     const SizedBox(height: 10),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return SearchMainScreen();
-                            },
-                          ),
-                        );
+                        context.go('/search');
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) {
+                        //       return SearchMainScreen();
+                        //     },
+                        //   ),
+                        // );
                       },
                       child: Container(
                         width:
@@ -249,7 +244,7 @@ class HeaderWidget extends StatelessWidget {
                                 Text(
                                   location,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 20,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -267,14 +262,15 @@ class HeaderWidget extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return SearchMainScreen();
-                              },
-                            ),
-                          );
+                          context.go("/search?searchTitle=apple");
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) {
+                          //       return SearchMainScreen();
+                          //     },
+                          //   ),
+                          // );
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width / 3,
@@ -298,7 +294,7 @@ class HeaderWidget extends StatelessWidget {
                               Text(
                                 'Search For Products...',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: Color(0xFF666666),
                                 ),
                               ),
@@ -323,7 +319,7 @@ class HeaderWidget extends StatelessWidget {
                             child: Text(
                               'My Account',
                               style: GoogleFonts.poppins(
-                                fontSize: 18,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
@@ -363,7 +359,7 @@ class HeaderWidget extends StatelessWidget {
                                   Text(
                                     'My Cart',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFF052E16),
                                     ),

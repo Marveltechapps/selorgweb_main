@@ -34,8 +34,6 @@ class _YourLocationState extends State<YourLocation> {
   static Placemark place = Placemark();
   static bool iserrorLocation = false;
 
-
-
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     setState(() {
@@ -48,7 +46,6 @@ class _YourLocationState extends State<YourLocation> {
       );
     });
   }
-
 
   @override
   void initState() {

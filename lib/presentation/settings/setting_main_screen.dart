@@ -10,7 +10,7 @@ class SettingMainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Responsive(
-        mobile: SettingDesktopScreen(),
+        mobile: SettingsMobileScreen(),
         desktop: SettingDesktopScreen(),
       ),
     );

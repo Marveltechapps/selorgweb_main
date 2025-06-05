@@ -8,11 +8,20 @@ class SearchLocationEvent extends LocationEvent {
   SearchLocationEvent({required this.searchText});
 }
 
+class ContinueGetLocationEvent extends LocationEvent {}
+
 class GetLatLonOnListEvent extends LocationEvent {
   final String placeId;
 
   GetLatLonOnListEvent({required this.placeId});
 }
+
+class PlaceLocaitonEvent extends LocationEvent {
+  final String locationText;
+
+  PlaceLocaitonEvent({required this.locationText});
+}
+
 class GetLocationUsingLatLongFromApiEvent extends LocationEvent {
   final String latitude;
   final String longitude;
@@ -23,6 +32,15 @@ class GetLocationUsingLatLongFromApiEvent extends LocationEvent {
   });
 }
 
+class GetLocationUsingLatLongFromApiTwoEvent extends LocationEvent {
+  final String latitude;
+  final String longitude;
+
+  GetLocationUsingLatLongFromApiTwoEvent({
+    required this.latitude,
+    required this.longitude,
+  });
+}
 
 class GetLatLonEvent extends LocationEvent {
   final String latitude;
@@ -44,22 +62,22 @@ class LatLonLocationEvent extends LocationEvent {
   final String screenType;
   final String? place;
 
-  LatLonLocationEvent(
-      {required this.latitude,
-      required this.longitude,
-      required this.screenType,
-      required this.place});
+  LatLonLocationEvent({
+    required this.latitude,
+    required this.longitude,
+    required this.screenType,
+    required this.place,
+  });
 }
-
-
 
 class ContinueLocationEvent extends LocationEvent {
   final String latitude;
   final String longitude;
   final String screenType;
 
-  ContinueLocationEvent(
-      {required this.latitude,
-      required this.longitude,
-      required this.screenType});
+  ContinueLocationEvent({
+    required this.latitude,
+    required this.longitude,
+    required this.screenType,
+  });
 }

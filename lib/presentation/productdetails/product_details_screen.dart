@@ -1380,11 +1380,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                           },
                                                                           child: Text(
                                                                             "Add",
-                                                                            // style:
-                                                                            //     GoogleFonts.poppins(
-                                                                            //   color: appColor,
-                                                                            //   fontSize: 14,
-                                                                            // ),
+                                                                            style: GoogleFonts.poppins(
+                                                                              color:
+                                                                                  appColor,
+                                                                              fontSize:
+                                                                                  14,
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       )
@@ -1460,15 +1461,15 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                   productDetailResponse.data!.product!.variants![i].cartQuantity.toString(),
                                                                                   textAlign:
                                                                                       TextAlign.center,
-                                                                                  // style: GoogleFonts
-                                                                                  //     .poppins(
-                                                                                  //   color: const Color(
-                                                                                  //       0xFF326A32),
-                                                                                  //   fontSize: 14,
-                                                                                  //   fontWeight:
-                                                                                  //       FontWeight
-                                                                                  //           .w500,
-                                                                                  // ),
+                                                                                  style: GoogleFonts.poppins(
+                                                                                    color: const Color(
+                                                                                      0xFF326A32,
+                                                                                    ),
+                                                                                    fontSize:
+                                                                                        14,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                  ),
                                                                                 ),
                                                                               ),
                                                                             ),
@@ -1764,11 +1765,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                           },
                                                                           child: Text(
                                                                             "Add",
-                                                                            // style:
-                                                                            //     GoogleFonts.poppins(
-                                                                            //   color: appColor,
-                                                                            //   fontSize: 14,
-                                                                            // ),
+                                                                            style: GoogleFonts.poppins(
+                                                                              color:
+                                                                                  appColor,
+                                                                              fontSize:
+                                                                                  14,
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       )
@@ -1844,15 +1846,15 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                   productDetailResponse.data!.product!.variants![i].cartQuantity.toString(),
                                                                                   textAlign:
                                                                                       TextAlign.center,
-                                                                                  // style: GoogleFonts
-                                                                                  //     .poppins(
-                                                                                  //   color: const Color(
-                                                                                  //       0xFF326A32),
-                                                                                  //   fontSize: 14,
-                                                                                  //   fontWeight:
-                                                                                  //       FontWeight
-                                                                                  //           .w500,
-                                                                                  // ),
+                                                                                  style: GoogleFonts.poppins(
+                                                                                    color: const Color(
+                                                                                      0xFF326A32,
+                                                                                    ),
+                                                                                    fontSize:
+                                                                                        14,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                  ),
                                                                                 ),
                                                                               ),
                                                                             ),
@@ -2477,11 +2479,14 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                     similarProductResponse.data![i].variants![0].cartQuantity.toString(),
                                                                                     textAlign:
                                                                                         TextAlign.center,
-                                                                                    // style: GoogleFonts.poppins(
-                                                                                    //   color: const Color(0xFF326A32),
-                                                                                    //   fontSize: 14,
-                                                                                    //   fontWeight: FontWeight.w500,
-                                                                                    // ),
+                                                                                    style: GoogleFonts.poppins(
+                                                                                      color:
+                                                                                          appColor,
+                                                                                      fontSize:
+                                                                                          14,
+                                                                                      fontWeight:
+                                                                                          FontWeight.w500,
+                                                                                    ),
                                                                                   ),
                                                                                 ),
                                                                               ),
