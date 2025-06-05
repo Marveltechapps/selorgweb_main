@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import '../constants/colors.dart';
 

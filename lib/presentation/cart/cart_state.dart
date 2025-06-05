@@ -26,14 +26,16 @@ class AddressFetchedSuccessState extends CartState {
   final String loctionType;
   final String address;
 
-  AddressFetchedSuccessState(
-      {required this.loctionType, required this.address});
+  AddressFetchedSuccessState({
+    required this.loctionType,
+    required this.address,
+  });
 }
 
 class CartDataSuccess extends CartState {
   final CartResponse cartResponse;
-
-  CartDataSuccess({required this.cartResponse});
+  final int countvalue;
+  CartDataSuccess({required this.cartResponse, required this.countvalue});
 }
 
 class PlaceAddressState extends CartState {
@@ -70,15 +72,19 @@ class ItemRemovedToCartState extends CartState {
 class UpdateDeliveryTipApiSuccessState extends CartState {
   final UpdateDeliveryTipResponseModel updateDeliveryTipResponseModel;
 
-  UpdateDeliveryTipApiSuccessState({required this.updateDeliveryTipResponseModel});
+  UpdateDeliveryTipApiSuccessState({
+    required this.updateDeliveryTipResponseModel,
+  });
 }
 
 class SavedAddressFetchedSuccess extends CartState {
   final String time;
   final GetSavedAddressResponse getSavedAddressResponse;
 
-  SavedAddressFetchedSuccess(
-      {required this.time, required this.getSavedAddressResponse});
+  SavedAddressFetchedSuccess({
+    required this.time,
+    required this.getSavedAddressResponse,
+  });
 }
 
 class UpdateCartStateSuccess extends CartState {

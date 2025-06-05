@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 
 class TermsConditions extends StatelessWidget {

@@ -12,8 +12,8 @@ import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/category/remove_cart_response_model.dart';
 import 'package:selorgweb_main/model/category/remove_item_cart_model.dart';
 import 'package:selorgweb_main/model/category/sub_category_model.dart';
-import 'package:selorgweb_main/presentation/productlist/product_event.dart';
-import 'package:selorgweb_main/presentation/productlist/product_state.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_event.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {

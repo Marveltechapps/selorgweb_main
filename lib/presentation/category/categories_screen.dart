@@ -6,8 +6,9 @@ import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/presentation/category/category_bloc.dart';
 import 'package:selorgweb_main/presentation/category/category_event.dart';
 import 'package:selorgweb_main/presentation/category/category_state.dart';
-import 'package:selorgweb_main/presentation/productlist/product_list_menu.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_desktop.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
+import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
@@ -1285,7 +1286,7 @@ class CategoriesScreen extends StatelessWidget {
                                                   MaterialPageRoute(
                                                     builder:
                                                         (context) =>
-                                                            ProductListMenuScreen(
+                                                            ProductListMainScreen(
                                                               title:
                                                                   mainCategory
                                                                       .data![i]
@@ -1438,7 +1439,7 @@ class CategoriesScreen extends StatelessWidget {
                                                   MaterialPageRoute(
                                                     builder:
                                                         (context) =>
-                                                            ProductListMenuScreen(
+                                                            ProductListMainScreen(
                                                               title:
                                                                   categories[i]
                                                                       .name ??
@@ -1597,7 +1598,7 @@ class CategoriesScreen extends StatelessWidget {
                                                       builder:
                                                           (
                                                             context,
-                                                          ) => ProductListMenuScreen(
+                                                          ) => ProductListMainScreen(
                                                             title:
                                                                 mainCategory
                                                                     .data![i]
@@ -1753,7 +1754,7 @@ class CategoriesScreen extends StatelessWidget {
                                                       builder:
                                                           (
                                                             context,
-                                                          ) => ProductListMenuScreen(
+                                                          ) => ProductListMainScreen(
                                                             title:
                                                                 categories[i]
                                                                     .name ??
@@ -1903,7 +1904,7 @@ class CategoriesScreen extends StatelessWidget {
                                                   MaterialPageRoute(
                                                     builder:
                                                         (context) =>
-                                                            ProductListMenuScreen(
+                                                            ProductListMainScreen(
                                                               title:
                                                                   categories[i]
                                                                       .name ??
@@ -2046,7 +2047,7 @@ class CategoriesScreen extends StatelessWidget {
                                                   MaterialPageRoute(
                                                     builder:
                                                         (context) =>
-                                                            ProductListMenuScreen(
+                                                            ProductListMainScreen(
                                                               title:
                                                                   categories[i]
                                                                       .name ??
@@ -2193,7 +2194,7 @@ class CategoriesScreen extends StatelessWidget {
                                                       builder:
                                                           (
                                                             context,
-                                                          ) => ProductListMenuScreen(
+                                                          ) => ProductListMainScreen(
                                                             title:
                                                                 categories[i]
                                                                     .name ??
@@ -2340,7 +2341,7 @@ class CategoriesScreen extends StatelessWidget {
                                                       builder:
                                                           (
                                                             context,
-                                                          ) => ProductListMenuScreen(
+                                                          ) => ProductListMainScreen(
                                                             title:
                                                                 categories[i]
                                                                     .name ??

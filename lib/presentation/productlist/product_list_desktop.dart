@@ -5,11 +5,12 @@ import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/category/sub_category_model.dart';
+import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
-import 'package:selorgweb_main/presentation/productlist/product_bloc.dart';
-import 'package:selorgweb_main/presentation/productlist/product_event.dart';
-import 'package:selorgweb_main/presentation/productlist/product_state.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_bloc.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_event.dart';
+import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
+// import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
@@ -18,14 +19,14 @@ import 'package:selorgweb_main/widgets/network_image.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 
 // ignore: must_be_immutable
-class ProductListMenuScreen extends StatelessWidget {
+class ProductListDesktopScreen extends StatelessWidget {
   String title;
   String id;
   bool isMainCategory;
   String mainCatId;
   bool isCategory;
   String catId;
-  ProductListMenuScreen({
+  ProductListDesktopScreen({
     super.key,
     required this.title,
     required this.id,
@@ -59,171 +60,78 @@ class ProductListMenuScreen extends StatelessWidget {
   static bool isLoading = false;
   CartResponse cartResponse = CartResponse();
 
-  void showProductBottomSheet(
+  void showVarientsDialog(
     BuildContext context,
     String name,
     int productIndex,
     ProductBloc productBloc,
   ) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: false,
-      backgroundColor: whiteColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return BlocProvider.value(
-          value: productBloc,
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return BlocBuilder<ProductBloc, ProductState>(
-                builder: (context, state) {
-                  return StatefulBuilder(
+      barrierDismissible: !(location == "No Location Found"),
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 500, maxWidth: 500),
+              child: Padding(
+                padding: const EdgeInsets.all(30),
+                child: BlocProvider.value(
+                  value: productBloc,
+                  child: StatefulBuilder(
                     builder: (context, setState) {
-                      return Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-
-                              // ✅ Now BlocBuilder will work because ProductBloc is provided
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    productStyleResponse
-                                        .data![productIndex]
-                                        .variants!
-                                        .length,
-                                itemBuilder: (context, i) {
-                                  return InkWell(
-                                    onTap: () {
-                                      context.read<ProductBloc>().add(
-                                        ChangeVarientItemEvent(
-                                          productIndex: productIndex,
-                                          varientIndex: i,
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 6,
+                      return BlocBuilder<ProductBloc, ProductState>(
+                        builder: (context, state) {
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              return Column(
+                                spacing: 20,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        name,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium,
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: whiteColor,
-                                        borderRadius: BorderRadius.circular(3),
-                                        border: Border.all(
-                                          color: Colors.green,
-                                          width: 0.5,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  productStyleResponse
-                                                          .data![productIndex]
-                                                          .variants![i]
-                                                          .label ??
-                                                      "",
-                                                  style:
-                                                      Theme.of(
-                                                        context,
-                                                      ).textTheme.bodySmall,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    RichText(
-                                                      text: TextSpan(
-                                                        text: '₹ ',
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black,
-                                                        ),
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                            text:
-                                                                productStyleResponse
-                                                                    .data![productIndex]
-                                                                    .variants![i]
-                                                                    .discountPrice
-                                                                    .toString(),
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      Colors
-                                                                          .black,
-                                                                ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                    RichText(
-                                                      text: TextSpan(
-                                                        text: '₹ ',
-                                                        style: const TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                          fontSize: 12,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                            text:
-                                                                productStyleResponse
-                                                                    .data![productIndex]
-                                                                    .variants![i]
-                                                                    .price
-                                                                    .toString(),
-                                                            style: const TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .lineThrough,
-                                                              fontSize: 12,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                      InkWell(
+                                        onTap: () => Navigator.pop(context),
+                                        child: CircleAvatar(
+                                          radius: 14,
+                                          backgroundColor: appColor,
+                                          child: Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: Colors.white,
                                           ),
-                                          productStyleResponse
-                                                      .data![productIndex]
-                                                      .variants![i]
-                                                      .cartQuantity ==
-                                                  0
-                                              ? GestureDetector(
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount:
+                                                productStyleResponse
+                                                    .data![productIndex]
+                                                    .variants!
+                                                    .length,
+                                            itemBuilder: (context, i) {
+                                              return InkWell(
                                                 onTap: () {
-                                                  setState(() {});
                                                   context
                                                       .read<ProductBloc>()
                                                       .add(
@@ -233,101 +141,133 @@ class ProductListMenuScreen extends StatelessWidget {
                                                           varientIndex: i,
                                                         ),
                                                       );
-                                                  context
-                                                      .read<ProductBloc>()
-                                                      .add(
-                                                        AddButtonClikedEvent(
-                                                          type: "dialog",
-                                                          index: productIndex,
-                                                          isButtonPressed: true,
-                                                        ),
-                                                      );
                                                 },
                                                 child: Container(
-                                                  width: 130,
-                                                  height: 30,
+                                                  margin:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 6,
+                                                      ),
                                                   padding:
                                                       const EdgeInsets.symmetric(
-                                                        vertical: 1,
+                                                        horizontal: 12,
+                                                        vertical: 10,
                                                       ),
                                                   decoration: BoxDecoration(
-                                                    color:
-                                                        productStyleResponse
-                                                                    .data![productIndex]
-                                                                    .variants![i]
-                                                                    .cartQuantity ==
-                                                                0
-                                                            ? whiteColor
-                                                            : const Color(
-                                                              0xFF326A32,
-                                                            ),
+                                                    color: whiteColor,
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                          20,
+                                                          3,
                                                         ),
                                                     border: Border.all(
-                                                      color: appColor,
+                                                      color: Colors.green,
+                                                      width: 0.5,
                                                     ),
                                                   ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Add",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      // style:
-                                                      //     GoogleFonts.poppins(
-                                                      //   color: appColor,
-                                                      //   fontSize: 12,
-                                                      //   fontWeight:
-                                                      //       FontWeight.w500,
-                                                      // ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              : Container(
-                                                width: 130,
-                                                height: 30,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      vertical: 1,
-                                                    ),
-                                                decoration: BoxDecoration(
-                                                  color:
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              productStyleResponse
+                                                                      .data![productIndex]
+                                                                      .variants![i]
+                                                                      .label ??
+                                                                  "",
+                                                              style:
+                                                                  Theme.of(
+                                                                        context,
+                                                                      )
+                                                                      .textTheme
+                                                                      .bodySmall,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                RichText(
+                                                                  text: TextSpan(
+                                                                    text: '₹ ',
+                                                                    style: const TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color:
+                                                                          Colors
+                                                                              .black,
+                                                                    ),
+                                                                    children: <
+                                                                      TextSpan
+                                                                    >[
+                                                                      TextSpan(
+                                                                        text:
+                                                                            productStyleResponse.data![productIndex].variants![i].discountPrice.toString(),
+                                                                        style: const TextStyle(
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 6,
+                                                                ),
+                                                                RichText(
+                                                                  text: TextSpan(
+                                                                    text: '₹ ',
+                                                                    style: const TextStyle(
+                                                                      decoration:
+                                                                          TextDecoration
+                                                                              .lineThrough,
+                                                                      fontSize:
+                                                                          12,
+                                                                      color:
+                                                                          Colors
+                                                                              .grey,
+                                                                    ),
+                                                                    children: <
+                                                                      TextSpan
+                                                                    >[
+                                                                      TextSpan(
+                                                                        text:
+                                                                            productStyleResponse.data![productIndex].variants![i].price.toString(),
+                                                                        style: const TextStyle(
+                                                                          decoration:
+                                                                              TextDecoration.lineThrough,
+                                                                          fontSize:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.grey,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
                                                       productStyleResponse
                                                                   .data![productIndex]
                                                                   .variants![i]
                                                                   .cartQuantity ==
                                                               0
-                                                          ? whiteColor
-                                                          : const Color(
-                                                            0xFF326A32,
-                                                          ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  border: Border.all(
-                                                    color: appColor,
-                                                  ),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          // context.read<ProductBloc>().add(
-                                                          //     RemoveItemButtonClikedEvent(
-                                                          //         type: "dialog",
-                                                          //         index: i,
-                                                          //         isButtonPressed:
-                                                          //             true));
-
-                                                          context
-                                                              .read<
-                                                                ProductBloc
-                                                              >()
-                                                              .add(
+                                                          ? GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {});
+                                                              context.read<ProductBloc>().add(
                                                                 ChangeVarientItemEvent(
                                                                   productIndex:
                                                                       productIndex,
@@ -335,83 +275,7 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                       i,
                                                                 ),
                                                               );
-                                                          context
-                                                              .read<
-                                                                ProductBloc
-                                                              >()
-                                                              .add(
-                                                                RemoveItemButtonClikedEvent(
-                                                                  type:
-                                                                      "dialog",
-                                                                  index:
-                                                                      productIndex,
-                                                                  isButtonPressed:
-                                                                      true,
-                                                                ),
-                                                              );
-                                                        },
-                                                        child: SizedBox(
-                                                          height: 30,
-                                                          child: const Icon(
-                                                            Icons.remove,
-                                                            color: Colors.white,
-                                                            size: 16,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      // margin:
-                                                      //     const EdgeInsets.symmetric(
-                                                      //         horizontal: 16),
-                                                      width: 37,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                      ),
-                                                      child: Text(
-                                                        i == variantindex
-                                                            ? productStyleResponse
-                                                                .data![productIndex]
-                                                                .variants![i]
-                                                                .cartQuantity
-                                                                .toString()
-                                                            : productStyleResponse
-                                                                .data![productIndex]
-                                                                .variants![i]
-                                                                .cartQuantity
-                                                                .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        // style:
-                                                        //     GoogleFonts.poppins(
-                                                        //   color: const Color(
-                                                        //       0xFF326A32),
-                                                        //   fontSize: 14,
-                                                        //   fontWeight:
-                                                        //       FontWeight.w500,
-                                                        // ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          context
-                                                              .read<
-                                                                ProductBloc
-                                                              >()
-                                                              .add(
-                                                                ChangeVarientItemEvent(
-                                                                  productIndex:
-                                                                      productIndex,
-                                                                  varientIndex:
-                                                                      i,
-                                                                ),
-                                                              );
-                                                          context
-                                                              .read<
-                                                                ProductBloc
-                                                              >()
-                                                              .add(
+                                                              context.read<ProductBloc>().add(
                                                                 AddButtonClikedEvent(
                                                                   type:
                                                                       "dialog",
@@ -421,138 +285,237 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                       true,
                                                                 ),
                                                               );
-                                                        },
-                                                        child: SizedBox(
-                                                          height: 30,
-                                                          child: Center(
-                                                            child: const Icon(
-                                                              Icons.add,
+                                                            },
+                                                            child: Container(
+                                                              width: 130,
+                                                              height: 30,
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    vertical: 1,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    productStyleResponse.data![productIndex].variants![i].cartQuantity ==
+                                                                            0
+                                                                        ? whiteColor
+                                                                        : const Color(
+                                                                          0xFF326A32,
+                                                                        ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                                border: Border.all(
+                                                                  color:
+                                                                      appColor,
+                                                                ),
+                                                              ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  "Add",
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  // style:
+                                                                  //     GoogleFonts.poppins(
+                                                                  //   color: appColor,
+                                                                  //   fontSize: 12,
+                                                                  //   fontWeight:
+                                                                  //       FontWeight.w500,
+                                                                  // ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                          : Container(
+                                                            width: 130,
+                                                            height: 30,
+                                                            padding:
+                                                                const EdgeInsets.symmetric(
+                                                                  vertical: 1,
+                                                                ),
+                                                            decoration: BoxDecoration(
                                                               color:
-                                                                  Colors.white,
-                                                              size: 16,
+                                                                  productStyleResponse
+                                                                              .data![productIndex]
+                                                                              .variants![i]
+                                                                              .cartQuantity ==
+                                                                          0
+                                                                      ? whiteColor
+                                                                      : const Color(
+                                                                        0xFF326A32,
+                                                                      ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    20,
+                                                                  ),
+                                                              border: Border.all(
+                                                                color: appColor,
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: InkWell(
+                                                                    onTap: () {
+                                                                      // context.read<ProductBloc>().add(
+                                                                      //     RemoveItemButtonClikedEvent(
+                                                                      //         type: "dialog",
+                                                                      //         index: i,
+                                                                      //         isButtonPressed:
+                                                                      //             true));
+
+                                                                      context
+                                                                          .read<
+                                                                            ProductBloc
+                                                                          >()
+                                                                          .add(
+                                                                            ChangeVarientItemEvent(
+                                                                              productIndex:
+                                                                                  productIndex,
+                                                                              varientIndex:
+                                                                                  i,
+                                                                            ),
+                                                                          );
+                                                                      context
+                                                                          .read<
+                                                                            ProductBloc
+                                                                          >()
+                                                                          .add(
+                                                                            RemoveItemButtonClikedEvent(
+                                                                              type:
+                                                                                  "dialog",
+                                                                              index:
+                                                                                  productIndex,
+                                                                              isButtonPressed:
+                                                                                  true,
+                                                                            ),
+                                                                          );
+                                                                    },
+                                                                    child: SizedBox(
+                                                                      height:
+                                                                          30,
+                                                                      child: const Icon(
+                                                                        Icons
+                                                                            .remove,
+                                                                        color:
+                                                                            Colors.white,
+                                                                        size:
+                                                                            16,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  // margin:
+                                                                  //     const EdgeInsets.symmetric(
+                                                                  //         horizontal: 16),
+                                                                  width: 37,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                        color:
+                                                                            Colors.white,
+                                                                      ),
+                                                                  child: Text(
+                                                                    i ==
+                                                                            variantindex
+                                                                        ? productStyleResponse
+                                                                            .data![productIndex]
+                                                                            .variants![i]
+                                                                            .cartQuantity
+                                                                            .toString()
+                                                                        : productStyleResponse
+                                                                            .data![productIndex]
+                                                                            .variants![i]
+                                                                            .cartQuantity
+                                                                            .toString(),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    // style:
+                                                                    //     GoogleFonts.poppins(
+                                                                    //   color: const Color(
+                                                                    //       0xFF326A32),
+                                                                    //   fontSize: 14,
+                                                                    //   fontWeight:
+                                                                    //       FontWeight.w500,
+                                                                    // ),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: InkWell(
+                                                                    onTap: () {
+                                                                      context
+                                                                          .read<
+                                                                            ProductBloc
+                                                                          >()
+                                                                          .add(
+                                                                            ChangeVarientItemEvent(
+                                                                              productIndex:
+                                                                                  productIndex,
+                                                                              varientIndex:
+                                                                                  i,
+                                                                            ),
+                                                                          );
+                                                                      context
+                                                                          .read<
+                                                                            ProductBloc
+                                                                          >()
+                                                                          .add(
+                                                                            AddButtonClikedEvent(
+                                                                              type:
+                                                                                  "dialog",
+                                                                              index:
+                                                                                  productIndex,
+                                                                              isButtonPressed:
+                                                                                  true,
+                                                                            ),
+                                                                          );
+                                                                    },
+                                                                    child: SizedBox(
+                                                                      height:
+                                                                          30,
+                                                                      child: Center(
+                                                                        child: const Icon(
+                                                                          Icons
+                                                                              .add,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          size:
+                                                                              16,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              cartCount == 0
-                                  ? SizedBox()
-                                  : Container(
-                                    height: 56,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: appColor,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 20,
-                                          right: 20,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "$cartCount Item",
-                                                  // style: GoogleFonts.poppins(
-                                                  //   fontSize: 16,
-                                                  //   color: whiteColor,
-                                                  //   fontWeight: FontWeight.bold,
-                                                  // ),
-                                                ),
-                                                Text(
-                                                  " | ",
-                                                  // style: GoogleFonts.poppins(
-                                                  //   fontSize: 16,
-                                                  //   color: whitecolor,
-                                                  //   fontWeight: FontWeight.bold,
-                                                  // ),
-                                                ),
-                                                RichText(
-                                                  text: TextSpan(
-                                                    text: '₹',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: whiteColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                    children: <TextSpan>[
-                                                      TextSpan(
-                                                        text:
-                                                            totalAmount
-                                                                .toString(),
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                              '`Poppins`',
-                                                          fontSize: 16,
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
                                                     ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                Navigator.pop(context);
-                                                // Navigator.pushNamed(context, '/cart');
-                                                // Navigator.push(context,
-                                                //     MaterialPageRoute(
-                                                //   builder: (context) {
-                                                //     return CartScreen(
-                                                //       fromScreen: 'productlist',
-                                                //     );
-                                                //   },
-                                                // ));
-                                              },
-                                              child: Row(
-                                                spacing: 10,
-                                                children: [
-                                                  Image.asset(viewCartImage),
-                                                  Text(
-                                                    "View Cart",
-                                                    // style: GoogleFonts.poppins(
-                                                    //   fontSize: 16,
-                                                    //   color: whiteColor,
-                                                    //   fontWeight: FontWeight.bold,
-                                                    // ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ),
+                                        const SizedBox(height: 10),
+                                      ],
                                     ),
                                   ),
-
-                              const SizedBox(height: 10),
-                            ],
-                          ),
-                        ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              );
-            },
+                  ),
+                ),
+              ),
+            ),
           ),
         );
       },
@@ -563,8 +526,12 @@ class ProductListMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProductBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ProductBloc()),
+        //   BlocProvider(create: (context) => CounterCubit()),
+        // BlocProvider(create: (context) => CategoryBloc()),
+      ],
       child: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
           if (state is OnScrollSuccessState) {
@@ -600,6 +567,7 @@ class ProductListMenuScreen extends StatelessWidget {
                     cartCount + (state.cartResponse.items![i].quantity ?? 0);
               }
             }
+            context.read<CounterCubit>().increment(cartCount);
             totalAmount = state.cartResponse.billSummary!.itemTotal ?? 0;
           } else if (state is AddButtonClickedState) {
             addButtonClicked = state.isSelected;
@@ -1350,7 +1318,7 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                   ),
                                                                   InkWell(
                                                                     onTap: () {
-                                                                      showProductBottomSheet(
+                                                                      showVarientsDialog(
                                                                         context,
                                                                         productStyleResponse.data![index].skuName ??
                                                                             "",
@@ -2054,7 +2022,7 @@ class ProductListMenuScreen extends StatelessWidget {
                                                                       ),
                                                                       InkWell(
                                                                         onTap: () {
-                                                                          showProductBottomSheet(
+                                                                          showVarientsDialog(
                                                                             context,
                                                                             productStyleResponse.data![index].skuName ??
                                                                                 "",

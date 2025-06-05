@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/footer/screens/home_screen.dart';
-import 'package:selorgweb_main/presentation/settings/setting_screen.dart';
+import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
+import 'package:selorgweb_main/presentation/settings/setting_desktop_screen.dart';
+import 'package:selorgweb_main/presentation/settings/setting_main_screen.dart';
 import 'package:selorgweb_main/screens/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+class SearchDesktopScreen extends StatelessWidget {
+  const SearchDesktopScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class SearchScreen extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => HomeScreen(),
+                                    builder: (context) => HomeDesktopScreen(),
                                   ),
                                 );
                               },
@@ -143,7 +144,7 @@ class SearchScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) {
-                                      return SettingScreen();
+                                      return SettingMainScreen();
                                     },
                                   ),
                                 );
@@ -221,7 +222,7 @@ class SearchScreen extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => HomeScreen(),
+                                      builder: (context) => HomeDesktopScreen(),
                                     ),
                                   );
                                 },
@@ -330,7 +331,7 @@ class SearchScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return SettingScreen();
+                                        return SettingMainScreen();
                                       },
                                     ),
                                   );

@@ -3,7 +3,6 @@ import 'package:selorgweb_main/cart/widgets/cart_with_no_address.dart';
 import 'package:selorgweb_main/footer/widgets/app_download_section.dart';
 import 'package:selorgweb_main/footer/widgets/categories_section.dart';
 import 'package:selorgweb_main/footer/widgets/footer_section.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 
 class CartScreen extends StatelessWidget {

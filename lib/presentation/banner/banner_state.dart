@@ -46,9 +46,9 @@ class RemoveItemFromCartState extends BannerState {
 }
 
 class CartCountLengthOnBannerSuccessState extends BannerState {
-  final CartResponse cartResponse;
+  final int countvalue;
 
-  CartCountLengthOnBannerSuccessState({required this.cartResponse});
+  CartCountLengthOnBannerSuccessState({required this.countvalue});
 }
 
 class BannerErrorState extends BannerState {

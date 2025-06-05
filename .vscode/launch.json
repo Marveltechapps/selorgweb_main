@@ -12,8 +12,13 @@
             "flutterMode": "debug",
             "args": [
                 "--web-port=8080",
+<<<<<<< Updated upstream
                 "--verbose",
                 // "--release",
+=======
+                //"--verbose",
+                "--debug",
+>>>>>>> Stashed changes
             ],
             "program": "lib/main.dart",
             "cwd": "${workspaceFolder}",
@@ -24,7 +29,7 @@
             "name": "selorgweb_main",
             "request": "launch",
             "type": "dart",
-            
+            "flutterMode": "debug"
         },
         {
             "name": "selorgweb_main (profile mode)",

@@ -25,10 +25,13 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
 
   onAddPressed(AddButtonPressedEvent event, Emitter<BannerState> emit) {
     emit(BannerLoadingState());
-    emit(AddButtonPressedState(
+    emit(
+      AddButtonPressedState(
         index: event.index,
         varientindex: event.varientindex,
-        type: event.type));
+        type: event.type,
+      ),
+    );
   }
 
   addItemToApi(AddItemApiEvent event, Emitter<BannerState> emit) async {
@@ -46,11 +49,14 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     try {
       String url = addCartUrl;
       debugPrint(url);
-      api.Response response = await api.ApiService()
-          .postRequest(url, addItemToCartRequestToJson(addItemToCartRequest));
+      api.Response response = await api.ApiService().postRequest(
+        url,
+        addItemToCartRequestToJson(addItemToCartRequest),
+      );
       if (response.statusCode == 200) {
-        var addItemToCartResponse =
-            addItemToCartResponseFromJson(response.resBody);
+        var addItemToCartResponse = addItemToCartResponseFromJson(
+          response.resBody,
+        );
         emit(AddedToCartState(addItemToCartResponse: addItemToCartResponse));
       } else {
         emit(BannerErrorState(errorMsg: response.resBody));
@@ -62,14 +68,19 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
 
   onRemovePressed(RemoveButtonPressedEvent event, Emitter<BannerState> emit) {
     emit(BannerLoadingState());
-    emit(RemoveButtonPressedState(
+    emit(
+      RemoveButtonPressedState(
         index: event.index,
         varientindex: event.varientindex,
-        type: event.type));
+        type: event.type,
+      ),
+    );
   }
 
   removeItemFromCartApifunction(
-      RemoveItemApiEvent event, Emitter<BannerState> emit) async {
+    RemoveItemApiEvent event,
+    Emitter<BannerState> emit,
+  ) async {
     emit(BannerLoadingState());
     RemoveItemToCartRequest removeItemToCartRequest = RemoveItemToCartRequest();
     removeItemToCartRequest.userId = event.userId;
@@ -82,7 +93,9 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
       String url = removeCartUrl;
       //  debugPrint(url);
       api.Response response = await api.ApiService().postRequest(
-          url, removeItemToCartRequestToJson(removeItemToCartRequest));
+        url,
+        removeItemToCartRequestToJson(removeItemToCartRequest),
+      );
       if (response.statusCode == 200) {
         var removeCartResponse = removeCartResponseFromJson(response.resBody);
         emit(RemoveItemFromCartState(removeCartResponse: removeCartResponse));
@@ -94,9 +107,10 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     }
   }
 
-
   getCartCountOnBannerfunction(
-      GetCartCountLengthOnBannerEvent event, Emitter<BannerState> emit) async {
+    GetCartCountLengthOnBannerEvent event,
+    Emitter<BannerState> emit,
+  ) async {
     emit(BannerLoadingState());
     try {
       String url = "$cartUrl${event.userId}";
@@ -104,7 +118,12 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var cartResponse = cartResponseFromJson(response.body);
-        emit(CartCountLengthOnBannerSuccessState(cartResponse: cartResponse));
+        cartResponse.items!.length;
+        int countvalue = 0;
+        for (int i = 0; i < cartResponse.items!.length; i++) {
+          countvalue = countvalue + cartResponse.items![i].quantity!;
+        }
+        emit(CartCountLengthOnBannerSuccessState(countvalue: countvalue));
       } else {
         emit(BannerErrorState(errorMsg: 'Failed to fetch data'));
       }
@@ -114,7 +133,9 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
   }
 
   getProductDetails(
-      GetProductDetailsEvent event, Emitter<BannerState> emit) async {
+    GetProductDetailsEvent event,
+    Emitter<BannerState> emit,
+  ) async {
     emit(BannerLoadingState());
     try {
       String url =

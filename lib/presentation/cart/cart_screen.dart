@@ -10,7 +10,8 @@ import 'package:selorgweb_main/order/screens/order_status.dart';
 import 'package:selorgweb_main/presentation/cart/cart_bloc.dart';
 import 'package:selorgweb_main/presentation/cart/cart_event.dart';
 import 'package:selorgweb_main/presentation/cart/cart_state.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
+import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
@@ -495,6 +496,8 @@ class CartScreen extends StatelessWidget {
             } else {
               tipAmount = cartResponse.billSummary!.deliveryTip.toString();
             }
+            cartCount = state.countvalue;
+            context.read<CounterCubit>().increment(cartCount);
             // debugPrint(state.cartResponse.billSummary!..toString());
           } else if (state is AddButtonClickedState) {
             cartResponse.items![state.selectedIndex].quantity =
@@ -633,6 +636,12 @@ class CartScreen extends StatelessWidget {
                                           MediaQuery.of(context).size.width / 3,
                                       child: ElevatedButton(
                                         onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => HomeDesktopScreen(),
+                                            ),
+                                          );
                                           // Navigator.pop(context);
                                           // Navigator.pushNamed(context, '/home');
                                           // selectedIndex = 1;

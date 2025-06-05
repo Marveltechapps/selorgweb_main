@@ -7,7 +7,7 @@ import 'package:selorgweb_main/order/pages/orderdetails.dart';
 import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
 import 'package:selorgweb_main/order/pages/profilesection.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import '../constants/colors.dart';
 import '../widgets/account_sidebar_widget.dart';

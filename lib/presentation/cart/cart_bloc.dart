@@ -39,19 +39,27 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   onRemovebuttonclicked(
-      RemoveItemFromCartEvent event, Emitter<CartState> emit) {
+    RemoveItemFromCartEvent event,
+    Emitter<CartState> emit,
+  ) {
     emit(CartLoadingState());
     emit(RemoveButtonClickedState(selectedIndex: event.selectedIndex));
   }
 
   fetchAddress(FetchAddressEvent event, Emitter<CartState> emit) {
     emit(CartLoadingState());
-    emit(AddressFetchedSuccessState(
-        loctionType: event.locationType, address: event.address));
+    emit(
+      AddressFetchedSuccessState(
+        loctionType: event.locationType,
+        address: event.address,
+      ),
+    );
   }
 
   onSelectDeliveryInstructions(
-      DeliveryInstructionSelectEvent event, Emitter<CartState> emit) {
+    DeliveryInstructionSelectEvent event,
+    Emitter<CartState> emit,
+  ) {
     emit(CartLoadingState());
     emit(DelivaryInstructionSelectState(one: event.one, two: event.two));
   }
@@ -68,8 +76,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   placeAddressValue(PlaceAddressEvent event, Emitter<CartState> emit) {
     emit(CartLoadingState());
-    emit(PlaceAddressState(
-        locationType: event.locationType, address: event.address));
+    emit(
+      PlaceAddressState(
+        locationType: event.locationType,
+        address: event.address,
+      ),
+    );
   }
 
   getCartDetails(GetCartDetailsEvent event, Emitter<CartState> emit) async {
@@ -80,7 +92,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var cartResponse = cartResponseFromJson(response.body);
-        emit(CartDataSuccess(cartResponse: cartResponse));
+        int countvalue = 0;
+        for (int i = 0; i < cartResponse.items!.length; i++) {
+          countvalue = countvalue + cartResponse.items![i].quantity!;
+        }
+        emit(CartDataSuccess(cartResponse: cartResponse, countvalue: countvalue));
       } else {
         emit(CartErrorState(errormsg: 'Failed to fetch data'));
       }
@@ -99,13 +115,19 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = updateDeliveryTipUrl;
       debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(url,
-          updateDeliveryTipRequestModelToJson(updateDeliveryTipRequestModel));
+      api.Response response = await api.ApiService().postRequest(
+        url,
+        updateDeliveryTipRequestModelToJson(updateDeliveryTipRequestModel),
+      );
       if (response.statusCode == 200) {
-        var updateDeliveryTipResponse =
-            updateDeliveryTipResponseModelFromJson(response.resBody);
-        emit(UpdateDeliveryTipApiSuccessState(
-            updateDeliveryTipResponseModel: updateDeliveryTipResponse));
+        var updateDeliveryTipResponse = updateDeliveryTipResponseModelFromJson(
+          response.resBody,
+        );
+        emit(
+          UpdateDeliveryTipApiSuccessState(
+            updateDeliveryTipResponseModel: updateDeliveryTipResponse,
+          ),
+        );
       } else {
         emit(CartErrorState(errormsg: response.resBody));
       }
@@ -120,14 +142,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     updateCartRequest.userId = event.userId;
     updateCartRequest.deliveryInstructions = event.deliveryInstructions;
     updateCartRequest.addNotes = event.addNotes;
-    updateCartRequest.deliveryTip =
-        int.parse(event.deliveryTip == "" ? "0" : event.deliveryTip);
+    updateCartRequest.deliveryTip = int.parse(
+      event.deliveryTip == "" ? "0" : event.deliveryTip,
+    );
     updateCartRequest.deliveryFee = int.parse(event.deliveryFee);
     try {
       String url = updateCartUrl;
       debugPrint(url);
-      api.Response response = await api.ApiService()
-          .postRequest(url, updateCartRequestToJson(updateCartRequest));
+      api.Response response = await api.ApiService().postRequest(
+        url,
+        updateCartRequestToJson(updateCartRequest),
+      );
       if (response.statusCode == 200) {
         var res = updateCartResponseFromJson(response.resBody);
         emit(UpdateCartStateSuccess(updateCartResponse: res));
@@ -140,7 +165,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   addItemsToCartApifunction(
-      AddItemInCartApiEvent event, Emitter<CartState> emit) async {
+    AddItemInCartApiEvent event,
+    Emitter<CartState> emit,
+  ) async {
     emit(CartLoadingState());
     AddItemToCartRequest addItemToCartRequest = AddItemToCartRequest();
     addItemToCartRequest.userId = event.userId;
@@ -155,13 +182,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = addCartUrl;
       // debugPrint(url);
-      api.Response response = await api.ApiService()
-          .postRequest(url, addItemToCartRequestToJson(addItemToCartRequest));
+      api.Response response = await api.ApiService().postRequest(
+        url,
+        addItemToCartRequestToJson(addItemToCartRequest),
+      );
       if (response.statusCode == 200) {
-        var addItemToCartResponse =
-            addItemToCartResponseFromJson(response.resBody);
+        var addItemToCartResponse = addItemToCartResponseFromJson(
+          response.resBody,
+        );
         emit(
-            ItemAddedToCartState(addItemToCartResponse: addItemToCartResponse));
+          ItemAddedToCartState(addItemToCartResponse: addItemToCartResponse),
+        );
       } else {
         emit(CartErrorState(errormsg: response.resBody));
       }
@@ -171,7 +202,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   removeItemsToCartApifunction(
-      RemoveItemInCartApiEvent event, Emitter<CartState> emit) async {
+    RemoveItemInCartApiEvent event,
+    Emitter<CartState> emit,
+  ) async {
     emit(CartLoadingState());
     RemoveItemToCartRequest removeItemToCartRequest = RemoveItemToCartRequest();
     removeItemToCartRequest.userId = event.userId;
@@ -185,7 +218,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       String url = removeCartUrl;
       //  debugPrint(url);
       api.Response response = await api.ApiService().postRequest(
-          url, removeItemToCartRequestToJson(removeItemToCartRequest));
+        url,
+        removeItemToCartRequestToJson(removeItemToCartRequest),
+      );
       if (response.statusCode == 200) {
         var removeCartResponse = removeCartResponseFromJson(response.resBody);
         emit(ItemRemovedToCartState(removeCartResponse: removeCartResponse));
@@ -198,18 +233,24 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   getSavedAddress(
-      GetSavedAddressFromApiEvent event, Emitter<CartState> emit) async {
+    GetSavedAddressFromApiEvent event,
+    Emitter<CartState> emit,
+  ) async {
     emit(CartLoadingState());
     try {
       String url = "$getAddressUrl${event.userId}";
       debugPrint(url);
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        var getSavedAddressResponse =
-            getSavedAddressResponseFromJson(response.body);
-        emit(SavedAddressFetchedSuccess(
+        var getSavedAddressResponse = getSavedAddressResponseFromJson(
+          response.body,
+        );
+        emit(
+          SavedAddressFetchedSuccess(
             time: event.time,
-            getSavedAddressResponse: getSavedAddressResponse));
+            getSavedAddressResponse: getSavedAddressResponse,
+          ),
+        );
       } else {
         emit(CartErrorState(errormsg: 'Failed to fetch data'));
       }

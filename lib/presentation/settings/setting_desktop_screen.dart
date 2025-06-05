@@ -5,21 +5,20 @@ import 'package:selorgweb_main/order/pages/faqscreen.dart';
 import 'package:selorgweb_main/order/pages/orderdetails.dart';
 import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_screen.dart';
 import 'package:selorgweb_main/presentation/settings/profile/profile_screen.dart';
 import 'package:selorgweb_main/widgets/header_widget.dart';
 import './constants/colors.dart';
 import '../../widgets/settings/account_sidebar_widget.dart';
 
-class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
+class SettingDesktopScreen extends StatefulWidget {
+  const SettingDesktopScreen({super.key});
 
   @override
-  State<SettingScreen> createState() => _SettingScreenState();
+  State<SettingDesktopScreen> createState() => _SettingDesktopScreenState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _SettingDesktopScreenState extends State<SettingDesktopScreen> {
   final List<Widget> _pages = [
     Center(child: OrdersList()),
     FAQScreen(),

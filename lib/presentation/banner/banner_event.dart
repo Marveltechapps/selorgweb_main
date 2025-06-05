@@ -56,6 +56,12 @@ class RemoveItemApiEvent extends BannerEvent {
 }
 
 
+class GetCartCountEvent extends BannerEvent {
+  final String userId;
+
+  GetCartCountEvent({required this.userId});
+}
+
 class GetCartCountLengthOnBannerEvent extends BannerEvent {
   final String userId;
 

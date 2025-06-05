@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/category/similar_product_response_model.dart';
+import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_bloc.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_event.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_state.dart';
-import 'package:selorgweb_main/presentation/search/search_screen.dart';
+import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
 import 'package:selorgweb_main/screens/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
@@ -1081,6 +1082,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     cartCount + (state.cartResponse.items![i].quantity ?? 0);
               }
             }
+            context.read<CounterCubit>().increment(cartCount);
             totalAmount = state.cartResponse.billSummary!.itemTotal ?? 0;
           } else if (state is ProductDetailErrorState) {
             errorMsg = state.errorMsg;
