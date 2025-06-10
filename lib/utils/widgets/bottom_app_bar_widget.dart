@@ -4,7 +4,7 @@ import 'package:selorgweb_main/presentation/general/privacy_policy.dart';
 import 'package:selorgweb_main/presentation/general/terms_conditions.dart';
 import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/app_store_button_widget.dart';
+import 'package:selorgweb_main/utils/widgets/app_store_button_widget.dart';
 
 class BottomAppBarWidget extends StatelessWidget {
   const BottomAppBarWidget({super.key});
@@ -37,7 +37,7 @@ class BottomAppBarWidget extends StatelessWidget {
                         width: 200,
                         child: Column(
                           spacing: 20,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             InkWell(

@@ -7,12 +7,11 @@ import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_screen.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
-import 'package:selorgweb_main/presentation/location/location_desktop_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_main_screen.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_bloc.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_event.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_state.dart';
-import 'package:selorgweb_main/widgets/success_dialog_widget.dart';
+import 'package:selorgweb_main/utils/widgets/success_dialog_widget.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class AddressScreen extends StatelessWidget {
@@ -156,6 +155,7 @@ class AddressScreen extends StatelessWidget {
     );
 
     if (result == true) {
+      if (!context.mounted) return;
       context.read()<AddressBloc>().add(GetSavedAddressEvent(userId: userId));
     }
   }

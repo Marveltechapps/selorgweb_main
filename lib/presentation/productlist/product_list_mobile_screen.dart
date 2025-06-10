@@ -12,9 +12,8 @@ import 'package:selorgweb_main/presentation/productdetails/product_details_scree
 import 'package:selorgweb_main/presentation/productlist/product_list_bloc.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_event.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
-import 'package:selorgweb_main/presentation/search/search_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 // ignore: must_be_immutable
 class ProductListMobileScreen extends StatelessWidget {
@@ -961,7 +960,7 @@ class ProductListMobileScreen extends StatelessWidget {
                   actions: [
                     IconButton(
                       onPressed: () {
-                        context.go('/search');
+                        context.push('/search');
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(

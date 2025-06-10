@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
+import 'package:selorgweb_main/presentation/banner/banner_screen.dart';
+import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 // import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_main_screen.dart';
+import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
 import 'package:selorgweb_main/presentation/search/search_main_screen.dart';
 import 'package:selorgweb_main/presentation/settings/customer_support/customer_support_mobile_screen.dart';
@@ -35,7 +38,6 @@ class MyApp extends StatelessWidget {
         name: 'home',
         builder: (context, state) => const HomeMainScreen(),
       ),
-
       GoRoute(
         path: '/settings',
         name: 'settings',
@@ -46,7 +48,6 @@ class MyApp extends StatelessWidget {
         name: 'orders',
         builder: (context, state) => const OrderMobileScreen(),
       ),
-
       GoRoute(
         path: '/customersupport',
         name: 'customersupport',
@@ -57,23 +58,44 @@ class MyApp extends StatelessWidget {
         name: 'generalinfo',
         builder: (context, state) => const GeneralInfoMobileScreen(),
       ),
-GoRoute(
+      GoRoute(
         path: '/privacypolicy',
         name: 'privacypolicy',
         builder: (context, state) => const PrivacyPolicyMobileScreen(),
       ),
-
-GoRoute(
+      GoRoute(
+        path: '/cart',
+        name: 'cart',
+        builder: (context, state) => const CartScreen(),
+      ),
+      GoRoute(
         path: '/terms&conditions',
         name: 'terms&conditions',
         builder: (context, state) => const TermsConditionsMobileScreen(),
       ),
-
       GoRoute(
         path: '/search',
         builder: (context, state) {
           final searchTitle = state.uri.queryParameters['searchTitle'] ?? '';
           return SearchMainScreen(searchTitle: searchTitle);
+        },
+      ),
+      GoRoute(
+        path: '/banner',
+        builder: (context, state) {
+          final bannerId = state.uri.queryParameters['bannerId'] ?? '';
+          return BannerScreen(bannerId: bannerId);
+        },
+      ),
+      GoRoute(
+        path: '/productdetail',
+        builder: (context, state) {
+          final productId = state.uri.queryParameters['productId'] ?? '';
+          final screenType = state.uri.queryParameters['screenType'] ?? '';
+          return ProductDetailsScreen(
+            productId: productId,
+            screenType: screenType,
+          );
         },
       ),
       GoRoute(

@@ -11,7 +11,7 @@ class OrderItems extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 4),
+          BoxShadow(color: Colors.black, blurRadius: 4),
         ],
       ),
       padding: EdgeInsets.all(isMobile ? 15 : 19),

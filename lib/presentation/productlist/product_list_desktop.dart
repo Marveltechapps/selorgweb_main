@@ -12,11 +12,11 @@ import 'package:selorgweb_main/presentation/productlist/product_list_event.dart'
 import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
 // import 'package:selorgweb_main/presentation/search/search_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 
 // ignore: must_be_immutable
 class ProductListDesktopScreen extends StatelessWidget {
@@ -316,12 +316,14 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
-                                                                  style:
-                                                                      GoogleFonts.poppins(
-                                                                    color: appColor,
-                                                                    fontSize: 12,
+                                                                  style: GoogleFonts.poppins(
+                                                                    color:
+                                                                        appColor,
+                                                                    fontSize:
+                                                                        12,
                                                                     fontWeight:
-                                                                        FontWeight.w500,
+                                                                        FontWeight
+                                                                            .w500,
                                                                   ),
                                                                 ),
                                                               ),
@@ -933,7 +935,7 @@ class ProductListDesktopScreen extends StatelessWidget {
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  HeaderWidget(),
+                  HeaderWidget(isHomeScreen: false),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal:
@@ -1085,7 +1087,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                             isMobile
                                                                 ? 2
                                                                 : 4, // 5 items per row
-                                                        mainAxisSpacing: 10,
+                                                        mainAxisSpacing: 20,
                                                         crossAxisSpacing: 10,
                                                         childAspectRatio:
                                                             itemWidth /
@@ -1784,7 +1786,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                             crossAxisCount:
                                                                 5, // 5 items per row
-                                                            mainAxisSpacing: 10,
+                                                            mainAxisSpacing: 20,
                                                             crossAxisSpacing:
                                                                 10,
                                                             childAspectRatio:

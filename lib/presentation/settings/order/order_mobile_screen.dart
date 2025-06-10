@@ -626,7 +626,7 @@ class OrderMobileScreen extends StatelessWidget {
               backgroundColor: appColor,
               leading: IconButton(
                 onPressed: () {
-                  context.go('/settings');
+                  context.pop();
                 },
                 icon: Icon(
                   Icons.arrow_back_ios_new,

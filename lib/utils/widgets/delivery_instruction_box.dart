@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/widgets/cart/delivery_tip_styles.dart';
+import 'package:selorgweb_main/utils/widgets/delivery_tip_styles.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class DeliveryInstructionBox extends StatelessWidget {

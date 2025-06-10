@@ -13,7 +13,7 @@ class GeneralInfoMobileScreen extends StatelessWidget {
         backgroundColor: appColor,
         leading: IconButton(
           onPressed: () {
-            context.go('/settings');
+            context.pop();
           },
           icon: Icon(Icons.arrow_back_ios_new, color: whitecolor, size: 16),
         ),
@@ -32,7 +32,7 @@ class GeneralInfoMobileScreen extends StatelessWidget {
             ),
             trailing: Icon(Icons.arrow_forward_ios_rounded, color: greyColor),
             onTap: () {
-              context.go('terms&conditions');
+              context.push('terms&conditions');
             },
           ),
           ListTile(
@@ -44,7 +44,7 @@ class GeneralInfoMobileScreen extends StatelessWidget {
             ),
             trailing: Icon(Icons.arrow_forward_ios_rounded, color: greyColor),
             onTap: () {
-              context.go('/privacypolicy');
+              context.push('/privacypolicy');
             },
           ),
         ],

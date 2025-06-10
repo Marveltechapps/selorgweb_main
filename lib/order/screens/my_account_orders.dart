@@ -7,8 +7,7 @@ import 'package:selorgweb_main/order/pages/orderdetails.dart';
 import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
 import 'package:selorgweb_main/order/pages/profilesection.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
-import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 import '../constants/colors.dart';
 import '../widgets/account_sidebar_widget.dart';
 
@@ -48,7 +47,9 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderWidget(),
+            HeaderWidget(
+              isHomeScreen: false,
+            ),
             SizedBox(height: 0),
             context.watch<Navigationprovider>().sectionId == 6 || isDesktop
                 ? SizedBox()
@@ -120,7 +121,7 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
+                      color: Colors.black,
                       blurRadius: 4,
                     ),
                   ],

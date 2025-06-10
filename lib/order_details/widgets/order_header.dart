@@ -90,7 +90,7 @@ class OrderHeader extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
+                            color: Colors.black,
                             blurRadius: 4,
                           ),
                         ],

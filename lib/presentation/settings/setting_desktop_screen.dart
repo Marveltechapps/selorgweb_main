@@ -7,9 +7,9 @@ import 'package:selorgweb_main/order/pages/ordersinsidebar.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import 'package:selorgweb_main/presentation/settings/address/address_screen.dart';
 import 'package:selorgweb_main/presentation/settings/profile/profile_screen.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 import './constants/colors.dart';
-import '../../widgets/settings/account_sidebar_widget.dart';
+import '../../utils/widgets/account_sidebar_widget.dart';
 
 class SettingDesktopScreen extends StatefulWidget {
   const SettingDesktopScreen({super.key});
@@ -49,7 +49,7 @@ class _SettingDesktopScreenState extends State<SettingDesktopScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderWidget(),
+            HeaderWidget(isHomeScreen: false,),
             SizedBox(height: 0),
             context.watch<Navigationprovider>().sectionId == 6 || isDesktop
                 ? SizedBox()
@@ -121,7 +121,7 @@ class _SettingDesktopScreenState extends State<SettingDesktopScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
+                      color: Colors.black,
                       blurRadius: 2,
                     ),
                   ],

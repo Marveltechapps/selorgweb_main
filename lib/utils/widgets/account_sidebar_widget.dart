@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
-import './constants/colors.dart';
+import 'colors.dart';
 
 class AccountSidebarWidget extends StatelessWidget {
   const AccountSidebarWidget({super.key});
@@ -110,9 +110,9 @@ class AccountSidebarWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withOpacity(0.1) : null,
+          color: isSelected ? AppColors.primary : null,
           border: Border(
-            bottom: BorderSide(color: AppColors.white.withOpacity(0.2)),
+            bottom: BorderSide(color: AppColors.white),
           ),
         ),
         child: Row(

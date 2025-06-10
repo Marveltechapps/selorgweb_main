@@ -353,7 +353,7 @@ class CartWithNoAddress extends StatelessWidget {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
+                        color: Colors.black,
                         blurRadius: 6,
                         offset: const Offset(0, 1),
                       ),

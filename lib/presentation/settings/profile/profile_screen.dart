@@ -4,8 +4,8 @@ import 'package:selorgweb_main/presentation/settings/profile/profile_bloc.dart';
 import 'package:selorgweb_main/presentation/settings/profile/profile_event.dart';
 import 'package:selorgweb_main/presentation/settings/profile/profile_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/cart/add_address_styles.dart';
-import 'package:selorgweb_main/widgets/success_dialog_widget.dart';
+import 'package:selorgweb_main/utils/widgets/add_address_styles.dart';
+import 'package:selorgweb_main/utils/widgets/success_dialog_widget.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

@@ -32,7 +32,7 @@ class TopNavigationWidget extends StatelessWidget {
                     height: 40,
                     width: 2,
                     margin: const EdgeInsets.symmetric(horizontal: 19),
-                    color: const Color(0xFFDEE3CF).withOpacity(0.5),
+                    color: const Color(0xFFDEE3CF),
                   ),
                   const Text(
                     'Lattice Bridge',
@@ -91,11 +91,11 @@ class TopNavigationWidget extends StatelessWidget {
                       color: AppColors.white,
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(
-                        color: AppColors.grey.withOpacity(0.25),
+                        color: AppColors.grey,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.25),
+                          color: Colors.black,
                           blurRadius: 4,
                         ),
                       ],

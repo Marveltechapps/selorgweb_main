@@ -8,10 +8,11 @@ import 'package:selorgweb_main/presentation/location/addaddress/add_address_bloc
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_event.dart';
 import 'package:selorgweb_main/presentation/location/addaddress/add_address_state.dart';
 import 'package:selorgweb_main/presentation/location/yourlocation/your_location.dart';
-import 'package:selorgweb_main/widgets/success_dialog_widget.dart';
+import 'package:selorgweb_main/utils/widgets/success_dialog_widget.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/cart/add_address_styles.dart';
+import 'package:selorgweb_main/utils/widgets/add_address_styles.dart';
 
+// ignore: must_be_immutable
 class AddAddress extends StatelessWidget {
   final Placemark place;
   final String screenType;

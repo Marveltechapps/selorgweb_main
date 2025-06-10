@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import 'package:selorgweb_main/model/home/search_response_model.dart';
@@ -9,7 +10,7 @@ import 'package:selorgweb_main/presentation/search/search_bloc.dart';
 import 'package:selorgweb_main/presentation/search/search_event.dart';
 import 'package:selorgweb_main/presentation/search/search_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 class SearchMobileScreen extends StatelessWidget {
   final String? searchTitle;
@@ -20,8 +21,12 @@ class SearchMobileScreen extends StatelessWidget {
   static int variantindex = 0;
   static String nodata = "";
 
-  void showProductBottomSheet(BuildContext context, String name,
-      int productIndex, SearchBloc searchBloc) {
+  void showProductBottomSheet(
+    BuildContext context,
+    String name,
+    int productIndex,
+    SearchBloc searchBloc,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -36,188 +41,223 @@ class SearchMobileScreen extends StatelessWidget {
             builder: (context, setState) {
               return BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
-                  return StatefulBuilder(builder: (context, setState) {
-                    return Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(name,
-                              style: Theme.of(context).textTheme.titleMedium),
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
 
-                          // ✅ Now BlocBuilder will work because ProductBloc is provided
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: searchResponse
-                                .data![productIndex].variants!.length,
-                            itemBuilder: (context, i) {
-                              return InkWell(
-                                onTap: () {
-                                  context.read<SearchBloc>().add(
+                            // ✅ Now BlocBuilder will work because ProductBloc is provided
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  searchResponse
+                                      .data![productIndex]
+                                      .variants!
+                                      .length,
+                              itemBuilder: (context, i) {
+                                return InkWell(
+                                  onTap: () {
+                                    context.read<SearchBloc>().add(
                                       ChangeVarientItemEvent(
-                                          productIndex: productIndex,
-                                          varientIndex: i));
-                                },
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 6),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: whitecolor,
-                                    borderRadius: BorderRadius.circular(3),
-                                    border: Border.all(
-                                        color: Colors.green, width: 0.5),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              searchResponse.data![productIndex]
-                                                      .variants![i].label ??
-                                                  "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
-                                            ),
-                                            Row(
-                                              children: [
-                                                RichText(
-                                                  text: TextSpan(
-                                                    text: '₹ ',
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black,
-                                                    ),
-                                                    children: <TextSpan>[
-                                                      TextSpan(
-                                                        text: searchResponse
-                                                            .data![productIndex]
-                                                            .variants![i]
-                                                            .discountPrice
-                                                            .toString(),
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 6),
-                                                RichText(
-                                                  text: TextSpan(
-                                                    text: '₹ ',
-                                                    style: const TextStyle(
-                                                      decoration: TextDecoration
-                                                          .lineThrough,
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    children: <TextSpan>[
-                                                      TextSpan(
-                                                        text: searchResponse
-                                                            .data![productIndex]
-                                                            .variants![i]
-                                                            .price
-                                                            .toString(),
-                                                        style: const TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                          fontSize: 12,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                        productIndex: productIndex,
+                                        varientIndex: i,
                                       ),
-                                      searchResponse.data![productIndex]
-                                                  .variants![i].cartQuantity ==
-                                              0
-                                          ? GestureDetector(
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: whitecolor,
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(
+                                        color: Colors.green,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                searchResponse
+                                                        .data![productIndex]
+                                                        .variants![i]
+                                                        .label ??
+                                                    "",
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.bodySmall,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: '₹ ',
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                      children: <TextSpan>[
+                                                        TextSpan(
+                                                          text:
+                                                              searchResponse
+                                                                  .data![productIndex]
+                                                                  .variants![i]
+                                                                  .discountPrice
+                                                                  .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    Colors
+                                                                        .black,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: '₹ ',
+                                                      style: const TextStyle(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        fontSize: 12,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      children: <TextSpan>[
+                                                        TextSpan(
+                                                          text:
+                                                              searchResponse
+                                                                  .data![productIndex]
+                                                                  .variants![i]
+                                                                  .price
+                                                                  .toString(),
+                                                          style: const TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough,
+                                                            fontSize: 12,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        searchResponse
+                                                    .data![productIndex]
+                                                    .variants![i]
+                                                    .cartQuantity ==
+                                                0
+                                            ? GestureDetector(
                                               onTap: () {
                                                 setState(() {});
                                                 context.read<SearchBloc>().add(
-                                                    ChangeVarientItemEvent(
-                                                        productIndex:
-                                                            productIndex,
-                                                        varientIndex: i));
+                                                  ChangeVarientItemEvent(
+                                                    productIndex: productIndex,
+                                                    varientIndex: i,
+                                                  ),
+                                                );
                                                 context.read<SearchBloc>().add(
-                                                    AddButtonClickedEvent(
-                                                        type: "dialog",
-                                                        index: productIndex));
+                                                  AddButtonClickedEvent(
+                                                    type: "dialog",
+                                                    index: productIndex,
+                                                  ),
+                                                );
                                               },
                                               child: Container(
-                                                  width: 130,
-                                                  height: 30,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 1),
-                                                  decoration: BoxDecoration(
-                                                    color: searchResponse
-                                                                .data![
-                                                                    productIndex]
+                                                width: 130,
+                                                height: 30,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 1,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      searchResponse
+                                                                  .data![productIndex]
+                                                                  .variants![i]
+                                                                  .cartQuantity ==
+                                                              0
+                                                          ? whitecolor
+                                                          : const Color(
+                                                            0xFF326A32,
+                                                          ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                    color: appColor,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Add",
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.poppins(
+                                                      color: appColor,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            : Container(
+                                              width: 130,
+                                              height: 30,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 1,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    searchResponse
+                                                                .data![productIndex]
                                                                 .variants![i]
                                                                 .cartQuantity ==
                                                             0
                                                         ? whitecolor
                                                         : const Color(
-                                                            0xFF326A32),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    border: Border.all(
-                                                        color: appColor),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Add",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                        color: appColor,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                  )),
-                                            )
-                                          : Container(
-                                              width: 130,
-                                              height: 30,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 1),
-                                              decoration: BoxDecoration(
-                                                color: searchResponse
-                                                            .data![productIndex]
-                                                            .variants![i]
-                                                            .cartQuantity ==
-                                                        0
-                                                    ? whitecolor
-                                                    : const Color(0xFF326A32),
+                                                          0xFF326A32,
+                                                        ),
                                                 borderRadius:
                                                     BorderRadius.circular(20),
-                                                border:
-                                                    Border.all(color: appColor),
+                                                border: Border.all(
+                                                  color: appColor,
+                                                ),
                                               ),
                                               child: Row(
                                                 mainAxisAlignment:
@@ -235,24 +275,30 @@ class SearchMobileScreen extends StatelessWidget {
 
                                                         context
                                                             .read<SearchBloc>()
-                                                            .add(ChangeVarientItemEvent(
+                                                            .add(
+                                                              ChangeVarientItemEvent(
                                                                 productIndex:
                                                                     productIndex,
-                                                                varientIndex:
-                                                                    i));
+                                                                varientIndex: i,
+                                                              ),
+                                                            );
                                                         context
                                                             .read<SearchBloc>()
-                                                            .add(RemoveButtonClickedEvent(
+                                                            .add(
+                                                              RemoveButtonClickedEvent(
                                                                 type: "dialog",
                                                                 index:
-                                                                    productIndex));
+                                                                    productIndex,
+                                                              ),
+                                                            );
                                                       },
                                                       child: SizedBox(
                                                         height: 30,
                                                         child: const Icon(
-                                                            Icons.remove,
-                                                            color: Colors.white,
-                                                            size: 16),
+                                                          Icons.remove,
+                                                          color: Colors.white,
+                                                          size: 16,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -267,14 +313,12 @@ class SearchMobileScreen extends StatelessWidget {
                                                     child: Text(
                                                       i == variantindex
                                                           ? searchResponse
-                                                              .data![
-                                                                  productIndex]
+                                                              .data![productIndex]
                                                               .variants![i]
                                                               .cartQuantity
                                                               .toString()
                                                           : searchResponse
-                                                              .data![
-                                                                  productIndex]
+                                                              .data![productIndex]
                                                               .variants![i]
                                                               .cartQuantity
                                                               .toString(),
@@ -282,12 +326,13 @@ class SearchMobileScreen extends StatelessWidget {
                                                           TextAlign.center,
                                                       style:
                                                           GoogleFonts.poppins(
-                                                        color: const Color(
-                                                            0xFF326A32),
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
+                                                            color: const Color(
+                                                              0xFF326A32,
+                                                            ),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                     ),
                                                   ),
                                                   Expanded(
@@ -295,26 +340,31 @@ class SearchMobileScreen extends StatelessWidget {
                                                       onTap: () {
                                                         context
                                                             .read<SearchBloc>()
-                                                            .add(ChangeVarientItemEvent(
+                                                            .add(
+                                                              ChangeVarientItemEvent(
                                                                 productIndex:
                                                                     productIndex,
-                                                                varientIndex:
-                                                                    i));
+                                                                varientIndex: i,
+                                                              ),
+                                                            );
                                                         context
                                                             .read<SearchBloc>()
-                                                            .add(AddButtonClickedEvent(
+                                                            .add(
+                                                              AddButtonClickedEvent(
                                                                 type: "dialog",
                                                                 index:
-                                                                    productIndex));
+                                                                    productIndex,
+                                                              ),
+                                                            );
                                                       },
                                                       child: SizedBox(
                                                         height: 30,
                                                         child: Center(
                                                           child: const Icon(
-                                                              Icons.add,
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 16),
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                            size: 16,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -322,111 +372,112 @@ class SearchMobileScreen extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                          // cartCount == 0
-                          //     ? SizedBox()
-                          //     : Container(
-                          //         height: 56,
-                          //         width: double.infinity,
-                          //         decoration: BoxDecoration(
-                          //           color: appColor,
-                          //           borderRadius: BorderRadius.circular(20),
-                          //         ),
-                          //         child: Center(
-                          //           child: Padding(
-                          //             padding: const EdgeInsets.only(
-                          //                 left: 20, right: 20),
-                          //             child: Row(
-                          //               mainAxisAlignment:
-                          //                   MainAxisAlignment.spaceBetween,
-                          //               children: [
-                          //                 Row(
-                          //                   children: [
-                          //                     Text(
-                          //                       "$cartCount Item",
-                          //                       style: GoogleFonts.poppins(
-                          //                         fontSize: 16,
-                          //                         color: whitecolor,
-                          //                         fontWeight: FontWeight.bold,
-                          //                       ),
-                          //                     ),
-                          //                     Text(
-                          //                       " | ",
-                          //                       style: GoogleFonts.poppins(
-                          //                         fontSize: 16,
-                          //                         color: whitecolor,
-                          //                         fontWeight: FontWeight.bold,
-                          //                       ),
-                          //                     ),
-                          //                     RichText(
-                          //                       text: TextSpan(
-                          //                         text: '₹',
-                          //                         style: TextStyle(
-                          //                           fontSize: 16,
-                          //                           color: whitecolor,
-                          //                           fontWeight: FontWeight.bold,
-                          //                         ),
-                          //                         children: <TextSpan>[
-                          //                           TextSpan(
-                          //                             text: totalAmount
-                          //                                 .toString(),
-                          //                             style: TextStyle(
-                          //                               fontFamily: '`Poppins`',
-                          //                               fontSize: 16,
-                          //                               color: whitecolor,
-                          //                               fontWeight:
-                          //                                   FontWeight.bold,
-                          //                             ),
-                          //                           ),
-                          //                         ],
-                          //                       ),
-                          //                     ),
-                          //                   ],
-                          //                 ),
-                          //                 InkWell(
-                          //                   onTap: () {
-                          //                     Navigator.pop(context);
-                          //                     // Navigator.pushNamed(context, '/cart');
-                          //                     Navigator.push(context,
-                          //                         MaterialPageRoute(
-                          //                       builder: (context) {
-                          //                         return CartScreen(
-                          //                           fromScreen: 'productlist',
-                          //                         );
-                          //                       },
-                          //                     ));
-                          //                   },
-                          //                   child: Row(
-                          //                     spacing: 10,
-                          //                     children: [
-                          //                       Image.asset(viewCartImage),
-                          //                       Text(
-                          //                         "View Cart",
-                          //                         style: GoogleFonts.poppins(
-                          //                           fontSize: 16,
-                          //                           color: whitecolor,
-                          //                           fontWeight: FontWeight.bold,
-                          //                         ),
-                          //                       ),
-                          //                     ],
-                          //                   ),
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
+                                );
+                              },
+                            ),
 
-                          const SizedBox(height: 10),
-                        ],
-                      ),
-                    );
-                  });
+                            // cartCount == 0
+                            //     ? SizedBox()
+                            //     : Container(
+                            //         height: 56,
+                            //         width: double.infinity,
+                            //         decoration: BoxDecoration(
+                            //           color: appColor,
+                            //           borderRadius: BorderRadius.circular(20),
+                            //         ),
+                            //         child: Center(
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.only(
+                            //                 left: 20, right: 20),
+                            //             child: Row(
+                            //               mainAxisAlignment:
+                            //                   MainAxisAlignment.spaceBetween,
+                            //               children: [
+                            //                 Row(
+                            //                   children: [
+                            //                     Text(
+                            //                       "$cartCount Item",
+                            //                       style: GoogleFonts.poppins(
+                            //                         fontSize: 16,
+                            //                         color: whitecolor,
+                            //                         fontWeight: FontWeight.bold,
+                            //                       ),
+                            //                     ),
+                            //                     Text(
+                            //                       " | ",
+                            //                       style: GoogleFonts.poppins(
+                            //                         fontSize: 16,
+                            //                         color: whitecolor,
+                            //                         fontWeight: FontWeight.bold,
+                            //                       ),
+                            //                     ),
+                            //                     RichText(
+                            //                       text: TextSpan(
+                            //                         text: '₹',
+                            //                         style: TextStyle(
+                            //                           fontSize: 16,
+                            //                           color: whitecolor,
+                            //                           fontWeight: FontWeight.bold,
+                            //                         ),
+                            //                         children: <TextSpan>[
+                            //                           TextSpan(
+                            //                             text: totalAmount
+                            //                                 .toString(),
+                            //                             style: TextStyle(
+                            //                               fontFamily: '`Poppins`',
+                            //                               fontSize: 16,
+                            //                               color: whitecolor,
+                            //                               fontWeight:
+                            //                                   FontWeight.bold,
+                            //                             ),
+                            //                           ),
+                            //                         ],
+                            //                       ),
+                            //                     ),
+                            //                   ],
+                            //                 ),
+                            //                 InkWell(
+                            //                   onTap: () {
+                            //                     Navigator.pop(context);
+                            //                     // Navigator.pushNamed(context, '/cart');
+                            //                     Navigator.push(context,
+                            //                         MaterialPageRoute(
+                            //                       builder: (context) {
+                            //                         return CartScreen(
+                            //                           fromScreen: 'productlist',
+                            //                         );
+                            //                       },
+                            //                     ));
+                            //                   },
+                            //                   child: Row(
+                            //                     spacing: 10,
+                            //                     children: [
+                            //                       Image.asset(viewCartImage),
+                            //                       Text(
+                            //                         "View Cart",
+                            //                         style: GoogleFonts.poppins(
+                            //                           fontSize: 16,
+                            //                           color: whitecolor,
+                            //                           fontWeight: FontWeight.bold,
+                            //                         ),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
               );
             },
@@ -451,48 +502,73 @@ class SearchMobileScreen extends StatelessWidget {
             if (state.type == "screen") {
               searchResponse.data![state.index].variants![0].cartQuantity =
                   searchResponse.data![state.index].variants![0].cartQuantity! +
-                      1;
-              context.read<SearchBloc>().add(ItemAddToCartApiEvent(
+                  1;
+              context.read<SearchBloc>().add(
+                ItemAddToCartApiEvent(
                   userId: userId,
                   productId: searchResponse.data![state.index].id ?? "",
                   quantity: 1,
-                  variantLabel: searchResponse
-                      .data![state.index].variants![0].label
-                      .toString(),
-                  imageUrl: searchResponse
-                      .data![state.index].variants![0].imageUrl
-                      .toString(),
+                  variantLabel:
+                      searchResponse.data![state.index].variants![0].label
+                          .toString(),
+                  imageUrl:
+                      searchResponse.data![state.index].variants![0].imageUrl
+                          .toString(),
                   price:
                       searchResponse.data![state.index].variants![0].price ?? 0,
-                  discountPrice: searchResponse
-                          .data![state.index].variants![0].discountPrice ??
+                  discountPrice:
+                      searchResponse
+                          .data![state.index]
+                          .variants![0]
+                          .discountPrice ??
                       0,
                   deliveryInstructions: "",
-                  addNotes: ""));
+                  addNotes: "",
+                ),
+              );
             } else {
-              searchResponse.data![state.index].variants![variantindex]
-                  .cartQuantity = searchResponse.data![state.index]
-                      .variants![variantindex].cartQuantity! +
+              searchResponse
+                  .data![state.index]
+                  .variants![variantindex]
+                  .cartQuantity = searchResponse
+                      .data![state.index]
+                      .variants![variantindex]
+                      .cartQuantity! +
                   1;
 
-              context.read<SearchBloc>().add(ItemAddToCartApiEvent(
+              context.read<SearchBloc>().add(
+                ItemAddToCartApiEvent(
                   userId: userId,
                   productId: searchResponse.data![state.index].id ?? "",
                   quantity: 1,
-                  variantLabel: searchResponse
-                      .data![state.index].variants![variantindex].label
-                      .toString(),
-                  imageUrl: searchResponse
-                      .data![state.index].variants![variantindex].imageUrl
-                      .toString(),
-                  price: searchResponse
-                          .data![state.index].variants![variantindex].price ??
+                  variantLabel:
+                      searchResponse
+                          .data![state.index]
+                          .variants![variantindex]
+                          .label
+                          .toString(),
+                  imageUrl:
+                      searchResponse
+                          .data![state.index]
+                          .variants![variantindex]
+                          .imageUrl
+                          .toString(),
+                  price:
+                      searchResponse
+                          .data![state.index]
+                          .variants![variantindex]
+                          .price ??
                       0,
-                  discountPrice: searchResponse.data![state.index]
-                          .variants![variantindex].discountPrice ??
+                  discountPrice:
+                      searchResponse
+                          .data![state.index]
+                          .variants![variantindex]
+                          .discountPrice ??
                       0,
                   deliveryInstructions: "",
-                  addNotes: ""));
+                  addNotes: "",
+                ),
+              );
             }
           } else if (state is AddedItemToCartState) {
             // context.read<ProductBloc>().add(CartLengthEvent(userId: userId));
@@ -508,31 +584,44 @@ class SearchMobileScreen extends StatelessWidget {
             if (state.type == "screen") {
               searchResponse.data![state.index].variants![0].cartQuantity =
                   searchResponse.data![state.index].variants![0].cartQuantity! -
-                      1;
-
-              context.read<SearchBloc>().add(ItemRemoveFromApiEvent(
-                  userId: userId,
-                  productId: searchResponse.data![state.index].id ?? "",
-                  variantLabel: searchResponse
-                      .data![state.index].variants![0].label
-                      .toString(),
-                  quantity: 1,
-                  handlingCharges: 0,
-                  deliveryTip: 0));
-            } else {
-              searchResponse.data![state.index].variants![variantindex]
-                  .cartQuantity = searchResponse.data![state.index]
-                      .variants![variantindex].cartQuantity! -
                   1;
-              context.read<SearchBloc>().add(ItemRemoveFromApiEvent(
+
+              context.read<SearchBloc>().add(
+                ItemRemoveFromApiEvent(
                   userId: userId,
                   productId: searchResponse.data![state.index].id ?? "",
-                  variantLabel: searchResponse
-                      .data![state.index].variants![variantindex].label
-                      .toString(),
+                  variantLabel:
+                      searchResponse.data![state.index].variants![0].label
+                          .toString(),
                   quantity: 1,
                   handlingCharges: 0,
-                  deliveryTip: 0));
+                  deliveryTip: 0,
+                ),
+              );
+            } else {
+              searchResponse
+                  .data![state.index]
+                  .variants![variantindex]
+                  .cartQuantity = searchResponse
+                      .data![state.index]
+                      .variants![variantindex]
+                      .cartQuantity! -
+                  1;
+              context.read<SearchBloc>().add(
+                ItemRemoveFromApiEvent(
+                  userId: userId,
+                  productId: searchResponse.data![state.index].id ?? "",
+                  variantLabel:
+                      searchResponse
+                          .data![state.index]
+                          .variants![variantindex]
+                          .label
+                          .toString(),
+                  quantity: 1,
+                  handlingCharges: 0,
+                  deliveryTip: 0,
+                ),
+              );
             }
           } else if (state is ItemRemovedCartState) {
             // context.read<ProductBloc>().add(CartLengthEvent(userId: userId));
@@ -569,10 +658,7 @@ class SearchMobileScreen extends StatelessWidget {
             circularProgressColor: Colors.transparent,
             overlayBackgroundColor: Colors.black87,
             isLoading: state is SearchLoadingState,
-            appIcon: Image.asset(
-              loadGif,
-              fit: BoxFit.fill,
-            ),
+            appIcon: Image.asset(loadGif, fit: BoxFit.fill),
             child: Scaffold(
               body: SafeArea(
                 child: Padding(
@@ -583,18 +669,20 @@ class SearchMobileScreen extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.black54)),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black54),
+                        ),
                         //  width: size.width,
                         height: 50,
                         child: Row(
                           children: [
                             GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: SvgPicture.asset(backsvg)),
+                              onTap: () {
+                                context.pop();
+                              },
+                              child: SvgPicture.asset(backsvg),
+                            ),
                             SizedBox(width: 8),
                             Expanded(
                               child: TextFormField(
@@ -608,92 +696,107 @@ class SearchMobileScreen extends StatelessWidget {
                                 ),
                                 textInputAction: TextInputAction.search,
                                 onFieldSubmitted: (value) {
-                                  context.read<SearchBloc>().add(SearchApiEvent(
-                                        searchText: searchController.text,
-                                      ));
+                                  context.read<SearchBloc>().add(
+                                    SearchApiEvent(
+                                      searchText: searchController.text,
+                                    ),
+                                  );
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Color(0xFFFFFFFF),
-                                  hintText: 'Search For "$searchTitle"',
+                                  hintText: 'Search for products...',
                                   hintStyle: TextStyle(color: Colors.black54),
                                   border: InputBorder.none,
                                 ),
                                 onChanged: (value) {
-                                  context.read<SearchBloc>().add(SearchApiEvent(
-                                        searchText: value,
-                                      ));
+                                  context.read<SearchBloc>().add(
+                                    SearchApiEvent(searchText: value),
+                                  );
                                 },
                               ),
                             ),
                             GestureDetector(
-                                onTap: () {
-                                  context
-                                      .read<SearchBloc>()
-                                      .add(ClickCloseButtonEvent());
-                                },
-                                child: SvgPicture.asset(closesvg)),
+                              onTap: () {
+                                context.read<SearchBloc>().add(
+                                  ClickCloseButtonEvent(),
+                                );
+                              },
+                              child: SvgPicture.asset(closesvg),
+                            ),
                           ],
                         ),
                       ),
                       searchResponse.data == null
                           ? Visibility(
-                              visible: searchController.text.isNotEmpty,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    nodata,
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 14),
+                            visible: searchController.text.isNotEmpty,
+                            child: Row(
+                              children: [
+                                Text(
+                                  nodata,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      ' "${searchController.text}"',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w900),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    ' "${searchController.text}"',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
                                     ),
-                                  )
-                                ],
-                              ),
-                            )
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                           : Expanded(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: searchResponse.data!.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return ProductDetailsScreen(
-                                          productId:
-                                              searchResponse.data![index].id ??
-                                                  "",
-                                          screenType: "back",
-                                        );
-                                      }));
-                                    },
-                                    leading: ImageNetworkWidget(
-                                      url: searchResponse.data![index]
-                                              .variants![0].imageUrl ??
-                                          "",
-                                      height: 30,
-                                      width: 30,
-                                    ),
-                                    title: Text(
-                                      searchResponse.data![index].skuName ?? "",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: searchResponse.data!.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return ProductDetailsScreen(
+                                            productId:
+                                                searchResponse
+                                                    .data![index]
+                                                    .id ??
+                                                "",
+                                            screenType: "back",
+                                          );
+                                        },
                                       ),
+                                    );
+                                  },
+                                  leading: ImageNetworkWidget(
+                                    url:
+                                        searchResponse
+                                            .data![index]
+                                            .variants![0]
+                                            .imageUrl ??
+                                        "",
+                                    height: 30,
+                                    width: 30,
+                                  ),
+                                  title: Text(
+                                    searchResponse.data![index].skuName ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
                                     ),
-                                  );
-                                },
-                              ),
-                            )
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                       /* Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 
 class TermsConditions extends StatelessWidget {
   const TermsConditions({super.key});
@@ -17,7 +16,7 @@ class TermsConditions extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeaderWidget(),
+              HeaderWidget(isHomeScreen: false,),
               Container(
                 constraints: BoxConstraints(maxWidth: 1280),
                 child: Padding(

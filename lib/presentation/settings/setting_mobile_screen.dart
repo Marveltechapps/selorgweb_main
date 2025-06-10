@@ -14,7 +14,7 @@ class SettingsMobileScreen extends StatelessWidget {
         leading: IconButton(
           onPressed: () {
             debugPrint("Back button pressed");
-            context.goNamed('home');
+            Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_back_ios_new, color: whitecolor, size: 16),
         ),
@@ -37,7 +37,7 @@ class SettingsMobileScreen extends StatelessWidget {
                   color: greyColor,
                 ),
                 onTap: () {
-                  context.go('/orders');
+                  context.push('/orders');
                 },
               ),
               Divider(color: greyColor),
@@ -52,7 +52,7 @@ class SettingsMobileScreen extends StatelessWidget {
                   color: greyColor,
                 ),
                 onTap: () {
-                  context.go('/customersupport');
+                  context.push('/customersupport');
                 },
               ),
               Divider(color: greyColor),
@@ -70,21 +70,21 @@ class SettingsMobileScreen extends StatelessWidget {
                   Navigator.pushNamed(context, '/address');
                 },
               ),
-              Divider(color: greyColor),
-              ListTile(
-                leading: SvgPicture.asset(refundssvg),
-                title: Text(
-                  "Refunds",
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: greyColor,
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/refunds');
-                },
-              ),
+              // Divider(color: greyColor),
+              // ListTile(
+              //   leading: SvgPicture.asset(refundssvg),
+              //   title: Text(
+              //     "Refunds",
+              //     style: Theme.of(context).textTheme.displayMedium,
+              //   ),
+              //   trailing: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     color: greyColor,
+              //   ),
+              //   onTap: () {
+              //     Navigator.pushNamed(context, '/refunds');
+              //   },
+              // ),
               Divider(color: greyColor),
               ListTile(
                 leading: SvgPicture.asset(profilessvg),
@@ -100,7 +100,7 @@ class SettingsMobileScreen extends StatelessWidget {
                   Navigator.pushNamed(context, '/profile');
                 },
               ),
-              Divider(color: greyColor),
+              // Divider(color: greyColor),
               // ListTile(
               //   leading: Image.asset(suggestIcon),
               //   title: Text("Suggest Products",
@@ -114,50 +114,50 @@ class SettingsMobileScreen extends StatelessWidget {
               // Divider(
               //   color: greyColor.shade400,
               // ),
-              ListTile(
-                leading: SvgPicture.asset(paymentsvg),
-                title: Text(
-                  "Payment management",
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: greyColor,
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/paymentManagementScreen');
-                },
-              ),
-              Divider(color: greyColor),
-              ListTile(
-                leading: SvgPicture.asset(generalInfosvg),
-                title: Text(
-                  "General Info",
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: greyColor,
-                ),
-                onTap: () {
-                  context.go('/generalinfo');
-                },
-              ),
-              Divider(color: greyColor),
-              ListTile(
-                leading: SvgPicture.asset(notificationsvg),
-                title: Text(
-                  "Notifications",
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: greyColor,
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/notifications');
-                },
-              ),
+              // ListTile(
+              //   leading: SvgPicture.asset(paymentsvg),
+              //   title: Text(
+              //     "Payment management",
+              //     style: Theme.of(context).textTheme.displayMedium,
+              //   ),
+              //   trailing: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     color: greyColor,
+              //   ),
+              //   onTap: () {
+              //     Navigator.pushNamed(context, '/paymentManagementScreen');
+              //   },
+              // ),
+              // Divider(color: greyColor),
+              // ListTile(
+              //   leading: SvgPicture.asset(generalInfosvg),
+              //   title: Text(
+              //     "General Info",
+              //     style: Theme.of(context).textTheme.displayMedium,
+              //   ),
+              //   trailing: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     color: greyColor,
+              //   ),
+              //   onTap: () {
+              //     context.push('/generalinfo');
+              //   },
+              // ),
+              // Divider(color: greyColor),
+              // ListTile(
+              //   leading: SvgPicture.asset(notificationsvg),
+              //   title: Text(
+              //     "Notifications",
+              //     style: Theme.of(context).textTheme.displayMedium,
+              //   ),
+              //   trailing: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     color: greyColor,
+              //   ),
+              //   onTap: () {
+              //     Navigator.pushNamed(context, '/notifications');
+              //   },
+              // ),
               Divider(color: greyColor),
               SizedBox(height: 30),
               InkWell(

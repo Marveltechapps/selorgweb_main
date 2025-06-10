@@ -12,7 +12,7 @@ class BillSummary extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 4),
+          BoxShadow(color: Colors.black, blurRadius: 4),
         ],
       ),
       padding: const EdgeInsets.all(17),

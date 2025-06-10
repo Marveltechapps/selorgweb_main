@@ -45,7 +45,7 @@ class PrivacyPolicyMobileScreen extends StatelessWidget {
                 backgroundColor: appColor,
                 leading: IconButton(
                     onPressed: () {
-                    context.go('/generalinfo');
+                    context.pop();
                     },
                     icon: Icon(
                       Icons.arrow_back_ios_new,

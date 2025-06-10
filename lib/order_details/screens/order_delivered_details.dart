@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 import '../widgets/side_navigation.dart';
 import '../widgets/order_items.dart';
 import '../widgets/bill_summary.dart';
@@ -16,7 +15,9 @@ class OrderDeliveredDetails extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderWidget(),
+            HeaderWidget(
+              isHomeScreen: false,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 70.0,

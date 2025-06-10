@@ -3,15 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
-import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
-import 'package:selorgweb_main/presentation/settings/setting_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 
 class HeaderWidget extends StatelessWidget {
+  final bool isHomeScreen;
   final Function()? onClick;
-  const HeaderWidget({super.key, this.onClick});
+  const HeaderWidget({super.key, this.onClick, required this.isHomeScreen});
 
   @override
   Widget build(BuildContext context) {
@@ -22,28 +20,26 @@ class HeaderWidget extends StatelessWidget {
             if (constraints.maxWidth < 991) {
               // mobile view and tablet view
               return Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: constraints.maxWidth < 991 ? 20 : 52,
-                  vertical: 7,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 7),
                 color: const Color(0xFF052E16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
                           onTap: () {
-                            context.go('/');
+                            isHomeScreen ? null : context.push('/');
                           },
                           child: SvgPicture.asset(appTextImage, height: 12),
                         ),
-                        Container(
-                          width: 2,
-                          height: 30,
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          color: Colors.white,
-                        ),
+                        // Container(
+                        //   width: 2,
+                        //   height: 30,
+                        //   margin: const EdgeInsets.symmetric(horizontal: 8),
+                        //   color: Colors.white,
+                        // ),
                         InkWell(
                           onTap: onClick,
                           child: Row(
@@ -74,7 +70,7 @@ class HeaderWidget extends StatelessWidget {
                     const SizedBox(height: 10),
                     InkWell(
                       onTap: () {
-                        context.go('/search');
+                        context.push('/search');
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(
@@ -123,14 +119,15 @@ class HeaderWidget extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return SettingMainScreen();
-                                },
-                              ),
-                            );
+                            context.push('/settings');
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) {
+                            //       return SettingMainScreen();
+                            //     },
+                            //   ),
+                            // );
                           },
                           child: Text(
                             'My Account',
@@ -144,14 +141,16 @@ class HeaderWidget extends StatelessWidget {
                         // const SizedBox(width: 28),
                         InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return CartScreen();
-                                },
-                              ),
-                            );
+                            debugPrint("cart screeen");
+                            context.push('/cart');
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) {
+                            //       return CartScreen();
+                            //     },
+                            //   ),
+                            // );
                           },
                           child: Container(
                             width: 100,
@@ -223,11 +222,7 @@ class HeaderWidget extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => HomeDesktopScreen(),
-                                ),
-                              );
+                              isHomeScreen ? null : context.push('/');
                             },
                             child: SvgPicture.asset(appTextImage, height: 20),
                           ),
@@ -262,7 +257,7 @@ class HeaderWidget extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          context.go("/search?searchTitle=apple");
+                          context.push("/search");
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(
@@ -307,14 +302,15 @@ class HeaderWidget extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return SettingMainScreen();
-                                  },
-                                ),
-                              );
+                              context.push('/settings');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) {
+                              //       return SettingMainScreen();
+                              //     },
+                              //   ),
+                              // );
                             },
                             child: Text(
                               'My Account',
@@ -328,14 +324,16 @@ class HeaderWidget extends StatelessWidget {
                           const SizedBox(width: 28),
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return CartScreen();
-                                  },
-                                ),
-                              );
+                              debugPrint("cart screeen");
+                              context.push('/cart');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) {
+                              //       return CartScreen();
+                              //     },
+                              //   ),
+                              // );
                             },
                             child: Container(
                               width: 127,

@@ -6,15 +6,13 @@ import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/presentation/category/category_bloc.dart';
 import 'package:selorgweb_main/presentation/category/category_event.dart';
 import 'package:selorgweb_main/presentation/category/category_state.dart';
-import 'package:selorgweb_main/presentation/productlist/product_list_desktop.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
-import 'package:selorgweb_main/presentation/search/search_desktop_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
@@ -51,7 +49,7 @@ class CategoriesScreen extends StatelessWidget {
               child: Column(
                 spacing: 20,
                 children: [
-                  HeaderWidget(),
+                  HeaderWidget(isHomeScreen: false),
                   // Padding(
                   //   padding: EdgeInsets.symmetric(
                   //     horizontal: isMobile ? 20 : 60,
@@ -1192,7 +1190,7 @@ class CategoriesScreen extends StatelessWidget {
                   // ),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: isMobile ? 20 : 60,
+                      horizontal: isMobile ? 20 : 150,
                     ),
                     child: Column(
                       spacing: 20,
@@ -1210,36 +1208,36 @@ class CategoriesScreen extends StatelessWidget {
                               ),
                             ),
                             // if (mainCategory.data != null)
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return CategoriesScreen();
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'See All',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF034703),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    size: 14,
-                                    color: appColor,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // InkWell(
+                            //   onTap: () {
+                            //     Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //         builder: (context) {
+                            //           return CategoriesScreen();
+                            //         },
+                            //       ),
+                            //     );
+                            //   },
+                            //   child: Row(
+                            //     children: [
+                            //       Text(
+                            //         'See All',
+                            //         style: GoogleFonts.poppins(
+                            //           fontSize: 13,
+                            //           fontWeight: FontWeight.w600,
+                            //           color: Color(0xFF034703),
+                            //         ),
+                            //       ),
+                            //       const SizedBox(width: 6),
+                            //       Icon(
+                            //         Icons.arrow_forward_ios_rounded,
+                            //         size: 14,
+                            //         color: appColor,
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                         isTablet

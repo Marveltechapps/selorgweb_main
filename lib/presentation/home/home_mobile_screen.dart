@@ -12,21 +12,20 @@ import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/home/banner_model.dart';
 import 'package:selorgweb_main/model/home/grab_essentials_model.dart';
-import 'package:selorgweb_main/presentation/banner/banner_screen.dart';
 import 'package:selorgweb_main/presentation/category/category_bloc.dart';
 // import 'package:selorgweb_main/presentation/category/category_state.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
-import 'package:selorgweb_main/presentation/location/location_desktop_screen.dart';
 import 'package:selorgweb_main/presentation/location/location_main_screen.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
-import 'package:selorgweb_main/presentation/search/search_main_screen.dart';
-import 'package:selorgweb_main/presentation/settings/setting_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 class HomeMobileScreen extends StatelessWidget {
   const HomeMobileScreen({super.key});
@@ -563,7 +562,7 @@ class HomeMobileScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  context.go('/settings');
+                                  context.push('/settings');
                                   //   Navigator.pushNamed(context, '/settings');
                                 },
                                 child: SvgPicture.asset(
@@ -576,7 +575,7 @@ class HomeMobileScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              context.go('/search');
+                              context.push('/search');
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
@@ -736,7 +735,7 @@ class HomeMobileScreen extends StatelessWidget {
                                                         .imageUrl ??
                                                     "",
                                               ),
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.fill,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               5,
@@ -824,29 +823,38 @@ class HomeMobileScreen extends StatelessWidget {
                               itemBuilder: (context, index, realIndex) {
                                 return InkWell(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => BannerScreen(
-                                              bannerId:
-                                                  festivalbanners[index].id ??
-                                                  "",
-                                            ),
-                                      ),
-                                    ).then((value) {
-                                      if (!context.mounted) return;
-                                      context.read<HomeBloc>().add(
-                                        GetCartCountEvent(userId: userId),
-                                      );
-                                      // context
-                                      //     .read<CounterCubit>()
-                                      //     .decrement(cartCount);
-                                      context.read<CounterCubit>().increment(
-                                        cartCount,
-                                      );
-                                      noOfIteminCart = cartCount;
-                                    });
+                                    context.push(
+                                      Uri(
+                                        path: '/banner',
+                                        queryParameters: {
+                                          'bannerId':
+                                              festivalbanners[index].id ?? "",
+                                        },
+                                      ).toString(),
+                                    );
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder:
+                                    //         (context) => BannerScreen(
+                                    //           bannerId:
+                                    //               festivalbanners[index].id ??
+                                    //               "",
+                                    //         ),
+                                    //   ),
+                                    // ).then((value) {
+                                    //   if (!context.mounted) return;
+                                    //   context.read<HomeBloc>().add(
+                                    //     GetCartCountEvent(userId: userId),
+                                    //   );
+                                    //   // context
+                                    //   //     .read<CounterCubit>()
+                                    //   //     .decrement(cartCount);
+                                    //   context.read<CounterCubit>().increment(
+                                    //     cartCount,
+                                    //   );
+                                    //   noOfIteminCart = cartCount;
+                                    // });
                                     debugPrint(festivalbanners[index].id);
                                   },
                                   child: Container(
@@ -876,29 +884,38 @@ class HomeMobileScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return BannerScreen(
-                                          bannerId:
-                                              dailybanners[index].id ?? "",
-                                        );
+                                  context.push(
+                                    Uri(
+                                      path: '/banner',
+                                      queryParameters: {
+                                        'bannerId':
+                                            dailybanners[index].id ?? "",
                                       },
-                                    ),
-                                  ).then((value) {
-                                    if (!context.mounted) return;
-                                    context.read<HomeBloc>().add(
-                                      GetCartCountEvent(userId: userId),
-                                    );
-                                    // context
-                                    //     .read<CounterCubit>()
-                                    //     .decrement(cartCount);
-                                    context.read<CounterCubit>().increment(
-                                      cartCount,
-                                    );
-                                    noOfIteminCart = cartCount;
-                                  });
+                                    ).toString(),
+                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return BannerScreen(
+                                  //         bannerId:
+                                  //             dailybanners[index].id ?? "",
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // ).then((value) {
+                                  //   if (!context.mounted) return;
+                                  //   context.read<HomeBloc>().add(
+                                  //     GetCartCountEvent(userId: userId),
+                                  //   );
+                                  //   // context
+                                  //   //     .read<CounterCubit>()
+                                  //   //     .decrement(cartCount);
+                                  //   context.read<CounterCubit>().increment(
+                                  //     cartCount,
+                                  //   );
+                                  //   noOfIteminCart = cartCount;
+                                  // });
                                   debugPrint(dailybanners[index].id);
                                   //  Navigator.pushNamed(context, '/banner');
                                 },
@@ -1174,28 +1191,36 @@ class HomeMobileScreen extends StatelessWidget {
                         if (offerbanners.isNotEmpty)
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return BannerScreen(
-                                      bannerId: offerbanners[0].id ?? "",
-                                    );
+                              context.push(
+                                Uri(
+                                  path: '/banner',
+                                  queryParameters: {
+                                    'bannerId': offerbanners[0].id ?? "",
                                   },
-                                ),
-                              ).then((value) {
-                                if (!context.mounted) return;
-                                context.read<HomeBloc>().add(
-                                  GetCartCountEvent(userId: userId),
-                                );
-                                // context
-                                //     .read<CounterCubit>()
-                                //     .decrement(cartCount);
-                                context.read<CounterCubit>().increment(
-                                  cartCount,
-                                );
-                                noOfIteminCart = cartCount;
-                              });
+                                ).toString(),
+                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) {
+                              //       return BannerScreen(
+                              //         bannerId: offerbanners[0].id ?? "",
+                              //       );
+                              //     },
+                              //   ),
+                              // ).then((value) {
+                              //   if (!context.mounted) return;
+                              //   context.read<HomeBloc>().add(
+                              //     GetCartCountEvent(userId: userId),
+                              //   );
+                              //   // context
+                              //   //     .read<CounterCubit>()
+                              //   //     .decrement(cartCount);
+                              //   context.read<CounterCubit>().increment(
+                              //     cartCount,
+                              //   );
+                              //   noOfIteminCart = cartCount;
+                              // });
                               debugPrint(offerbanners[0].id ?? "");
                             },
                             child: ImageNetworkWidget(
@@ -2807,6 +2832,10 @@ class HomeMobileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  SizedBox(height: 40),
+                  BottomImageWidget(),
+                  BottomCategoriesBarWidget(),
+                  BottomAppBarWidget(),
                   //  SizedBox(height: 200),
                 ],
               ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_network/image_network.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/cart/update_cart_response_model.dart';
@@ -12,14 +11,13 @@ import 'package:selorgweb_main/presentation/cart/cart_event.dart';
 import 'package:selorgweb_main/presentation/cart/cart_state.dart';
 import 'package:selorgweb_main/presentation/category/categories_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
-import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
-import 'package:selorgweb_main/widgets/cart/delivery_instruction_box.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
+import 'package:selorgweb_main/utils/widgets/delivery_instruction_box.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 class AddressItem {
   final String title;
@@ -294,7 +292,10 @@ class CartScreen extends StatelessWidget {
                         return Dialog(
                           backgroundColor: Colors.white,
                           child: Container(
-                            width: MediaQuery.of(context).size.width,
+                            constraints: BoxConstraints(
+                              maxHeight: 500,
+                              maxWidth: 500,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
@@ -596,11 +597,11 @@ class CartScreen extends StatelessWidget {
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  HeaderWidget(),
+                  HeaderWidget(isHomeScreen: false),
                   Padding(
                     padding:
                         !isMobile
-                            ? EdgeInsets.symmetric(horizontal: 25, vertical: 60)
+                            ? EdgeInsets.symmetric(horizontal: 25, vertical: 10)
                             : EdgeInsets.symmetric(
                               horizontal: 10,
                               vertical: 10,
@@ -621,7 +622,7 @@ class CartScreen extends StatelessWidget {
                                 width: double.infinity,
                                 //color: appColor,
                                 child: Column(
-                                  spacing: 5,
+                                  spacing: 20,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Image.asset(emptyCartImage),
@@ -632,44 +633,48 @@ class CartScreen extends StatelessWidget {
                                           .displayMedium
                                           ?.copyWith(fontSize: 20),
                                     ),
-                                    SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                      CategoriesScreen(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) =>
+                                                        CategoriesScreen(),
+                                              ),
+                                            );
+                                            // Navigator.pop(context);
+                                            // Navigator.pushNamed(context, '/home');
+                                            // selectedIndex = 1;
+                                            // context
+                                            //     .read<CartBloc>()
+                                            //     .add(SelectTipEvent(amount: "0"));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(
+                                              0xFF034703,
                                             ),
-                                          );
-                                          // Navigator.pop(context);
-                                          // Navigator.pushNamed(context, '/home');
-                                          // selectedIndex = 1;
-                                          // context
-                                          //     .read<CartBloc>()
-                                          //     .add(SelectTipEvent(amount: "0"));
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(
-                                            0xFF034703,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                            ),
+                                            minimumSize: const Size(300, 50),
                                           ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              32,
+                                          child: Center(
+                                            child: Text(
+                                              'Browse Now',
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium?.copyWith(
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
-                                          minimumSize: const Size(300, 50),
                                         ),
-                                        child: Text(
-                                          'Browse Now',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(color: Colors.white),
-                                        ),
-                                      ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -723,14 +728,8 @@ class CartScreen extends StatelessWidget {
                                                                             .items![index]
                                                                             .imageUrl ??
                                                                         "",
-                                                                    width:
-                                                                        isMobile
-                                                                            ? 70
-                                                                            : 90,
-                                                                    height:
-                                                                        isMobile
-                                                                            ? 70
-                                                                            : 90,
+                                                                    width: 90,
+                                                                    height: 90,
                                                                     fit:
                                                                         BoxFit
                                                                             .fitHeight,
@@ -824,8 +823,16 @@ class CartScreen extends StatelessWidget {
                                                             ],
                                                           ),
                                                           Container(
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                  maxWidth: 140,
+                                                                ),
                                                             height: 30,
-                                                            width: 140,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                  context,
+                                                                ).size.width /
+                                                                8,
                                                             decoration: BoxDecoration(
                                                               color:
                                                                   const Color(
@@ -1070,6 +1077,10 @@ class CartScreen extends StatelessWidget {
                                               const SizedBox(height: 10),
                                               TextFormField(
                                                 controller: additionalNote,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: blackColor,
+                                                ),
                                                 decoration: InputDecoration(
                                                   border: OutlineInputBorder(
                                                     borderRadius:
@@ -1232,11 +1243,11 @@ class CartScreen extends StatelessWidget {
                                                           tipAmount == "0"
                                                               ? Text(
                                                                 "This amount goes to your delivery partner.",
-                                                                style:
-                                                                    TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                    ),
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color:
+                                                                      blackColor,
+                                                                ),
                                                               )
                                                               : Text(
                                                                 "We thank you for your generosity!",
@@ -2028,8 +2039,8 @@ class CartScreen extends StatelessWidget {
                                                                         .imageUrl ==
                                                                     ""
                                                                 ? SizedBox()
-                                                                : ImageNetwork(
-                                                                  image:
+                                                                : ImageNetworkWidget(
+                                                                  url:
                                                                       cartResponse
                                                                           .items![index]
                                                                           .imageUrl ??
@@ -2042,105 +2053,111 @@ class CartScreen extends StatelessWidget {
                                                                       isMobile
                                                                           ? 70
                                                                           : 90,
-                                                                  fitWeb:
-                                                                      BoxFitWeb
-                                                                          .cover,
+                                                                  fit:
+                                                                      BoxFit
+                                                                          .fitHeight,
                                                                 ),
                                                             // Image.network('image', width: isMobile ? 70 : 90),
                                                             const SizedBox(
                                                               width: 20,
                                                             ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  cartResponse
-                                                                              .items![index]
-                                                                              .productId ==
-                                                                          null
-                                                                      ? ""
-                                                                      : cartResponse
-                                                                              .items![index]
-                                                                              .productId!
-                                                                              .skuName ??
-                                                                          "",
-                                                                  style: GoogleFonts.poppins(
-                                                                    fontSize:
-                                                                        isMobile
-                                                                            ? 15
-                                                                            : 19,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color: const Color(
-                                                                      0xFF444444,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  cartResponse
-                                                                          .items![index]
-                                                                          .variantLabel ??
-                                                                      "",
-                                                                  style: GoogleFonts.poppins(
-                                                                    fontSize:
-                                                                        isMobile
-                                                                            ? 10
-                                                                            : 13,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300,
-                                                                    color: const Color(
-                                                                      0xFF666666,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Text(
-                                                                      '₹ ${cartResponse.items![index].discountPrice}',
-                                                                      style: GoogleFonts.inter(
-                                                                        fontSize:
-                                                                            isMobile
-                                                                                ? 15
-                                                                                : 19,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: const Color(
-                                                                          0xFF444444,
-                                                                        ),
+                                                            SizedBox(
+                                                              width:
+                                                                  isMobile
+                                                                      ? 100
+                                                                      : 200,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    cartResponse.items![index].productId ==
+                                                                            null
+                                                                        ? ""
+                                                                        : cartResponse.items![index].productId!.skuName ??
+                                                                            "",
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize:
+                                                                          isMobile
+                                                                              ? 15
+                                                                              : 19,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color: const Color(
+                                                                        0xFF444444,
                                                                       ),
                                                                     ),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    Text(
-                                                                      '₹ ${cartResponse.items![index].price}',
-                                                                      style: GoogleFonts.inter(
-                                                                        fontSize:
-                                                                            isMobile
-                                                                                ? 10
-                                                                                : 13,
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                        color: const Color(
-                                                                          0xFF777777,
-                                                                        ),
-                                                                        decoration:
-                                                                            TextDecoration.lineThrough,
+                                                                  ),
+                                                                  Text(
+                                                                    cartResponse
+                                                                            .items![index]
+                                                                            .variantLabel ??
+                                                                        "",
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize:
+                                                                          isMobile
+                                                                              ? 10
+                                                                              : 13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                      color: const Color(
+                                                                        0xFF666666,
                                                                       ),
                                                                     ),
-                                                                  ],
-                                                                ),
-                                                              ],
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        '₹ ${cartResponse.items![index].discountPrice}',
+                                                                        style: GoogleFonts.inter(
+                                                                          fontSize:
+                                                                              isMobile
+                                                                                  ? 15
+                                                                                  : 19,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                          color: const Color(
+                                                                            0xFF444444,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            8,
+                                                                      ),
+                                                                      Text(
+                                                                        '₹ ${cartResponse.items![index].price}',
+                                                                        style: GoogleFonts.inter(
+                                                                          fontSize:
+                                                                              isMobile
+                                                                                  ? 10
+                                                                                  : 13,
+                                                                          fontWeight:
+                                                                              FontWeight.w400,
+                                                                          color: const Color(
+                                                                            0xFF777777,
+                                                                          ),
+                                                                          decoration:
+                                                                              TextDecoration.lineThrough,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
                                                         Container(
                                                           height: 30,
-                                                          width: 140,
+                                                          width:
+                                                              MediaQuery.of(
+                                                                context,
+                                                              ).size.width /
+                                                              4,
                                                           decoration: BoxDecoration(
                                                             color: const Color(
                                                               0xFF326A32,
@@ -2244,12 +2261,12 @@ class CartScreen extends StatelessWidget {
                                                         ),
                                                       ],
                                                     ),
-                                                    SizedBox(height: 15),
+                                                    // SizedBox(height: 15),
                                                   ],
                                                 );
                                               },
                                             ),
-                                            const SizedBox(height: 24),
+                                            //  const SizedBox(height: 24),
                                           ],
                                         ),
                                       ),
@@ -2297,6 +2314,8 @@ class CartScreen extends StatelessWidget {
                                                               "This amount goes to your delivery partner.",
                                                               style: TextStyle(
                                                                 fontSize: 14,
+                                                                color:
+                                                                    blackColor,
                                                               ),
                                                             )
                                                             : Text(
@@ -2784,6 +2803,10 @@ class CartScreen extends StatelessWidget {
                                             const SizedBox(height: 10),
                                             TextFormField(
                                               controller: additionalNote,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: blackColor,
+                                              ),
                                               decoration: InputDecoration(
                                                 border: OutlineInputBorder(
                                                   borderRadius:
@@ -3342,9 +3365,9 @@ class ResponsiveRowColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 700;
     return isMobile
-        ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 15,
+        ? Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   spacing: 15,
           children: children,
         )
         : Row(

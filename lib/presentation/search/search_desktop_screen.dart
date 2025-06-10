@@ -4,14 +4,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/home/search_response_model.dart';
+import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/search/search_bloc.dart';
 import 'package:selorgweb_main/presentation/search/search_event.dart';
 import 'package:selorgweb_main/presentation/search/search_state.dart';
 import 'package:selorgweb_main/presentation/settings/setting_main_screen.dart';
-import 'package:selorgweb_main/screens/cart_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 class SearchDesktopScreen extends StatelessWidget {
   final String searchTitle;
@@ -432,13 +432,17 @@ class SearchDesktopScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             searchResponse.data == null
-                                ? Center(
-                                  child: Text(
-                                    "No products found",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
+                                ? SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 1.5,
+                                  child: Center(
+                                    child: Text(
+                                      "No products found",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                      ),
                                     ),
                                   ),
                                 )

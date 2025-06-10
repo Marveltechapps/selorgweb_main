@@ -14,7 +14,7 @@ class SideNavigation extends StatelessWidget {
           bottomLeft: Radius.circular(20),
         ),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 4),
+          BoxShadow(color: Colors.black, blurRadius: 4),
         ],
       ),
       padding: const EdgeInsets.all(39),
@@ -92,7 +92,7 @@ class SideNavigation extends StatelessWidget {
       decoration: BoxDecoration(
         color: isSelected ? const Color(0x1A034703) : null,
         border: Border(
-          bottom: BorderSide(color: Colors.white.withOpacity(0.2)),
+          bottom: BorderSide(color: Colors.white),
         ),
       ),
       child: Row(

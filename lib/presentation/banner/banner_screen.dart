@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/banner/banner_product_response_model.dart';
 import 'package:selorgweb_main/presentation/banner/banner_bloc.dart';
 import 'package:selorgweb_main/presentation/banner/banner_event.dart';
 import 'package:selorgweb_main/presentation/banner/banner_state.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
-import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
 // import 'package:selorgweb_main/presentation/search/search_screen.dart';
-import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 // import 'package:selorgweb_main/presentation/search/search_screen.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart' as cart;
 
@@ -626,7 +626,7 @@ class BannerScreen extends StatelessWidget {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
-                            HeaderWidget(),
+                            HeaderWidget(isHomeScreen: false),
                             SizedBox(height: 20),
                             bannerProductResponse.data!.isEmpty
                                 ? Center(
@@ -658,7 +658,7 @@ class BannerScreen extends StatelessWidget {
                                                     : constraints.maxWidth < 991
                                                     ? 3
                                                     : 5,
-                                            mainAxisSpacing: 10,
+                                            mainAxisSpacing: 20,
                                             crossAxisSpacing: 10,
                                             childAspectRatio: 0.65,
                                           ),
@@ -681,53 +681,19 @@ class BannerScreen extends StatelessWidget {
                                               Expanded(
                                                 child: InkWell(
                                                   onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) {
-                                                          return ProductDetailsScreen(
-                                                            productId:
-                                                                bannerProductResponse
-                                                                    .data![index]
-                                                                    .productId ??
-                                                                "",
-                                                            screenType: "back",
-                                                          );
+                                                    context.push(
+                                                      Uri(
+                                                        path: '/productdetail',
+                                                        queryParameters: {
+                                                          'productId':
+                                                              bannerProductResponse
+                                                                  .data![index]
+                                                                  .productId ??
+                                                              "",
+                                                          'screenType': 'back',
                                                         },
-                                                      ),
-                                                    ).then((value) {
-                                                      // Scroll to the top
-                                                      // _scrollController.animateTo(
-                                                      //   0.0,
-                                                      //   duration: const Duration(
-                                                      //       milliseconds: 300),
-                                                      //   curve: Curves.easeInOut,
-                                                      // );
-                                                      // if (!context.mounted) return;
-                                                      // selectedIndexes = 0;
-                                                      // ProductBloc.productList = [];
-                                                      // page = 1;
-                                                      // context.read<ProductBloc>().add(
-                                                      //     ProductStyleEvent(
-                                                      //         mobilNo: phoneNumber,
-                                                      //         userId: userId,
-                                                      //         isMainCategory:
-                                                      //             isMainCategory,
-                                                      //         mainCatId: mainCatId,
-                                                      //         isSubCategory: true,
-                                                      //         subCatId:
-                                                      //             subCatList[isSelected]
-                                                      //                     .id ??
-                                                      //                 "",
-                                                      //         page: page));
-                                                      // context.read<ProductBloc>().add(
-                                                      //     CartLengthEvent(
-                                                      //         userId: userId));
-                                                    });
-                                                    // Navigator.pushNamed(
-                                                    //     context, '/productDetailsScreen');
-                                                    // debugPrint(productStyleResponse
-                                                    //     .data![index].productId);
+                                                      ).toString(),
+                                                    );
                                                   },
                                                   child: Stack(
                                                     children: [

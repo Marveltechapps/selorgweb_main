@@ -1,5 +1,4 @@
 import 'package:selorgweb_main/model/banner/banner_product_response_model.dart';
-import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
 import 'package:selorgweb_main/model/category/remove_cart_response_model.dart';
 

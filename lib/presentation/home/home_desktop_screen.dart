@@ -9,21 +9,19 @@ import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/home/banner_model.dart';
 import 'package:selorgweb_main/model/home/grab_essentials_model.dart';
-import 'package:selorgweb_main/presentation/banner/banner_screen.dart';
 import 'package:selorgweb_main/presentation/category/categories_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_mobile_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
-import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
-import 'package:selorgweb_main/widgets/bottom_app_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_categories_bar_widget.dart';
-import 'package:selorgweb_main/widgets/bottom_image_widget.dart';
-import 'package:selorgweb_main/widgets/network_image.dart';
-import 'package:selorgweb_main/widgets/header_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
+import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
+import 'package:selorgweb_main/utils/widgets/network_image.dart';
+import 'package:selorgweb_main/utils/widgets/header_widget.dart';
 
 class HomeDesktopScreen extends StatelessWidget {
   const HomeDesktopScreen({super.key});
@@ -791,6 +789,7 @@ class HomeDesktopScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           HeaderWidget(
+                            isHomeScreen: true,
                             onClick: () {
                               showSearchLocationAlertDialog(
                                 context,
@@ -801,7 +800,10 @@ class HomeDesktopScreen extends StatelessWidget {
                           Container(
                             // constraints: BoxConstraints(maxHeight: 300),
                             color: appbackgroundColor,
-                            height: 300,
+                            height:
+                                MediaQuery.of(context).size.width < 991
+                                    ? 250
+                                    : 300,
                             child: Stack(
                               children: [
                                 Container(
@@ -861,7 +863,7 @@ class HomeDesktopScreen extends StatelessWidget {
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          context.go(
+                                                          context.push(
                                                             Uri(
                                                               path:
                                                                   '/productslistscreen',
@@ -990,8 +992,7 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                   ),
                                                               image: DecorationImage(
                                                                 fit:
-                                                                    BoxFit
-                                                                        .cover,
+                                                                    BoxFit.fill,
                                                                 image: NetworkImage(
                                                                   grabandEssential
                                                                           .data![i]
@@ -1082,7 +1083,7 @@ class HomeDesktopScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          SizedBox(height: 20),
+                          //  SizedBox(height: 20),
                           Container(
                             constraints: BoxConstraints(
                               maxWidth: 1280,
@@ -1155,34 +1156,45 @@ class HomeDesktopScreen extends StatelessWidget {
                                             return InkWell(
                                               hoverColor: Colors.transparent,
                                               onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (
-                                                          context,
-                                                        ) => BannerScreen(
-                                                          bannerId:
-                                                              festivalbanners[index]
-                                                                  .id ??
-                                                              "",
-                                                        ),
-                                                  ),
-                                                ).then((value) {
-                                                  if (!context.mounted) return;
-                                                  context.read<HomeBloc>().add(
-                                                    GetCartCountEvent(
-                                                      userId: userId,
-                                                    ),
-                                                  );
-                                                  // context
-                                                  //     .read<CounterCubit>()
-                                                  //     .decrement(cartCount);
-                                                  context
-                                                      .read<CounterCubit>()
-                                                      .increment(cartCount);
-                                                  noOfIteminCart = cartCount;
-                                                });
+                                                context.push(
+                                                  Uri(
+                                                    path: '/banner',
+                                                    queryParameters: {
+                                                      'bannerId':
+                                                          festivalbanners[index]
+                                                              .id ??
+                                                          "",
+                                                    },
+                                                  ).toString(),
+                                                );
+                                                // Navigator.push(
+                                                //   context,
+                                                //   MaterialPageRoute(
+                                                //     builder:
+                                                //         (
+                                                //           context,
+                                                //         ) => BannerScreen(
+                                                //           bannerId:
+                                                //               festivalbanners[index]
+                                                //                   .id ??
+                                                //               "",
+                                                //         ),
+                                                //   ),
+                                                // ).then((value) {
+                                                //   if (!context.mounted) return;
+                                                //   context.read<HomeBloc>().add(
+                                                //     GetCartCountEvent(
+                                                //       userId: userId,
+                                                //     ),
+                                                //   );
+                                                //   // context
+                                                //   //     .read<CounterCubit>()
+                                                //   //     .decrement(cartCount);
+                                                //   context
+                                                //       .read<CounterCubit>()
+                                                //       .increment(cartCount);
+                                                //   noOfIteminCart = cartCount;
+                                                // });
                                                 debugPrint(
                                                   festivalbanners[index].id,
                                                 );
@@ -1282,33 +1294,43 @@ class HomeDesktopScreen extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         return InkWell(
                                           onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return BannerScreen(
-                                                    bannerId:
-                                                        dailybanners[index]
-                                                            .id ??
-                                                        "",
-                                                  );
+                                            context.push(
+                                              Uri(
+                                                path: '/banner',
+                                                queryParameters: {
+                                                  'bannerId':
+                                                      dailybanners[index].id ??
+                                                      "",
                                                 },
-                                              ),
-                                            ).then((value) {
-                                              if (!context.mounted) return;
-                                              context.read<HomeBloc>().add(
-                                                GetCartCountEvent(
-                                                  userId: userId,
-                                                ),
-                                              );
-                                              // context
-                                              //     .read<CounterCubit>()
-                                              //     .decrement(cartCount);
-                                              context
-                                                  .read<CounterCubit>()
-                                                  .increment(cartCount);
-                                              noOfIteminCart = cartCount;
-                                            });
+                                              ).toString(),
+                                            );
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (context) {
+                                            //       return BannerScreen(
+                                            //         bannerId:
+                                            //             dailybanners[index]
+                                            //                 .id ??
+                                            //             "",
+                                            //       );
+                                            //     },
+                                            //   ),
+                                            // ).then((value) {
+                                            //   if (!context.mounted) return;
+                                            //   context.read<HomeBloc>().add(
+                                            //     GetCartCountEvent(
+                                            //       userId: userId,
+                                            //     ),
+                                            //   );
+                                            //   // context
+                                            //   //     .read<CounterCubit>()
+                                            //   //     .decrement(cartCount);
+                                            //   context
+                                            //       .read<CounterCubit>()
+                                            //       .increment(cartCount);
+                                            //   noOfIteminCart = cartCount;
+                                            // });
                                             debugPrint(dailybanners[index].id);
                                             //  Navigator.pushNamed(context, '/banner');
                                           },
@@ -2862,6 +2884,15 @@ class HomeDesktopScreen extends StatelessWidget {
                                       // color: appColor,
                                       child: InkWell(
                                         onTap: () {
+                                          context.push(
+                                            Uri(
+                                              path: '/banner',
+                                              queryParameters: {
+                                                'bannerId':
+                                                    offerbanners[0].id ?? "",
+                                              },
+                                            ).toString(),
+                                          );
                                           // Navigator.push(context, MaterialPageRoute(
                                           //   builder: (context) {
                                           //     return BannerScreen(
@@ -2920,56 +2951,71 @@ class HomeDesktopScreen extends StatelessWidget {
                                                     hoverColor:
                                                         Colors.transparent,
                                                     onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return ProductDetailsScreen(
-                                                              productId:
-                                                                  freshFruitsresponse
-                                                                      .data![i]
-                                                                      .productId ??
-                                                                  "",
-                                                              screenType:
-                                                                  "back",
-                                                            );
+                                                      context.push(
+                                                        Uri(
+                                                          path:
+                                                              '/productdetail',
+                                                          queryParameters: {
+                                                            'productId':
+                                                                freshFruitsresponse
+                                                                    .data![i]
+                                                                    .productId ??
+                                                                "",
+                                                            'screenType':
+                                                                'back',
                                                           },
-                                                        ),
-                                                      ).then((value) {
-                                                        if (!context.mounted) {
-                                                          return;
-                                                        }
-                                                        context.read<HomeBloc>().add(
-                                                          GetOrganicFruitsEvent(
-                                                            mainCatId:
-                                                                "676431a2edae32578ae6d220",
-                                                            subCatId:
-                                                                "676ad87c756fa03a5d0d0616",
-                                                            mobileNo:
-                                                                phoneNumber,
-                                                          ),
-                                                        );
+                                                        ).toString(),
+                                                      );
+                                                      // Navigator.push(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //     builder: (context) {
+                                                      //       return ProductDetailsScreen(
+                                                      //         productId:
+                                                      //             freshFruitsresponse
+                                                      //                 .data![i]
+                                                      //                 .productId ??
+                                                      //             "",
+                                                      //         screenType:
+                                                      //             "back",
+                                                      //       );
+                                                      //     },
+                                                      //   ),
+                                                      // ).then((value) {
+                                                      //   if (!context.mounted) {
+                                                      //     return;
+                                                      //   }
+                                                      //   context.read<HomeBloc>().add(
+                                                      //     GetOrganicFruitsEvent(
+                                                      //       mainCatId:
+                                                      //           "676431a2edae32578ae6d220",
+                                                      //       subCatId:
+                                                      //           "676ad87c756fa03a5d0d0616",
+                                                      //       mobileNo:
+                                                      //           phoneNumber,
+                                                      //     ),
+                                                      //   );
 
-                                                        context
-                                                            .read<HomeBloc>()
-                                                            .add(
-                                                              GetCartCountEvent(
-                                                                userId: userId,
-                                                              ),
-                                                            );
-                                                        // context
-                                                        //     .read<CounterCubit>()
-                                                        //     .decrement(cartCount);
-                                                        context
-                                                            .read<
-                                                              CounterCubit
-                                                            >()
-                                                            .increment(
-                                                              cartCount,
-                                                            );
-                                                        noOfIteminCart =
-                                                            cartCount;
-                                                      });
+                                                      //   context
+                                                      //       .read<HomeBloc>()
+                                                      //       .add(
+                                                      //         GetCartCountEvent(
+                                                      //           userId: userId,
+                                                      //         ),
+                                                      //       );
+                                                      //   // context
+                                                      //   //     .read<CounterCubit>()
+                                                      //   //     .decrement(cartCount);
+                                                      //   context
+                                                      //       .read<
+                                                      //         CounterCubit
+                                                      //       >()
+                                                      //       .increment(
+                                                      //         cartCount,
+                                                      //       );
+                                                      //   noOfIteminCart =
+                                                      //       cartCount;
+                                                      // });
                                                     },
                                                     child: Container(
                                                       height: 250,
@@ -3281,11 +3327,15 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           freshFruitsresponse.data![i].variants![0].cartQuantity.toString(),
                                                                                           textAlign:
                                                                                               TextAlign.center,
-                                                                                          // style: GoogleFonts.poppins(
-                                                                                          //   color: const Color(0xFF326A32),
-                                                                                          //   fontSize: 14,
-                                                                                          //   fontWeight: FontWeight.w500,
-                                                                                          // ),
+                                                                                          style: GoogleFonts.poppins(
+                                                                                            color: const Color(
+                                                                                              0xFF326A32,
+                                                                                            ),
+                                                                                            fontSize:
+                                                                                                14,
+                                                                                            fontWeight:
+                                                                                                FontWeight.w500,
+                                                                                          ),
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -3382,54 +3432,69 @@ class HomeDesktopScreen extends StatelessWidget {
                                                     hoverColor:
                                                         Colors.transparent,
                                                     onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return ProductDetailsScreen(
-                                                              productId:
-                                                                  groceryEssentialsResponse
-                                                                      .data![i]
-                                                                      .productId ??
-                                                                  "",
-                                                              screenType:
-                                                                  "back",
-                                                            );
+                                                      context.push(
+                                                        Uri(
+                                                          path:
+                                                              '/productdetail',
+                                                          queryParameters: {
+                                                            'productId':
+                                                                groceryEssentialsResponse
+                                                                    .data![i]
+                                                                    .productId ??
+                                                                "",
+                                                            'screenType':
+                                                                'back',
                                                           },
-                                                        ),
-                                                      ).then((value) {
-                                                        if (!context.mounted) {
-                                                          return;
-                                                        }
-                                                        context.read<HomeBloc>().add(
-                                                          GetGroceryEssentialsEvent(
-                                                            subCatId:
-                                                                "676b624a84dd76eac5d33a3e",
-                                                            mobileNo:
-                                                                phoneNumber,
-                                                          ),
-                                                        );
+                                                        ).toString(),
+                                                      );
+                                                      // Navigator.push(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //     builder: (context) {
+                                                      //       return ProductDetailsScreen(
+                                                      //         productId:
+                                                      //             groceryEssentialsResponse
+                                                      //                 .data![i]
+                                                      //                 .productId ??
+                                                      //             "",
+                                                      //         screenType:
+                                                      //             "back",
+                                                      //       );
+                                                      //     },
+                                                      //   ),
+                                                      // ).then((value) {
+                                                      //   if (!context.mounted) {
+                                                      //     return;
+                                                      //   }
+                                                      //   context.read<HomeBloc>().add(
+                                                      //     GetGroceryEssentialsEvent(
+                                                      //       subCatId:
+                                                      //           "676b624a84dd76eac5d33a3e",
+                                                      //       mobileNo:
+                                                      //           phoneNumber,
+                                                      //     ),
+                                                      //   );
 
-                                                        context
-                                                            .read<HomeBloc>()
-                                                            .add(
-                                                              GetCartCountEvent(
-                                                                userId: userId,
-                                                              ),
-                                                            );
-                                                        // context
-                                                        //     .read<CounterCubit>()
-                                                        //     .decrement(cartCount);
-                                                        context
-                                                            .read<
-                                                              CounterCubit
-                                                            >()
-                                                            .increment(
-                                                              cartCount,
-                                                            );
-                                                        noOfIteminCart =
-                                                            cartCount;
-                                                      });
+                                                      //   context
+                                                      //       .read<HomeBloc>()
+                                                      //       .add(
+                                                      //         GetCartCountEvent(
+                                                      //           userId: userId,
+                                                      //         ),
+                                                      //       );
+                                                      //   // context
+                                                      //   //     .read<CounterCubit>()
+                                                      //   //     .decrement(cartCount);
+                                                      //   context
+                                                      //       .read<
+                                                      //         CounterCubit
+                                                      //       >()
+                                                      //       .increment(
+                                                      //         cartCount,
+                                                      //       );
+                                                      //   noOfIteminCart =
+                                                      //       cartCount;
+                                                      // });
                                                     },
                                                     child: Container(
                                                       height: 250,
@@ -3738,11 +3803,15 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           groceryEssentialsResponse.data![i].variants![0].cartQuantity.toString(),
                                                                                           textAlign:
                                                                                               TextAlign.center,
-                                                                                          // style: GoogleFonts.poppins(
-                                                                                          //   color: const Color(0xFF326A32),
-                                                                                          //   fontSize: 14,
-                                                                                          //   fontWeight: FontWeight.w500,
-                                                                                          // ),
+                                                                                          style: GoogleFonts.poppins(
+                                                                                            color: const Color(
+                                                                                              0xFF326A32,
+                                                                                            ),
+                                                                                            fontSize:
+                                                                                                14,
+                                                                                            fontWeight:
+                                                                                                FontWeight.w500,
+                                                                                          ),
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -3840,54 +3909,69 @@ class HomeDesktopScreen extends StatelessWidget {
                                                         Colors.transparent,
 
                                                     onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return ProductDetailsScreen(
-                                                              productId:
-                                                                  nutsDriedFruitsResponse
-                                                                      .data![i]
-                                                                      .productId ??
-                                                                  "",
-                                                              screenType:
-                                                                  "back",
-                                                            );
+                                                      context.push(
+                                                        Uri(
+                                                          path:
+                                                              '/productdetail',
+                                                          queryParameters: {
+                                                            'productId':
+                                                                nutsDriedFruitsResponse
+                                                                    .data![i]
+                                                                    .productId ??
+                                                                "",
+                                                            'screenType':
+                                                                'back',
                                                           },
-                                                        ),
-                                                      ).then((value) {
-                                                        if (!context.mounted) {
-                                                          return;
-                                                        }
-                                                        context.read<HomeBloc>().add(
-                                                          GetNutsDriedFruitsEvent(
-                                                            subCatId:
-                                                                "676b62c484dd76eac5d33a46",
-                                                            mobileNo:
-                                                                phoneNumber,
-                                                          ),
-                                                        );
+                                                        ).toString(),
+                                                      );
+                                                      // Navigator.push(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //     builder: (context) {
+                                                      //       return ProductDetailsScreen(
+                                                      //         productId:
+                                                      //             nutsDriedFruitsResponse
+                                                      //                 .data![i]
+                                                      //                 .productId ??
+                                                      //             "",
+                                                      //         screenType:
+                                                      //             "back",
+                                                      //       );
+                                                      //     },
+                                                      //   ),
+                                                      // ).then((value) {
+                                                      //   if (!context.mounted) {
+                                                      //     return;
+                                                      //   }
+                                                      //   context.read<HomeBloc>().add(
+                                                      //     GetNutsDriedFruitsEvent(
+                                                      //       subCatId:
+                                                      //           "676b62c484dd76eac5d33a46",
+                                                      //       mobileNo:
+                                                      //           phoneNumber,
+                                                      //     ),
+                                                      //   );
 
-                                                        context
-                                                            .read<HomeBloc>()
-                                                            .add(
-                                                              GetCartCountEvent(
-                                                                userId: userId,
-                                                              ),
-                                                            );
-                                                        // context
-                                                        //     .read<CounterCubit>()
-                                                        //     .decrement(cartCount);
-                                                        context
-                                                            .read<
-                                                              CounterCubit
-                                                            >()
-                                                            .increment(
-                                                              cartCount,
-                                                            );
-                                                        noOfIteminCart =
-                                                            cartCount;
-                                                      });
+                                                      //   context
+                                                      //       .read<HomeBloc>()
+                                                      //       .add(
+                                                      //         GetCartCountEvent(
+                                                      //           userId: userId,
+                                                      //         ),
+                                                      //       );
+                                                      //   // context
+                                                      //   //     .read<CounterCubit>()
+                                                      //   //     .decrement(cartCount);
+                                                      //   context
+                                                      //       .read<
+                                                      //         CounterCubit
+                                                      //       >()
+                                                      //       .increment(
+                                                      //         cartCount,
+                                                      //       );
+                                                      //   noOfIteminCart =
+                                                      //       cartCount;
+                                                      // });
                                                     },
                                                     child: Container(
                                                       height: 250,
@@ -4198,11 +4282,15 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           nutsDriedFruitsResponse.data![i].variants![0].cartQuantity.toString(),
                                                                                           textAlign:
                                                                                               TextAlign.center,
-                                                                                          // style: GoogleFonts.poppins(
-                                                                                          //   color: const Color(0xFF326A32),
-                                                                                          //   fontSize: 14,
-                                                                                          //   fontWeight: FontWeight.w500,
-                                                                                          // ),
+                                                                                          style: GoogleFonts.poppins(
+                                                                                            color: const Color(
+                                                                                              0xFF326A32,
+                                                                                            ),
+                                                                                            fontSize:
+                                                                                                14,
+                                                                                            fontWeight:
+                                                                                                FontWeight.w500,
+                                                                                          ),
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -4300,56 +4388,71 @@ class HomeDesktopScreen extends StatelessWidget {
                                                         Colors.transparent,
 
                                                     onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return ProductDetailsScreen(
-                                                              productId:
-                                                                  riceCerealsResponse
-                                                                      .data![i]
-                                                                      .productId ??
-                                                                  "",
-                                                              screenType:
-                                                                  "back",
-                                                            );
+                                                      context.push(
+                                                        Uri(
+                                                          path:
+                                                              '/productdetail',
+                                                          queryParameters: {
+                                                            'productId':
+                                                                riceCerealsResponse
+                                                                    .data![i]
+                                                                    .productId ??
+                                                                "",
+                                                            'screenType':
+                                                                'back',
                                                           },
-                                                        ),
-                                                      ).then((value) {
-                                                        if (!context.mounted) {
-                                                          return;
-                                                        }
-                                                        context.read<HomeBloc>().add(
-                                                          GetRiceCerealsEvent(
-                                                            mainCatId:
-                                                                "676431ddedae32578ae6d222",
-                                                            subCatId:
-                                                                "676b60bd84dd76eac5d33a2a",
-                                                            mobileNo:
-                                                                phoneNumber,
-                                                          ),
-                                                        );
+                                                        ).toString(),
+                                                      );
+                                                      // Navigator.push(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //     builder: (context) {
+                                                      //       return ProductDetailsScreen(
+                                                      //         productId:
+                                                      //             riceCerealsResponse
+                                                      //                 .data![i]
+                                                      //                 .productId ??
+                                                      //             "",
+                                                      //         screenType:
+                                                      //             "back",
+                                                      //       );
+                                                      //     },
+                                                      //   ),
+                                                      // ).then((value) {
+                                                      //   if (!context.mounted) {
+                                                      //     return;
+                                                      //   }
+                                                      //   context.read<HomeBloc>().add(
+                                                      //     GetRiceCerealsEvent(
+                                                      //       mainCatId:
+                                                      //           "676431ddedae32578ae6d222",
+                                                      //       subCatId:
+                                                      //           "676b60bd84dd76eac5d33a2a",
+                                                      //       mobileNo:
+                                                      //           phoneNumber,
+                                                      //     ),
+                                                      //   );
 
-                                                        context
-                                                            .read<HomeBloc>()
-                                                            .add(
-                                                              GetCartCountEvent(
-                                                                userId: userId,
-                                                              ),
-                                                            );
-                                                        // context
-                                                        //     .read<CounterCubit>()
-                                                        //     .decrement(cartCount);
-                                                        context
-                                                            .read<
-                                                              CounterCubit
-                                                            >()
-                                                            .increment(
-                                                              cartCount,
-                                                            );
-                                                        noOfIteminCart =
-                                                            cartCount;
-                                                      });
+                                                      //   context
+                                                      //       .read<HomeBloc>()
+                                                      //       .add(
+                                                      //         GetCartCountEvent(
+                                                      //           userId: userId,
+                                                      //         ),
+                                                      //       );
+                                                      //   // context
+                                                      //   //     .read<CounterCubit>()
+                                                      //   //     .decrement(cartCount);
+                                                      //   context
+                                                      //       .read<
+                                                      //         CounterCubit
+                                                      //       >()
+                                                      //       .increment(
+                                                      //         cartCount,
+                                                      //       );
+                                                      //   noOfIteminCart =
+                                                      //       cartCount;
+                                                      // });
                                                     },
                                                     child: Container(
                                                       height: 250,
@@ -4660,11 +4763,15 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           riceCerealsResponse.data![i].variants![0].cartQuantity.toString(),
                                                                                           textAlign:
                                                                                               TextAlign.center,
-                                                                                          // style: GoogleFonts.poppins(
-                                                                                          //   color: const Color(0xFF326A32),
-                                                                                          //   fontSize: 14,
-                                                                                          //   fontWeight: FontWeight.w500,
-                                                                                          // ),
+                                                                                          style: GoogleFonts.poppins(
+                                                                                            color: const Color(
+                                                                                              0xFF326A32,
+                                                                                            ),
+                                                                                            fontSize:
+                                                                                                14,
+                                                                                            fontWeight:
+                                                                                                FontWeight.w500,
+                                                                                          ),
                                                                                         ),
                                                                                       ),
                                                                                     ),

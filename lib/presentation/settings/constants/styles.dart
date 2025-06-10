@@ -21,7 +21,7 @@ class AppStyles {
     borderRadius: BorderRadius.circular(14),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.25),
+        color: Colors.black,
         blurRadius: 1,
         offset: const Offset(0, 0),
       ),
