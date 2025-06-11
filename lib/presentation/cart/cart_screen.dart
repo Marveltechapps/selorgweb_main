@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
+import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/cart/update_cart_response_model.dart';
 import 'package:selorgweb_main/order/screens/order_status.dart';
@@ -12,6 +13,9 @@ import 'package:selorgweb_main/presentation/cart/cart_state.dart';
 import 'package:selorgweb_main/presentation/category/categories_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:selorgweb_main/presentation/home/home_bloc.dart';
+import 'package:selorgweb_main/presentation/home/home_event.dart' as he;
+import 'package:selorgweb_main/presentation/home/home_state.dart' as hs;
 import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
 import 'package:selorgweb_main/utils/widgets/bottom_categories_bar_widget.dart';
 import 'package:selorgweb_main/utils/widgets/bottom_image_widget.dart';
@@ -481,310 +485,636 @@ class CartScreen extends StatelessWidget {
     );
   }
 
+  static List<SearchedLocationResponse> searchedLocations = [];
+
+  static TextEditingController searchLocationController =
+      TextEditingController();
+
+  void showSearchLocationAlertDialog(BuildContext context, HomeBloc homebloc) {
+    showDialog(
+      context: context,
+      barrierDismissible: !(location == "No Location Found"),
+      builder: (BuildContext context) {
+        return BlocProvider.value(
+          value: homebloc,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return BlocBuilder<HomeBloc, hs.HomeState>(
+                builder: (context, state) {
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.white,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 500,
+                            maxWidth: 500,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 30,
+                            ),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: InkWell(
+                                    onTap: () => Navigator.pop(context),
+                                    child: CircleAvatar(
+                                      radius: 14,
+                                      backgroundColor: appColor,
+                                      child: Icon(
+                                        Icons.close,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: SizedBox(
+                                    height: 45,
+                                    child: TextFormField(
+                                      controller: searchLocationController,
+                                      cursorColor: appColor,
+                                      cursorHeight: 15,
+                                      onChanged: (value) {
+                                        homebloc.add(
+                                          he.SearchLocationEvent(
+                                            searchText: value,
+                                          ),
+                                        );
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: "Search a new address",
+                                        hintStyle:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelMedium,
+                                        prefixIcon: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          child: Icon(
+                                            Icons.search,
+                                            color: Colors.grey,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        prefixIconConstraints: BoxConstraints(
+                                          minWidth: 40,
+                                          minHeight: 40,
+                                        ),
+                                        suffixIcon:
+                                            searchLocationController
+                                                    .text
+                                                    .isNotEmpty
+                                                ? Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                  ),
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      searchLocationController
+                                                          .clear();
+                                                      searchedLocations.clear();
+                                                      context.read<HomeBloc>().add(
+                                                        he.SearchLocationEvent(
+                                                          searchText: "",
+                                                        ),
+                                                      );
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.close,
+                                                      color: Colors.grey,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                )
+                                                : null,
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          vertical: 14,
+                                          horizontal: 12,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.displayMedium,
+                                    ),
+                                  ),
+                                ),
+                                if (searchLocationController.text.isNotEmpty)
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: searchedLocations.length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            children: [
+                                              ListTile(
+                                                title: Text(
+                                                  searchedLocations[index]
+                                                          .structuredFormatting!
+                                                          .mainText ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                subtitle: Text(
+                                                  searchedLocations[index]
+                                                      .description!,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                onTap: () {
+                                                  searchLocationController
+                                                          .text =
+                                                      searchedLocations[index]
+                                                          .description!;
+                                                  context.read<HomeBloc>().add(
+                                                    he.PlaceLocaitonEvent(
+                                                      locationText:
+                                                          "${searchedLocations[index].structuredFormatting!.mainText} - ${searchedLocations[index].structuredFormatting!.secondaryText!.split(",").first}",
+                                                    ),
+                                                  );
+                                                  Navigator.pop(context);
+                                                  // context.read<LocationBloc>().add(
+                                                  //     GetLatLonEvent(
+                                                  //         latitude:
+                                                  //             searchedLocations[index].lat!,
+                                                  //         longitude:
+                                                  //             searchedLocations[index].lon!));
+                                                },
+                                              ),
+                                              Divider(),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                if (searchLocationController.text.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 40.0,
+                                      top: 20,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        homebloc.add(
+                                          he.ContinueLocationEvent(),
+                                        );
+                                        Navigator.pop(context);
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) {
+                                        //       return YourLocationScreen(
+                                        //         screenType:
+                                        //             screenType == "dialog"
+                                        //                 ? "current"
+                                        //                 : screenType,
+                                        //       );
+                                        //     },
+                                        //   ),
+                                        // );
+                                      },
+                                      child: Row(
+                                        spacing: 8,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Image.asset(locationIcon),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "Current Location",
+                                                    style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                "Using GPS",
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width >= 1090;
     final isMobile = MediaQuery.of(context).size.width < 700;
-    return BlocProvider(
-      create: (context) => CartBloc(),
-      child: BlocConsumer<CartBloc, CartState>(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CartBloc()),
+        BlocProvider(create: (context) => HomeBloc()),
+      ],
+      child: BlocConsumer<HomeBloc, hs.HomeState>(
         listener: (context, state) {
-          if (state is CartDataSuccess) {
-            cartResponse = state.cartResponse;
-            debugPrint(cartResponse.items!.length.toString());
-            if (cartResponse.items!.isEmpty) {
-              tipAmount = "0";
-              cartCount = 0;
-            } else {
-              tipAmount = cartResponse.billSummary!.deliveryTip.toString();
-            }
-            cartCount = state.countvalue;
-            context.read<CounterCubit>().increment(cartCount);
-            // debugPrint(state.cartResponse.billSummary!..toString());
-          } else if (state is AddButtonClickedState) {
-            cartResponse.items![state.selectedIndex].quantity =
-                (cartResponse.items![state.selectedIndex].quantity ?? 0) + 1;
-            context.read<CartBloc>().add(
-              AddItemInCartApiEvent(
-                userId: userId,
-                productId:
-                    cartResponse.items![state.selectedIndex].productId!.id ??
-                    "",
-                quantity: 1,
-                variantLabel:
-                    cartResponse.items![state.selectedIndex].variantLabel ?? "",
-                imageUrl:
-                    cartResponse.items![state.selectedIndex].imageUrl ?? "",
-                price: cartResponse.items![state.selectedIndex].price ?? 0,
-                discountPrice:
-                    cartResponse.items![state.selectedIndex].discountPrice ?? 0,
-                delivaryInstructions: "",
-                addNotes: "",
+          if (state is hs.SearchedLocationSuccessState) {
+            searchedLocations = state.searchedLocationResponse;
+          } else if (state is hs.LocationContinueSuccessState) {
+            context.read<HomeBloc>().add(
+              he.GetLocationUsingLatLongFromApiEvent(
+                latitude: state.latitude ?? "",
+                longitude: state.longitude ?? "",
               ),
             );
-          } else if (state is RemoveButtonClickedState) {
-            // cartResponse.items![state.selectedIndex].quantity =
-            //     (cartResponse.items![state.selectedIndex].quantity ?? 0) - 1;
-            context.read<CartBloc>().add(
-              RemoveItemInCartApiEvent(
-                userId: userId,
-                productId:
-                    cartResponse.items![state.selectedIndex].productId!.id ??
-                    "",
-                quantity: 1,
-                variantLabel:
-                    cartResponse.items![state.selectedIndex].variantLabel ?? "",
-                deliveryTip: 0,
-                handlingCharges: 0,
-              ),
-            );
-          } else if (state is ItemAddedToCartState) {
-            context.read<CartBloc>().add(GetCartDetailsEvent(userId: userId));
-          } else if (state is ItemRemovedToCartState) {
-            context.read<CartBloc>().add(GetCartDetailsEvent(userId: userId));
-          } else if (state is SelectedTipState) {
-            tipAmount = state.amount;
-            context.read<CartBloc>().add(
-              UpdateDeliveryTip(tip: tipAmount, userid: userId),
-            );
-            // context.read<CartBloc>().add(UpdateCartDataEvent(
-            //     userId: userId,
-            //     deliveryInstructions: deliveryIns,
-            //     addNotes: additionalNote.text,
-            //     deliveryTip: state.amount,
-            //     deliveryFee: "0"));
-          } else if (state is AddressFetchedSuccessState) {
-            locationType = state.loctionType;
-            address = state.address;
-            debugPrint("Address : ${address.toString()}");
-          } else if (state is PayExpantionState) {
-            expantion = state.isExpand;
-          } else if (state is DelivaryInstructionSelectState) {
-            isOneSelected = state.one;
-            isTwoSelected = state.two;
-          } else if (state is SavedAddressFetchedSuccess) {
-            savedAddressList = [];
-            savedAddressList = state.getSavedAddressResponse.data;
-            if (state.time == "initial") {
-              locationType = savedAddressList![0].label ?? "";
-              address =
-                  "${savedAddressList![0].details!.houseNo}, ${savedAddressList![0].details!.building}, ${savedAddressList![0].details!.landmark}, ${savedAddressList![0].details!.area}, ${savedAddressList![0].details!.city}, ${savedAddressList![0].details!.state}, ${savedAddressList![0].details!.pincode}";
-            } else {
-              showSavedAddressBottomSheet(context, context.read<CartBloc>());
-            }
-          } else if (state is PlaceAddressState) {
-            locationType = state.locationType;
-            address = state.address;
-          } else if (state is UpdateCartStateSuccess) {
-            updateCartResponse = state.updateCartResponse;
-            context.read<CartBloc>().add(GetCartDetailsEvent(userId: userId));
-          } else if (state is UpdateDeliveryTipApiSuccessState) {
-            context.read<CartBloc>().add(GetCartDetailsEvent(userId: userId));
+          } else if (state is hs.LatLongAddressSuccessState) {
+            location =
+                "${state.latLongLocationResponse.results![0].addressComponents![1].shortName} - ${state.latLongLocationResponse.results![0].addressComponents![3].shortName}";
+            debugPrint(location);
+          } else if (state is hs.PlaceLocaitonState) {
+            location = state.locationText;
           }
         },
         builder: (context, state) {
-          if (state is CartInitialState) {
-            cartResponse = CartResponse();
-            cartResponse.items = [];
-            // savedAddressList = [];
-            context.read<CartBloc>().add(GetCartDetailsEvent(userId: userId));
-            context.read<CartBloc>().add(
-              GetSavedAddressFromApiEvent(time: "initial", userId: userId),
-            );
-          }
-          return Scaffold(
-            // backgroundColor: appbackgroundColor,
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  HeaderWidget(isHomeScreen: false),
-                  Padding(
-                    padding:
-                        !isMobile
-                            ? EdgeInsets.symmetric(horizontal: 25, vertical: 10)
-                            : EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxWidth: 1280,
-                        minWidth: 500,
+          return BlocConsumer<CartBloc, CartState>(
+            listener: (context, state) {
+              if (state is CartDataSuccess) {
+                cartResponse = state.cartResponse;
+                debugPrint(cartResponse.items!.length.toString());
+                if (cartResponse.items!.isEmpty) {
+                  tipAmount = "0";
+                  cartCount = 0;
+                } else {
+                  tipAmount = cartResponse.billSummary!.deliveryTip.toString();
+                }
+                cartCount = state.countvalue;
+                context.read<CounterCubit>().increment(cartCount);
+                // debugPrint(state.cartResponse.billSummary!..toString());
+              } else if (state is AddButtonClickedState) {
+                cartResponse.items![state.selectedIndex].quantity =
+                    (cartResponse.items![state.selectedIndex].quantity ?? 0) +
+                    1;
+                context.read<CartBloc>().add(
+                  AddItemInCartApiEvent(
+                    userId: userId,
+                    productId:
+                        cartResponse
+                            .items![state.selectedIndex]
+                            .productId!
+                            .id ??
+                        "",
+                    quantity: 1,
+                    variantLabel:
+                        cartResponse.items![state.selectedIndex].variantLabel ??
+                        "",
+                    imageUrl:
+                        cartResponse.items![state.selectedIndex].imageUrl ?? "",
+                    price: cartResponse.items![state.selectedIndex].price ?? 0,
+                    discountPrice:
+                        cartResponse
+                            .items![state.selectedIndex]
+                            .discountPrice ??
+                        0,
+                    delivaryInstructions: "",
+                    addNotes: "",
+                  ),
+                );
+              } else if (state is RemoveButtonClickedState) {
+                // cartResponse.items![state.selectedIndex].quantity =
+                //     (cartResponse.items![state.selectedIndex].quantity ?? 0) - 1;
+                context.read<CartBloc>().add(
+                  RemoveItemInCartApiEvent(
+                    userId: userId,
+                    productId:
+                        cartResponse
+                            .items![state.selectedIndex]
+                            .productId!
+                            .id ??
+                        "",
+                    quantity: 1,
+                    variantLabel:
+                        cartResponse.items![state.selectedIndex].variantLabel ??
+                        "",
+                    deliveryTip: 0,
+                    handlingCharges: 0,
+                  ),
+                );
+              } else if (state is ItemAddedToCartState) {
+                context.read<CartBloc>().add(
+                  GetCartDetailsEvent(userId: userId),
+                );
+              } else if (state is ItemRemovedToCartState) {
+                context.read<CartBloc>().add(
+                  GetCartDetailsEvent(userId: userId),
+                );
+              } else if (state is SelectedTipState) {
+                tipAmount = state.amount;
+                context.read<CartBloc>().add(
+                  UpdateDeliveryTip(tip: tipAmount, userid: userId),
+                );
+                // context.read<CartBloc>().add(UpdateCartDataEvent(
+                //     userId: userId,
+                //     deliveryInstructions: deliveryIns,
+                //     addNotes: additionalNote.text,
+                //     deliveryTip: state.amount,
+                //     deliveryFee: "0"));
+              } else if (state is AddressFetchedSuccessState) {
+                locationType = state.loctionType;
+                address = state.address;
+                debugPrint("Address : ${address.toString()}");
+              } else if (state is PayExpantionState) {
+                expantion = state.isExpand;
+              } else if (state is DelivaryInstructionSelectState) {
+                isOneSelected = state.one;
+                isTwoSelected = state.two;
+              } else if (state is SavedAddressFetchedSuccess) {
+                savedAddressList = [];
+                savedAddressList = state.getSavedAddressResponse.data;
+                if (state.time == "initial") {
+                  locationType = savedAddressList![0].label ?? "";
+                  address =
+                      "${savedAddressList![0].details!.houseNo}, ${savedAddressList![0].details!.building}, ${savedAddressList![0].details!.landmark}, ${savedAddressList![0].details!.area}, ${savedAddressList![0].details!.city}, ${savedAddressList![0].details!.state}, ${savedAddressList![0].details!.pincode}";
+                } else {
+                  showSavedAddressBottomSheet(
+                    context,
+                    context.read<CartBloc>(),
+                  );
+                }
+              } else if (state is PlaceAddressState) {
+                locationType = state.locationType;
+                address = state.address;
+              } else if (state is UpdateCartStateSuccess) {
+                updateCartResponse = state.updateCartResponse;
+                context.read<CartBloc>().add(
+                  GetCartDetailsEvent(userId: userId),
+                );
+              } else if (state is UpdateDeliveryTipApiSuccessState) {
+                context.read<CartBloc>().add(
+                  GetCartDetailsEvent(userId: userId),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is CartInitialState) {
+                cartResponse = CartResponse();
+                cartResponse.items = [];
+                // savedAddressList = [];
+                context.read<CartBloc>().add(
+                  GetCartDetailsEvent(userId: userId),
+                );
+                context.read<CartBloc>().add(
+                  GetSavedAddressFromApiEvent(time: "initial", userId: userId),
+                );
+              }
+              return Scaffold(
+                // backgroundColor: appbackgroundColor,
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      HeaderWidget(
+                        isHomeScreen: false,
+                        onClick: () {
+                          showSearchLocationAlertDialog(
+                            context,
+                            context.read<HomeBloc>(),
+                          );
+                        },
                       ),
-                      child:
-                          cartResponse
-                                  .items!
-                                  .isEmpty /* || cartResponse.items![index]
-                                                          .quantity ==
-                                                      0
-                                                  ?  */
-                              ? SizedBox(
-                                width: double.infinity,
-                                //color: appColor,
-                                child: Column(
-                                  spacing: 20,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(emptyCartImage),
-                                    Text(
-                                      "Your cart is empty",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium
-                                          ?.copyWith(fontSize: 20),
-                                    ),
-                                    Row(
+                      Padding(
+                        padding:
+                            !isMobile
+                                ? EdgeInsets.symmetric(
+                                  horizontal: 25,
+                                  vertical: 10,
+                                )
+                                : EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: 1280,
+                            minWidth: 500,
+                          ),
+                          child:
+                              cartResponse
+                                      .items!
+                                      .isEmpty /* || cartResponse.items![index]
+                                                                .quantity ==
+                                                            0
+                                                        ?  */
+                                  ? SizedBox(
+                                    width: double.infinity,
+                                    //color: appColor,
+                                    child: Column(
+                                      spacing: 20,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) =>
-                                                        CategoriesScreen(),
+                                        Image.asset(emptyCartImage),
+                                        Text(
+                                          "Your cart is empty",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayMedium
+                                              ?.copyWith(fontSize: 20),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (context) =>
+                                                            CategoriesScreen(),
+                                                  ),
+                                                );
+                                                // Navigator.pop(context);
+                                                // Navigator.pushNamed(context, '/home');
+                                                // selectedIndex = 1;
+                                                // context
+                                                //     .read<CartBloc>()
+                                                //     .add(SelectTipEvent(amount: "0"));
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(
+                                                  0xFF034703,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                minimumSize: const Size(
+                                                  300,
+                                                  50,
+                                                ),
                                               ),
-                                            );
-                                            // Navigator.pop(context);
-                                            // Navigator.pushNamed(context, '/home');
-                                            // selectedIndex = 1;
-                                            // context
-                                            //     .read<CartBloc>()
-                                            //     .add(SelectTipEvent(amount: "0"));
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: const Color(
-                                              0xFF034703,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            minimumSize: const Size(300, 50),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'Browse Now',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium?.copyWith(
-                                                color: Colors.white,
+                                              child: Center(
+                                                child: Text(
+                                                  'Browse Now',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        color: Colors.white,
+                                                      ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              )
-                              : isDesktop
-                              ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    flex: 59,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(22),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40666666),
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1),
+                                  )
+                                  : isDesktop
+                                  ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Flexible(
+                                        flex: 59,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(22),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40666666),
+                                                    blurRadius: 2,
+                                                    offset: Offset(0, 1),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemCount:
-                                                    cartResponse.items!.length,
-                                                itemBuilder: (context, index) {
-                                                  // cartCount = cartResponse.items!.length;
-                                                  return Column(
-                                                    children: [
-                                                      ResponsiveRowColumn(
-                                                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              child: Column(
+                                                children: [
+                                                  ListView.builder(
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount:
+                                                        cartResponse
+                                                            .items!
+                                                            .length,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      // cartCount = cartResponse.items!.length;
+                                                      return Column(
                                                         children: [
-                                                          Row(
+                                                          ResponsiveRowColumn(
+                                                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
-                                                              cartResponse
-                                                                          .items![index]
-                                                                          .imageUrl ==
-                                                                      ""
-                                                                  ? SizedBox()
-                                                                  : ImageNetworkWidget(
-                                                                    url:
-                                                                        cartResponse
-                                                                            .items![index]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    width: 90,
-                                                                    height: 90,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .fitHeight,
-                                                                  ),
-                                                              // Image.network('image', width: isMobile ? 70 : 90),
-                                                              const SizedBox(
-                                                                width: 20,
-                                                              ),
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
+                                                              Row(
                                                                 children: [
-                                                                  Text(
-                                                                    cartResponse.items![index].productId ==
-                                                                            null
-                                                                        ? ""
-                                                                        : cartResponse.items![index].productId!.skuName ??
+                                                                  cartResponse
+                                                                              .items![index]
+                                                                              .imageUrl ==
+                                                                          ""
+                                                                      ? SizedBox()
+                                                                      : ImageNetworkWidget(
+                                                                        url:
+                                                                            cartResponse.items![index].imageUrl ??
                                                                             "",
-                                                                    style: GoogleFonts.poppins(
-                                                                      fontSize:
-                                                                          isMobile
-                                                                              ? 15
-                                                                              : 19,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: const Color(
-                                                                        0xFF444444,
+                                                                        width:
+                                                                            90,
+                                                                        height:
+                                                                            90,
+                                                                        fit:
+                                                                            BoxFit.fitHeight,
                                                                       ),
-                                                                    ),
+                                                                  // Image.network('image', width: isMobile ? 70 : 90),
+                                                                  const SizedBox(
+                                                                    width: 20,
                                                                   ),
-                                                                  Text(
-                                                                    cartResponse
-                                                                            .items![index]
-                                                                            .variantLabel ??
-                                                                        "",
-                                                                    style: GoogleFonts.poppins(
-                                                                      fontSize:
-                                                                          isMobile
-                                                                              ? 10
-                                                                              : 13,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w300,
-                                                                      color: const Color(
-                                                                        0xFF666666,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Row(
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        '₹ ${cartResponse.items![index].discountPrice}',
-                                                                        style: GoogleFonts.inter(
+                                                                        cartResponse.items![index].productId ==
+                                                                                null
+                                                                            ? ""
+                                                                            : cartResponse.items![index].productId!.skuName ??
+                                                                                "",
+                                                                        style: GoogleFonts.poppins(
                                                                           fontSize:
                                                                               isMobile
                                                                                   ? 15
@@ -796,303 +1126,329 @@ class CartScreen extends StatelessWidget {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            8,
-                                                                      ),
                                                                       Text(
-                                                                        '₹ ${cartResponse.items![index].price}',
-                                                                        style: GoogleFonts.inter(
+                                                                        cartResponse.items![index].variantLabel ??
+                                                                            "",
+                                                                        style: GoogleFonts.poppins(
                                                                           fontSize:
                                                                               isMobile
                                                                                   ? 10
                                                                                   : 13,
                                                                           fontWeight:
-                                                                              FontWeight.w400,
+                                                                              FontWeight.w300,
                                                                           color: const Color(
-                                                                            0xFF777777,
+                                                                            0xFF666666,
                                                                           ),
-                                                                          decoration:
-                                                                              TextDecoration.lineThrough,
                                                                         ),
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            '₹ ${cartResponse.items![index].discountPrice}',
+                                                                            style: GoogleFonts.inter(
+                                                                              fontSize:
+                                                                                  isMobile
+                                                                                      ? 15
+                                                                                      : 19,
+                                                                              fontWeight:
+                                                                                  FontWeight.w500,
+                                                                              color: const Color(
+                                                                                0xFF444444,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                8,
+                                                                          ),
+                                                                          Text(
+                                                                            '₹ ${cartResponse.items![index].price}',
+                                                                            style: GoogleFonts.inter(
+                                                                              fontSize:
+                                                                                  isMobile
+                                                                                      ? 10
+                                                                                      : 13,
+                                                                              fontWeight:
+                                                                                  FontWeight.w400,
+                                                                              color: const Color(
+                                                                                0xFF777777,
+                                                                              ),
+                                                                              decoration:
+                                                                                  TextDecoration.lineThrough,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ],
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ],
-                                                          ),
-                                                          Container(
-                                                            constraints:
-                                                                BoxConstraints(
-                                                                  maxWidth: 140,
-                                                                ),
-                                                            height: 30,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                  context,
-                                                                ).size.width /
-                                                                8,
-                                                            decoration: BoxDecoration(
-                                                              color:
-                                                                  const Color(
+                                                              Container(
+                                                                constraints:
+                                                                    BoxConstraints(
+                                                                      maxWidth:
+                                                                          140,
+                                                                    ),
+                                                                height: 30,
+                                                                width:
+                                                                    MediaQuery.of(
+                                                                      context,
+                                                                    ).size.width /
+                                                                    8,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
                                                                     0xFF326A32,
                                                                   ),
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    20,
-                                                                  ),
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceEvenly,
-                                                              children: [
-                                                                Expanded(
-                                                                  child: InkWell(
-                                                                    onTap: () {
-                                                                      context
-                                                                          .read<
-                                                                            CartBloc
-                                                                          >()
-                                                                          .add(
-                                                                            RemoveItemFromCartEvent(
-                                                                              selectedIndex:
-                                                                                  index,
-                                                                            ),
-                                                                          );
-                                                                    },
-                                                                    child: SizedBox(
-                                                                      height:
-                                                                          30,
-                                                                      child: const Icon(
-                                                                        Icons
-                                                                            .remove,
-                                                                        color:
-                                                                            Colors.white,
-                                                                        size:
-                                                                            16,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        20,
                                                                       ),
-                                                                    ),
-                                                                  ),
                                                                 ),
-                                                                Container(
-                                                                  height: 28,
-                                                                  width: 37,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                        color:
-                                                                            Colors.white,
-                                                                      ),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      cartResponse
-                                                                          .items![index]
-                                                                          .quantity
-                                                                          .toString(),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: GoogleFonts.poppins(
-                                                                        color: const Color(
-                                                                          0xFF326A32,
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceEvenly,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          context
+                                                                              .read<
+                                                                                CartBloc
+                                                                              >()
+                                                                              .add(
+                                                                                RemoveItemFromCartEvent(
+                                                                                  selectedIndex:
+                                                                                      index,
+                                                                                ),
+                                                                              );
+                                                                        },
+                                                                        child: SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                          child: const Icon(
+                                                                            Icons.remove,
+                                                                            color:
+                                                                                Colors.white,
+                                                                            size:
+                                                                                16,
+                                                                          ),
                                                                         ),
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: InkWell(
-                                                                    onTap: () {
-                                                                      context
-                                                                          .read<
-                                                                            CartBloc
-                                                                          >()
-                                                                          .add(
-                                                                            AddButtonClikedEvent(
-                                                                              selectedIndex:
-                                                                                  index,
-                                                                            ),
-                                                                          );
-                                                                    },
-                                                                    child: SizedBox(
+                                                                    Container(
                                                                       height:
-                                                                          30,
-                                                                      child: const Icon(
-                                                                        Icons
-                                                                            .add,
-                                                                        color:
-                                                                            Colors.white,
-                                                                        size:
-                                                                            16,
+                                                                          28,
+                                                                      width: 37,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                      child: Center(
+                                                                        child: Text(
+                                                                          cartResponse
+                                                                              .items![index]
+                                                                              .quantity
+                                                                              .toString(),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: GoogleFonts.poppins(
+                                                                            color: const Color(
+                                                                              0xFF326A32,
+                                                                            ),
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
+                                                                    Expanded(
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          context
+                                                                              .read<
+                                                                                CartBloc
+                                                                              >()
+                                                                              .add(
+                                                                                AddButtonClikedEvent(
+                                                                                  selectedIndex:
+                                                                                      index,
+                                                                                ),
+                                                                              );
+                                                                        },
+                                                                        child: SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                          child: const Icon(
+                                                                            Icons.add,
+                                                                            color:
+                                                                                Colors.white,
+                                                                            size:
+                                                                                16,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ],
-                                                            ),
+                                                              ),
+                                                            ],
                                                           ),
+                                                          SizedBox(height: 15),
                                                         ],
-                                                      ),
-                                                      SizedBox(height: 15),
-                                                    ],
-                                                  );
-                                                },
-                                              ),
-                                              const SizedBox(height: 24),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(25),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40666666),
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Delivery Instructions',
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: const Color(
-                                                    0xFF222222,
+                                                      );
+                                                    },
                                                   ),
-                                                ),
+                                                  const SizedBox(height: 24),
+                                                ],
                                               ),
-                                              Text(
-                                                'Delivery partner will be notified',
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color(
-                                                    0xFF666666,
+                                            ),
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(25),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40666666),
+                                                    blurRadius: 2,
+                                                    offset: Offset(0, 1),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                              const SizedBox(height: 16),
-                                              SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                child: Row(
-                                                  textDirection:
-                                                      TextDirection.ltr,
-                                                  children: [
-                                                    InkWell(
-                                                      onTap: () {
-                                                        context
-                                                            .read<CartBloc>()
-                                                            .add(
-                                                              DeliveryInstructionSelectEvent(
-                                                                one: true,
-                                                                two: false,
-                                                              ),
-                                                            );
-                                                        deliveryIns =
-                                                            "No Contact Delivery";
-                                                      },
-                                                      child: DeliveryInstructionBox(
-                                                        icon: ncdsvg,
-                                                        title:
-                                                            'No Contact Delivery',
-                                                        subtitle:
-                                                            'Delivery partner will leave your order at your door',
-                                                        isSelected:
-                                                            isOneSelected,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Delivery Instructions',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: const Color(
+                                                        0xFF222222,
                                                       ),
                                                     ),
-                                                    SizedBox(width: 20),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        context
-                                                            .read<CartBloc>()
-                                                            .add(
-                                                              DeliveryInstructionSelectEvent(
-                                                                one: false,
-                                                                two: true,
-                                                              ),
-                                                            );
-                                                        deliveryIns =
-                                                            "Do Not Ring The Bell";
-                                                      },
-                                                      child: DeliveryInstructionBox(
-                                                        icon: drbsvg,
-                                                        title:
-                                                            'Do Not Ring The Bell',
-                                                        subtitle:
-                                                            'Delivery partner will not ring the bell',
-                                                        isSelected:
-                                                            isTwoSelected,
+                                                  ),
+                                                  Text(
+                                                    'Delivery partner will be notified',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: const Color(
+                                                        0xFF666666,
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(24),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40666666),
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Additional Note',
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: const Color(
-                                                    0xFF222222,
                                                   ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 10),
-                                              TextFormField(
-                                                controller: additionalNote,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: blackColor,
-                                                ),
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
+                                                  const SizedBox(height: 16),
+                                                  SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Row(
+                                                      textDirection:
+                                                          TextDirection.ltr,
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () {
+                                                            context
+                                                                .read<
+                                                                  CartBloc
+                                                                >()
+                                                                .add(
+                                                                  DeliveryInstructionSelectEvent(
+                                                                    one: true,
+                                                                    two: false,
+                                                                  ),
+                                                                );
+                                                            deliveryIns =
+                                                                "No Contact Delivery";
+                                                          },
+                                                          child: DeliveryInstructionBox(
+                                                            icon: ncdsvg,
+                                                            title:
+                                                                'No Contact Delivery',
+                                                            subtitle:
+                                                                'Delivery partner will leave your order at your door',
+                                                            isSelected:
+                                                                isOneSelected,
+                                                          ),
                                                         ),
-                                                    borderSide: BorderSide(
-                                                      color: Color(0xFFAAAAAA),
+                                                        SizedBox(width: 20),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            context
+                                                                .read<
+                                                                  CartBloc
+                                                                >()
+                                                                .add(
+                                                                  DeliveryInstructionSelectEvent(
+                                                                    one: false,
+                                                                    two: true,
+                                                                  ),
+                                                                );
+                                                            deliveryIns =
+                                                                "Do Not Ring The Bell";
+                                                          },
+                                                          child: DeliveryInstructionBox(
+                                                            icon: drbsvg,
+                                                            title:
+                                                                'Do Not Ring The Bell',
+                                                            subtitle:
+                                                                'Delivery partner will not ring the bell',
+                                                            isSelected:
+                                                                isTwoSelected,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Container(
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(24),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40666666),
+                                                    blurRadius: 2,
+                                                    offset: Offset(0, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Additional Note',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: const Color(
+                                                        0xFF222222,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  TextFormField(
+                                                    controller: additionalNote,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: blackColor,
+                                                    ),
+                                                    decoration: InputDecoration(
+                                                      border: OutlineInputBorder(
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               12,
@@ -1101,213 +1457,211 @@ class CartScreen extends StatelessWidget {
                                                           color: Color(
                                                             0xFFAAAAAA,
                                                           ),
-                                                          width: 1.0,
                                                         ),
                                                       ),
-                                                  focusedBorder: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
-                                                    borderSide: BorderSide(
-                                                      color: Color(
-                                                        0xFFAAAAAA,
-                                                      ), // Change this to whatever highlight color you want
-                                                      width: 2.0,
-                                                    ),
-                                                  ),
-                                                  // helperText: 'Add your special notes on your order',
-                                                  hintText:
-                                                      'Add your special notes on your order',
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Flexible(
-                                    flex: 41,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 23,
-                                            vertical: 10,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40666666),
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              showLocationMainAlertDialog(
-                                                context,
-                                              );
-                                            },
-                                            // () => showDialog(
-                                            //   context: context,
-                                            //   builder: (_) => const CouponPopup(),
-                                            // ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      couponImage,
-                                                      width: 39,
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Text(
-                                                      'View Coupons & Offers',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize:
-                                                                isMobile
-                                                                    ? 12
-                                                                    : 16,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: const Color(
-                                                              0xFF444444,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_rounded,
-                                                  color: const Color(
-                                                    0xFF666666,
-                                                  ),
-                                                  size: 16,
-                                                ),
-                                                // Image.network(
-                                                //   'https://cdn.builder.io/api/v1/image/assets/06096b941d4746ae854b71463e363371/fd21dedf63ca3d820a922f365814eef0f412a62e?placeholderIfAbsent=true',
-                                                //   width: 30,
-                                                // ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 7),
-                                        Container(
-                                          width: double.infinity,
-                                          // constraints: BoxConstraints(maxWidth: 523),
-                                          decoration:
-                                              DeliveryTipStyles.cardDecoration,
-                                          padding: EdgeInsets.fromLTRB(
-                                            21,
-                                            19,
-                                            21,
-                                            19,
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                  maxWidth: 451,
-                                                ),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            'Delivery Partner Tip',
-                                                            style:
-                                                                DeliveryTipStyles
-                                                                    .titleStyle,
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          tipAmount == "0"
-                                                              ? Text(
-                                                                "This amount goes to your delivery partner.",
-                                                                style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  color:
-                                                                      blackColor,
-                                                                ),
-                                                              )
-                                                              : Text(
-                                                                "We thank you for your generosity!",
-                                                                style:
-                                                                    DeliveryTipStyles
-                                                                        .subtitleStyle,
-                                                              ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 55),
-                                                    tipAmount == "0"
-                                                        ? SizedBox()
-                                                        : Container(
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 7,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            color:
-                                                                DeliveryTipStyles
-                                                                    .lightGreen,
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
                                                             borderRadius:
                                                                 BorderRadius.circular(
-                                                                  6,
+                                                                  12,
+                                                                ),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                  color: Color(
+                                                                    0xFFAAAAAA,
+                                                                  ),
+                                                                  width: 1.0,
                                                                 ),
                                                           ),
+                                                      focusedBorder: OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Color(
+                                                            0xFFAAAAAA,
+                                                          ), // Change this to whatever highlight color you want
+                                                          width: 2.0,
+                                                        ),
+                                                      ),
+                                                      // helperText: 'Add your special notes on your order',
+                                                      hintText:
+                                                          'Add your special notes on your order',
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Flexible(
+                                        flex: 41,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 23,
+                                                    vertical: 10,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40666666),
+                                                    blurRadius: 2,
+                                                    offset: Offset(0, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  showLocationMainAlertDialog(
+                                                    context,
+                                                  );
+                                                },
+                                                // () => showDialog(
+                                                //   context: context,
+                                                //   builder: (_) => const CouponPopup(),
+                                                // ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          couponImage,
+                                                          width: 39,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          'View Coupons & Offers',
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize:
+                                                                    isMobile
+                                                                        ? 12
+                                                                        : 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color:
+                                                                    const Color(
+                                                                      0xFF444444,
+                                                                    ),
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_rounded,
+                                                      color: const Color(
+                                                        0xFF666666,
+                                                      ),
+                                                      size: 16,
+                                                    ),
+                                                    // Image.network(
+                                                    //   'https://cdn.builder.io/api/v1/image/assets/06096b941d4746ae854b71463e363371/fd21dedf63ca3d820a922f365814eef0f412a62e?placeholderIfAbsent=true',
+                                                    //   width: 30,
+                                                    // ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 7),
+                                            Container(
+                                              width: double.infinity,
+                                              // constraints: BoxConstraints(maxWidth: 523),
+                                              decoration:
+                                                  DeliveryTipStyles
+                                                      .cardDecoration,
+                                              padding: EdgeInsets.fromLTRB(
+                                                21,
+                                                19,
+                                                21,
+                                                19,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Container(
+                                                    constraints: BoxConstraints(
+                                                      maxWidth: 451,
+                                                    ),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Expanded(
                                                           child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
-                                                              RichText(
-                                                                text: TextSpan(
-                                                                  text: '₹',
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w700,
-                                                                    color:
+                                                              Text(
+                                                                'Delivery Partner Tip',
+                                                                style:
+                                                                    DeliveryTipStyles
+                                                                        .titleStyle,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              tipAmount == "0"
+                                                                  ? Text(
+                                                                    "This amount goes to your delivery partner.",
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color:
+                                                                          blackColor,
+                                                                    ),
+                                                                  )
+                                                                  : Text(
+                                                                    "We thank you for your generosity!",
+                                                                    style:
                                                                         DeliveryTipStyles
-                                                                            .textGrey,
-                                                                    height:
-                                                                        15.6 /
-                                                                        12,
+                                                                            .subtitleStyle,
                                                                   ),
-                                                                  children: <
-                                                                    TextSpan
-                                                                  >[
-                                                                    TextSpan(
-                                                                      text:
-                                                                          tipAmount
-                                                                              .split(
-                                                                                ".",
-                                                                              )
-                                                                              .first
-                                                                              .toString(),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 55),
+                                                        tipAmount == "0"
+                                                            ? SizedBox()
+                                                            : Container(
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical: 7,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    DeliveryTipStyles
+                                                                        .lightGreen,
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      6,
+                                                                    ),
+                                                              ),
+                                                              child: Column(
+                                                                children: [
+                                                                  RichText(
+                                                                    text: TextSpan(
+                                                                      text: '₹',
                                                                       style: TextStyle(
-                                                                        fontFamily:
-                                                                            'Poppins',
                                                                         fontSize:
                                                                             12,
                                                                         fontWeight:
@@ -1318,114 +1672,32 @@ class CartScreen extends StatelessWidget {
                                                                             15.6 /
                                                                             12,
                                                                       ),
+                                                                      children: <
+                                                                        TextSpan
+                                                                      >[
+                                                                        TextSpan(
+                                                                          text:
+                                                                              tipAmount.split(".").first.toString(),
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            color:
+                                                                                DeliveryTipStyles.textGrey,
+                                                                            height:
+                                                                                15.6 /
+                                                                                12,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                'Tipped',
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  color:
-                                                                      DeliveryTipStyles
-                                                                          .textGrey,
-                                                                  height:
-                                                                      15.6 / 12,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(height: 21),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  // left: 20,
-                                                ),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Wrap(
-                                                    alignment:
-                                                        WrapAlignment
-                                                            .start, // Ensures items start from the left
-                                                    spacing: 6,
-                                                    runSpacing: 6,
-                                                    children: [
-                                                      ...tipOptions.map(
-                                                        (
-                                                          value,
-                                                        ) => IntrinsicWidth(
-                                                          child: GestureDetector(
-                                                            onTap: () {
-                                                              debugPrint(
-                                                                value
-                                                                    .toString(),
-                                                              );
-                                                              context
-                                                                  .read<
-                                                                    CartBloc
-                                                                  >()
-                                                                  .add(
-                                                                    SelectTipEvent(
-                                                                      amount:
-                                                                          value
-                                                                              .toString(),
-                                                                    ),
-                                                                  );
-                                                            },
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        12,
-                                                                    vertical: 7,
                                                                   ),
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    tipAmount ==
-                                                                            value
-                                                                                .toString()
-                                                                        ? DeliveryTipStyles
-                                                                            .lightGreen
-                                                                        : Colors
-                                                                            .white,
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      20,
-                                                                    ),
-                                                                border: Border.all(
-                                                                  color:
-                                                                      tipAmount ==
-                                                                              value.toString()
-                                                                          ? appColor
-                                                                          : DeliveryTipStyles.borderGrey,
-                                                                ),
-                                                              ),
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center, // Align contents properly
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min, // Avoid stretching
-                                                                children: [
-                                                                  Image.asset(
-                                                                    tipsImage,
-                                                                    width: 18,
-                                                                    height: 14,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    width: 1,
-                                                                  ), // Added spacing manually
                                                                   Text(
-                                                                    '₹${value.toInt()}',
-                                                                    style: GoogleFonts.inter(
+                                                                    'Tipped',
+                                                                    style: GoogleFonts.poppins(
                                                                       fontSize:
                                                                           12,
                                                                       fontWeight:
@@ -1442,225 +1714,339 @@ class CartScreen extends StatelessWidget {
                                                                 ],
                                                               ),
                                                             ),
-                                                          ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 21),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          // left: 20,
                                                         ),
-                                                      ),
-                                                      IntrinsicWidth(
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            context
-                                                                .read<
-                                                                  CartBloc
-                                                                >()
-                                                                .add(
-                                                                  SelectTipEvent(
-                                                                    amount: "0",
-                                                                  ),
-                                                                );
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets.symmetric(
-                                                                  horizontal:
-                                                                      12,
-                                                                  vertical: 7,
-                                                                ),
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  'Cancel',
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    letterSpacing:
-                                                                        0.8,
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Wrap(
+                                                        alignment:
+                                                            WrapAlignment
+                                                                .start, // Ensures items start from the left
+                                                        spacing: 6,
+                                                        runSpacing: 6,
+                                                        children: [
+                                                          ...tipOptions.map(
+                                                            (
+                                                              value,
+                                                            ) => IntrinsicWidth(
+                                                              child: GestureDetector(
+                                                                onTap: () {
+                                                                  debugPrint(
+                                                                    value
+                                                                        .toString(),
+                                                                  );
+                                                                  context
+                                                                      .read<
+                                                                        CartBloc
+                                                                      >()
+                                                                      .add(
+                                                                        SelectTipEvent(
+                                                                          amount:
+                                                                              value.toString(),
+                                                                        ),
+                                                                      );
+                                                                },
+                                                                child: Container(
+                                                                  padding:
+                                                                      const EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            12,
+                                                                        vertical:
+                                                                            7,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
                                                                     color:
-                                                                        Colors
-                                                                            .red,
+                                                                        tipAmount ==
+                                                                                value.toString()
+                                                                            ? DeliveryTipStyles.lightGreen
+                                                                            : Colors.white,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          20,
+                                                                        ),
+                                                                    border: Border.all(
+                                                                      color:
+                                                                          tipAmount ==
+                                                                                  value.toString()
+                                                                              ? appColor
+                                                                              : DeliveryTipStyles.borderGrey,
+                                                                    ),
+                                                                  ),
+                                                                  child: Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center, // Align contents properly
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min, // Avoid stretching
+                                                                    children: [
+                                                                      Image.asset(
+                                                                        tipsImage,
+                                                                        width:
+                                                                            18,
+                                                                        height:
+                                                                            14,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            1,
+                                                                      ), // Added spacing manually
+                                                                      Text(
+                                                                        '₹${value.toInt()}',
+                                                                        style: GoogleFonts.inter(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight.w700,
+                                                                          color:
+                                                                              DeliveryTipStyles.textGrey,
+                                                                          height:
+                                                                              15.6 /
+                                                                              12,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                              ],
+                                                              ),
                                                             ),
                                                           ),
+                                                          IntrinsicWidth(
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                context
+                                                                    .read<
+                                                                      CartBloc
+                                                                    >()
+                                                                    .add(
+                                                                      SelectTipEvent(
+                                                                        amount:
+                                                                            "0",
+                                                                      ),
+                                                                    );
+                                                              },
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          7,
+                                                                    ),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      'Cancel',
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        letterSpacing:
+                                                                            0.8,
+                                                                        color:
+                                                                            Colors.red,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            // _buildDeliveryTipSection(),
+                                            const SizedBox(height: 7),
+                                            //sperate
+                                            Container(
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(17),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40666666),
+                                                    blurRadius: 2,
+                                                    offset: Offset(0, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Bill Summary',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 19,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 7,
+                                                              vertical: 8,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          color: const Color(
+                                                            0xFF034703,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                        ),
+                                                        child: Text(
+                                                          'Saved ₹${cartResponse.billSummary!.savings ?? 0}',
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 15,
+                                                                color:
+                                                                    const Color(
+                                                                      0xFFE7F9E7,
+                                                                    ),
+                                                              ),
                                                         ),
                                                       ),
                                                     ],
                                                   ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        // _buildDeliveryTipSection(),
-                                        const SizedBox(height: 7),
-                                        //sperate
-                                        Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(17),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40666666),
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'Bill Summary',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 19,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: const Color(
-                                                        0xFF222222,
-                                                      ),
-                                                    ),
+                                                  const SizedBox(height: 17),
+                                                  buildBillItem(
+                                                    title: 'Item Total & GST',
+                                                    // originalPrice: '₹96',
+                                                    price:
+                                                        '₹${cartResponse.billSummary!.itemTotal! + cartResponse.billSummary!.gst!.toInt()}',
+                                                    showInfo: true,
+                                                    context: context,
                                                   ),
-                                                  const SizedBox(width: 6),
+                                                  buildBillItem(
+                                                    title: 'Handling charge',
+                                                    // originalPrice: '₹15',
+                                                    price:
+                                                        '₹${cartResponse.billSummary?.handlingCharges}',
+                                                    context: context,
+                                                  ),
+                                                  buildBillItem(
+                                                    title: 'Delivery Fee',
+                                                    // originalPrice: '₹35',
+                                                    price:
+                                                        '₹${cartResponse.billSummary?.deliveryFee}',
+                                                    context: context,
+                                                  ),
+                                                  buildBillItem(
+                                                    title: 'Delivery Tip',
+                                                    price:
+                                                        '₹${cartResponse.billSummary?.deliveryTip}',
+                                                    context: context,
+                                                  ),
                                                   Container(
-                                                    padding:
+                                                    height: 1,
+                                                    color: const Color(
+                                                      0xFFD9D4D4,
+                                                    ),
+                                                    margin:
                                                         const EdgeInsets.symmetric(
-                                                          horizontal: 7,
                                                           vertical: 8,
                                                         ),
-                                                    decoration: BoxDecoration(
-                                                      color: const Color(
-                                                        0xFF034703,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      'Saved ₹${cartResponse.billSummary!.savings ?? 0}',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 15,
-                                                            color: const Color(
-                                                              0xFFE7F9E7,
-                                                            ),
-                                                          ),
-                                                    ),
                                                   ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 17),
-                                              buildBillItem(
-                                                title: 'Item Total & GST',
-                                                // originalPrice: '₹96',
-                                                price:
-                                                    '₹${cartResponse.billSummary!.itemTotal! + cartResponse.billSummary!.gst!.toInt()}',
-                                                showInfo: true,
-                                                context: context,
-                                              ),
-                                              buildBillItem(
-                                                title: 'Handling charge',
-                                                // originalPrice: '₹15',
-                                                price:
-                                                    '₹${cartResponse.billSummary?.handlingCharges}',
-                                                context: context,
-                                              ),
-                                              buildBillItem(
-                                                title: 'Delivery Fee',
-                                                // originalPrice: '₹35',
-                                                price:
-                                                    '₹${cartResponse.billSummary?.deliveryFee}',
-                                                context: context,
-                                              ),
-                                              buildBillItem(
-                                                title: 'Delivery Tip',
-                                                price:
-                                                    '₹${cartResponse.billSummary?.deliveryTip}',
-                                                context: context,
-                                              ),
-                                              Container(
-                                                height: 1,
-                                                color: const Color(0xFFD9D4D4),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                      vertical: 8,
-                                                    ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    'Total Bill',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 19,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: const Color(
-                                                        0xFF222222,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '₹${cartResponse.billSummary?.totalBill}',
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 19,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: const Color(
-                                                        0xFF222222,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 7),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: isMobile ? 10 : 35,
-                                            vertical: 18,
-                                          ),
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40666666),
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child:
-                                              address != ""
-                                                  // address added
-                                                  ? Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                      Text(
+                                                        'Total Bill',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 19,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                      Text(
+                                                        '₹${cartResponse.billSummary?.totalBill}',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                              fontSize: 19,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF222222,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 7),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: isMobile ? 10 : 35,
+                                                vertical: 18,
+                                              ),
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40666666),
+                                                    blurRadius: 2,
+                                                    offset: Offset(0, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              child:
+                                                  address != ""
+                                                      // address added
+                                                      ? Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
-                                                          SizedBox(
-                                                            width:
-                                                                isMobile
-                                                                    ? 150
-                                                                    : 220,
-                                                            child: Text(
-                                                              address,
-                                                              style:
-                                                                  GoogleFonts.poppins(
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              SizedBox(
+                                                                width:
+                                                                    isMobile
+                                                                        ? 150
+                                                                        : 220,
+                                                                child: Text(
+                                                                  address,
+                                                                  style: GoogleFonts.poppins(
                                                                     color: Color(
                                                                       0xFF666666,
                                                                     ),
@@ -1668,42 +2054,206 @@ class CartScreen extends StatelessWidget {
                                                                         15,
                                                                   ),
 
-                                                              maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                spacing:
+                                                                    isMobile
+                                                                        ? 5
+                                                                        : 10,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  SvgPicture.string(
+                                                                    '''
+                            <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
+                fill="#034703"/>
+                </svg>
+                
+                            ''',
+                                                                    width: 20,
+                                                                    height: 22,
+                                                                  ),
+                                                                  Text(
+                                                                    'Change',
+                                                                    style: GoogleFonts.poppins(
+                                                                      color: const Color(
+                                                                        0xFF034703,
+                                                                      ),
+                                                                      fontSize:
+                                                                          isMobile
+                                                                              ? 12
+                                                                              : 14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      height:
+                                                                          1.32, // 29/22
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 27,
                                                           ),
                                                           Row(
-                                                            spacing:
-                                                                isMobile
-                                                                    ? 5
-                                                                    : 10,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Column(
+                                                                children: [
+                                                                  Text(
+                                                                    'To Pay',
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color:
+                                                                          const Color.fromRGBO(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0.75,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    '₹${cartResponse.billSummary?.totalBill}',
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize:
+                                                                          24,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color:
+                                                                          const Color.fromRGBO(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0.85,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  // showAddressPopup(context);
+                                                                  // showConfirmAddress(
+                                                                  //   context,
+                                                                  // );
+                                                                  Navigator.push<
+                                                                    void
+                                                                  >(
+                                                                    context,
+                                                                    MaterialPageRoute<
+                                                                      void
+                                                                    >(
+                                                                      builder:
+                                                                          (
+                                                                            BuildContext
+                                                                            context,
+                                                                          ) =>
+                                                                              OrderStatus(),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                style: ElevatedButton.styleFrom(
+                                                                  // backgroundColor: Colors.green,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          36,
+                                                                        ),
+                                                                  ),
+                                                                  backgroundColor:
+                                                                      const Color(
+                                                                        0xFF034703,
+                                                                      ),
+                                                                ),
+                                                                child: Container(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        isMobile
+                                                                            ? 0
+                                                                            : 10,
+                                                                  ),
+                                                                  // width: double.infinity,
+                                                                  height: 45,
+                                                                  decoration:
+                                                                      BoxDecoration(),
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                      'Continue to Payment',
+                                                                      style: GoogleFonts.poppins(
+                                                                        color:
+                                                                            Colors.white,
+                                                                        fontSize:
+                                                                            isMobile
+                                                                                ? 12
+                                                                                : 16,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                        height:
+                                                                            0.81, // 14.5/18
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      )
+                                                      : Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Row(
+                                                            spacing: 20,
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .center,
                                                             children: [
                                                               SvgPicture.string(
                                                                 '''
-                      <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
-          fill="#034703"/>
-          </svg>
-          
-                      ''',
-                                                                width: 20,
-                                                                height: 22,
+                            <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
+                fill="#034703"/>
+                </svg>
+                
+                            ''',
+                                                                width:
+                                                                    isMobile
+                                                                        ? 22
+                                                                        : 24,
+                                                                height:
+                                                                    isMobile
+                                                                        ? 24
+                                                                        : 26,
                                                               ),
                                                               Text(
-                                                                'Change',
+                                                                'Enter your Delivery Address',
                                                                 style: GoogleFonts.poppins(
                                                                   color: const Color(
                                                                     0xFF034703,
                                                                   ),
                                                                   fontSize:
                                                                       isMobile
-                                                                          ? 12
-                                                                          : 14,
+                                                                          ? 14
+                                                                          : 18,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -1713,73 +2263,15 @@ class CartScreen extends StatelessWidget {
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 27,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Column(
-                                                            children: [
-                                                              Text(
-                                                                'To Pay',
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color:
-                                                                      const Color.fromRGBO(
-                                                                        0,
-                                                                        0,
-                                                                        0,
-                                                                        0.75,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                '₹${cartResponse.billSummary?.totalBill}',
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 24,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      const Color.fromRGBO(
-                                                                        0,
-                                                                        0,
-                                                                        0,
-                                                                        0.85,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ],
+                                                          const SizedBox(
+                                                            height: 27,
                                                           ),
                                                           ElevatedButton(
                                                             onPressed: () {
-                                                              // showAddressPopup(context);
-                                                              // showConfirmAddress(
-                                                              //   context,
-                                                              // );
-                                                              Navigator.push<
-                                                                void
-                                                              >(
+                                                              showAddressPopup(
                                                                 context,
-                                                                MaterialPageRoute<
-                                                                  void
-                                                                >(
-                                                                  builder:
-                                                                      (
-                                                                        BuildContext
-                                                                        context,
-                                                                      ) =>
-                                                                          OrderStatus(),
-                                                                ),
                                                               );
+                                                              // showConfirmAddress(context);
                                                             },
                                                             style: ElevatedButton.styleFrom(
                                                               // backgroundColor: Colors.green,
@@ -1795,28 +2287,21 @@ class CartScreen extends StatelessWidget {
                                                                   ),
                                                             ),
                                                             child: Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        isMobile
-                                                                            ? 0
-                                                                            : 10,
-                                                                  ),
-                                                              // width: double.infinity,
+                                                              width:
+                                                                  double
+                                                                      .infinity,
                                                               height: 45,
                                                               decoration:
                                                                   BoxDecoration(),
                                                               child: Center(
                                                                 child: Text(
-                                                                  'Continue to Payment',
+                                                                  'Add Address to Proceed',
                                                                   style: GoogleFonts.poppins(
                                                                     color:
                                                                         Colors
                                                                             .white,
                                                                     fontSize:
-                                                                        isMobile
-                                                                            ? 12
-                                                                            : 16,
+                                                                        16,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -1829,290 +2314,170 @@ class CartScreen extends StatelessWidget {
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
-                                                  )
-                                                  : Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        spacing: 20,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          SvgPicture.string(
-                                                            '''
-                      <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
-          fill="#034703"/>
-          </svg>
-          
-                      ''',
-                                                            width:
-                                                                isMobile
-                                                                    ? 22
-                                                                    : 24,
-                                                            height:
-                                                                isMobile
-                                                                    ? 24
-                                                                    : 26,
-                                                          ),
-                                                          Text(
-                                                            'Enter your Delivery Address',
-                                                            style: GoogleFonts.poppins(
-                                                              color:
-                                                                  const Color(
-                                                                    0xFF034703,
-                                                                  ),
-                                                              fontSize:
-                                                                  isMobile
-                                                                      ? 14
-                                                                      : 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              height:
-                                                                  1.32, // 29/22
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 27,
-                                                      ),
-                                                      ElevatedButton(
-                                                        onPressed: () {
-                                                          showAddressPopup(
-                                                            context,
-                                                          );
-                                                          // showConfirmAddress(context);
-                                                        },
-                                                        style: ElevatedButton.styleFrom(
-                                                          // backgroundColor: Colors.green,
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  36,
-                                                                ),
-                                                          ),
-                                                          backgroundColor:
-                                                              const Color(
-                                                                0xFF034703,
-                                                              ),
-                                                        ),
-                                                        child: Container(
-                                                          width:
-                                                              double.infinity,
-                                                          height: 45,
-                                                          decoration:
-                                                              BoxDecoration(),
-                                                          child: Center(
-                                                            child: Text(
-                                                              'Add Address to Proceed',
-                                                              style: GoogleFonts.poppins(
-                                                                color:
-                                                                    Colors
-                                                                        .white,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                height:
-                                                                    0.81, // 14.5/18
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                        ),
-                                        // _buildAddressSection(),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                              : Wrap(
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 23,
-                                          vertical: 10,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
                                             ),
+                                            // _buildAddressSection(),
                                           ],
-                                        ),
-                                        child: InkWell(
-                                          onTap: () {
-                                            showLocationMainAlertDialog(
-                                              context,
-                                            );
-                                          },
-                                          // () => showDialog(
-                                          //   context: context,
-                                          //   builder: (_) => const CouponPopup(),
-                                          // ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    couponImage,
-                                                    width: 39,
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  Text(
-                                                    'View Coupons & Offers',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize:
-                                                          isMobile ? 12 : 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: const Color(
-                                                        0xFF444444,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Icon(
-                                                Icons.arrow_forward_ios_rounded,
-                                                color: const Color(0xFF666666),
-                                                size: 16,
-                                              ),
-                                              // Image.network(
-                                              //   'https://cdn.builder.io/api/v1/image/assets/06096b941d4746ae854b71463e363371/fd21dedf63ca3d820a922f365814eef0f412a62e?placeholderIfAbsent=true',
-                                              //   width: 30,
-                                              // ),
-                                            ],
-                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 7),
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(22),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
+                                    ],
+                                  )
+                                  : Wrap(
+                                    // crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 23,
+                                              vertical: 10,
                                             ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            ListView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              itemCount:
-                                                  cartResponse.items!.length,
-                                              itemBuilder: (context, index) {
-                                                // cartCount = cartResponse.items!.length;
-                                                return Column(
-                                                  children: [
-                                                    ResponsiveRowColumn(
-                                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child: InkWell(
+                                              onTap: () {
+                                                showLocationMainAlertDialog(
+                                                  context,
+                                                );
+                                              },
+                                              // () => showDialog(
+                                              //   context: context,
+                                              //   builder: (_) => const CouponPopup(),
+                                              // ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        couponImage,
+                                                        width: 39,
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      Text(
+                                                        'View Coupons & Offers',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize:
+                                                                  isMobile
+                                                                      ? 12
+                                                                      : 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF444444,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_rounded,
+                                                    color: const Color(
+                                                      0xFF666666,
+                                                    ),
+                                                    size: 16,
+                                                  ),
+                                                  // Image.network(
+                                                  //   'https://cdn.builder.io/api/v1/image/assets/06096b941d4746ae854b71463e363371/fd21dedf63ca3d820a922f365814eef0f412a62e?placeholderIfAbsent=true',
+                                                  //   width: 30,
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 7),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.all(22),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  itemCount:
+                                                      cartResponse
+                                                          .items!
+                                                          .length,
+                                                  itemBuilder: (
+                                                    context,
+                                                    index,
+                                                  ) {
+                                                    // cartCount = cartResponse.items!.length;
+                                                    return Column(
                                                       children: [
-                                                        Row(
+                                                        ResponsiveRowColumn(
+                                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            cartResponse
-                                                                        .items![index]
-                                                                        .imageUrl ==
-                                                                    ""
-                                                                ? SizedBox()
-                                                                : ImageNetworkWidget(
-                                                                  url:
-                                                                      cartResponse
-                                                                          .items![index]
-                                                                          .imageUrl ??
-                                                                      "",
+                                                            Row(
+                                                              children: [
+                                                                cartResponse
+                                                                            .items![index]
+                                                                            .imageUrl ==
+                                                                        ""
+                                                                    ? SizedBox()
+                                                                    : ImageNetworkWidget(
+                                                                      url:
+                                                                          cartResponse
+                                                                              .items![index]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      width:
+                                                                          isMobile
+                                                                              ? 70
+                                                                              : 90,
+                                                                      height:
+                                                                          isMobile
+                                                                              ? 70
+                                                                              : 90,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .fitHeight,
+                                                                    ),
+                                                                // Image.network('image', width: isMobile ? 70 : 90),
+                                                                const SizedBox(
+                                                                  width: 20,
+                                                                ),
+                                                                SizedBox(
                                                                   width:
                                                                       isMobile
-                                                                          ? 70
-                                                                          : 90,
-                                                                  height:
-                                                                      isMobile
-                                                                          ? 70
-                                                                          : 90,
-                                                                  fit:
-                                                                      BoxFit
-                                                                          .fitHeight,
-                                                                ),
-                                                            // Image.network('image', width: isMobile ? 70 : 90),
-                                                            const SizedBox(
-                                                              width: 20,
-                                                            ),
-                                                            SizedBox(
-                                                              width:
-                                                                  isMobile
-                                                                      ? 100
-                                                                      : 200,
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    cartResponse.items![index].productId ==
-                                                                            null
-                                                                        ? ""
-                                                                        : cartResponse.items![index].productId!.skuName ??
-                                                                            "",
-                                                                    style: GoogleFonts.poppins(
-                                                                      fontSize:
-                                                                          isMobile
-                                                                              ? 15
-                                                                              : 19,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: const Color(
-                                                                        0xFF444444,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    cartResponse
-                                                                            .items![index]
-                                                                            .variantLabel ??
-                                                                        "",
-                                                                    style: GoogleFonts.poppins(
-                                                                      fontSize:
-                                                                          isMobile
-                                                                              ? 10
-                                                                              : 13,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w300,
-                                                                      color: const Color(
-                                                                        0xFF666666,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Row(
+                                                                          ? 100
+                                                                          : 200,
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        '₹ ${cartResponse.items![index].discountPrice}',
-                                                                        style: GoogleFonts.inter(
+                                                                        cartResponse.items![index].productId ==
+                                                                                null
+                                                                            ? ""
+                                                                            : cartResponse.items![index].productId!.skuName ??
+                                                                                "",
+                                                                        style: GoogleFonts.poppins(
                                                                           fontSize:
                                                                               isMobile
                                                                                   ? 15
@@ -2124,257 +2489,270 @@ class CartScreen extends StatelessWidget {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            8,
-                                                                      ),
                                                                       Text(
-                                                                        '₹ ${cartResponse.items![index].price}',
-                                                                        style: GoogleFonts.inter(
+                                                                        cartResponse.items![index].variantLabel ??
+                                                                            "",
+                                                                        style: GoogleFonts.poppins(
                                                                           fontSize:
                                                                               isMobile
                                                                                   ? 10
                                                                                   : 13,
                                                                           fontWeight:
-                                                                              FontWeight.w400,
+                                                                              FontWeight.w300,
                                                                           color: const Color(
-                                                                            0xFF777777,
+                                                                            0xFF666666,
                                                                           ),
-                                                                          decoration:
-                                                                              TextDecoration.lineThrough,
                                                                         ),
                                                                       ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            '₹ ${cartResponse.items![index].discountPrice}',
+                                                                            style: GoogleFonts.inter(
+                                                                              fontSize:
+                                                                                  isMobile
+                                                                                      ? 15
+                                                                                      : 19,
+                                                                              fontWeight:
+                                                                                  FontWeight.w500,
+                                                                              color: const Color(
+                                                                                0xFF444444,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                8,
+                                                                          ),
+                                                                          Text(
+                                                                            '₹ ${cartResponse.items![index].price}',
+                                                                            style: GoogleFonts.inter(
+                                                                              fontSize:
+                                                                                  isMobile
+                                                                                      ? 10
+                                                                                      : 13,
+                                                                              fontWeight:
+                                                                                  FontWeight.w400,
+                                                                              color: const Color(
+                                                                                0xFF777777,
+                                                                              ),
+                                                                              decoration:
+                                                                                  TextDecoration.lineThrough,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                    context,
+                                                                  ).size.width /
+                                                                  4,
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    const Color(
+                                                                      0xFF326A32,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceEvenly,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: InkWell(
+                                                                      onTap: () {
+                                                                        context
+                                                                            .read<
+                                                                              CartBloc
+                                                                            >()
+                                                                            .add(
+                                                                              RemoveItemFromCartEvent(
+                                                                                selectedIndex:
+                                                                                    index,
+                                                                              ),
+                                                                            );
+                                                                      },
+                                                                      child: SizedBox(
+                                                                        height:
+                                                                            30,
+                                                                        child: const Icon(
+                                                                          Icons
+                                                                              .remove,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          size:
+                                                                              16,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    height: 28,
+                                                                    width: 37,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                    child: Center(
+                                                                      child: Text(
+                                                                        cartResponse
+                                                                            .items![index]
+                                                                            .quantity
+                                                                            .toString(),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: GoogleFonts.poppins(
+                                                                          color: const Color(
+                                                                            0xFF326A32,
+                                                                          ),
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: InkWell(
+                                                                      onTap: () {
+                                                                        context
+                                                                            .read<
+                                                                              CartBloc
+                                                                            >()
+                                                                            .add(
+                                                                              AddButtonClikedEvent(
+                                                                                selectedIndex:
+                                                                                    index,
+                                                                              ),
+                                                                            );
+                                                                      },
+                                                                      child: SizedBox(
+                                                                        height:
+                                                                            30,
+                                                                        child: const Icon(
+                                                                          Icons
+                                                                              .add,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          size:
+                                                                              16,
+                                                                        ),
+                                                                      ),
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ),
                                                           ],
                                                         ),
-                                                        Container(
-                                                          height: 30,
-                                                          width:
-                                                              MediaQuery.of(
-                                                                context,
-                                                              ).size.width /
-                                                              4,
-                                                          decoration: BoxDecoration(
-                                                            color: const Color(
-                                                              0xFF326A32,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: [
-                                                              Expanded(
-                                                                child: InkWell(
-                                                                  onTap: () {
-                                                                    context
-                                                                        .read<
-                                                                          CartBloc
-                                                                        >()
-                                                                        .add(
-                                                                          RemoveItemFromCartEvent(
-                                                                            selectedIndex:
-                                                                                index,
-                                                                          ),
-                                                                        );
-                                                                  },
-                                                                  child: SizedBox(
-                                                                    height: 30,
-                                                                    child: const Icon(
-                                                                      Icons
-                                                                          .remove,
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      size: 16,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                height: 28,
-                                                                width: 37,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                    ),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    cartResponse
-                                                                        .items![index]
-                                                                        .quantity
-                                                                        .toString(),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: GoogleFonts.poppins(
-                                                                      color: const Color(
-                                                                        0xFF326A32,
-                                                                      ),
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: InkWell(
-                                                                  onTap: () {
-                                                                    context
-                                                                        .read<
-                                                                          CartBloc
-                                                                        >()
-                                                                        .add(
-                                                                          AddButtonClikedEvent(
-                                                                            selectedIndex:
-                                                                                index,
-                                                                          ),
-                                                                        );
-                                                                  },
-                                                                  child: SizedBox(
-                                                                    height: 30,
-                                                                    child: const Icon(
-                                                                      Icons.add,
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      size: 16,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
+                                                        // SizedBox(height: 15),
                                                       ],
-                                                    ),
-                                                    // SizedBox(height: 15),
-                                                  ],
-                                                );
-                                              },
+                                                    );
+                                                  },
+                                                ),
+                                                //  const SizedBox(height: 24),
+                                              ],
                                             ),
-                                            //  const SizedBox(height: 24),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 8),
-                                      // deliverytip
-                                      Container(
-                                        width: double.infinity,
-                                        // constraints: BoxConstraints(maxWidth: 523),
-                                        decoration:
-                                            DeliveryTipStyles.cardDecoration,
-                                        padding: EdgeInsets.fromLTRB(
-                                          21,
-                                          19,
-                                          21,
-                                          19,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              constraints: BoxConstraints(
-                                                maxWidth: 451,
-                                              ),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          'Delivery Partner Tip',
-                                                          style:
-                                                              DeliveryTipStyles
-                                                                  .titleStyle,
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        tipAmount == "0"
-                                                            ? Text(
-                                                              "This amount goes to your delivery partner.",
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                color:
-                                                                    blackColor,
-                                                              ),
-                                                            )
-                                                            : Text(
-                                                              "We thank you for your generosity!",
+                                          ),
+                                          SizedBox(height: 8),
+                                          // deliverytip
+                                          Container(
+                                            width: double.infinity,
+                                            // constraints: BoxConstraints(maxWidth: 523),
+                                            decoration:
+                                                DeliveryTipStyles
+                                                    .cardDecoration,
+                                            padding: EdgeInsets.fromLTRB(
+                                              21,
+                                              19,
+                                              21,
+                                              19,
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                  constraints: BoxConstraints(
+                                                    maxWidth: 451,
+                                                  ),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              'Delivery Partner Tip',
                                                               style:
                                                                   DeliveryTipStyles
-                                                                      .subtitleStyle,
+                                                                      .titleStyle,
                                                             ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 55),
-                                                  tipAmount == "0"
-                                                      ? SizedBox()
-                                                      : Container(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              horizontal: 12,
-                                                              vertical: 7,
+                                                            SizedBox(
+                                                              height: 10,
                                                             ),
-                                                        decoration: BoxDecoration(
-                                                          color:
-                                                              DeliveryTipStyles
-                                                                  .lightGreen,
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                6,
-                                                              ),
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            RichText(
-                                                              text: TextSpan(
-                                                                text: '₹',
-                                                                style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  color:
+                                                            tipAmount == "0"
+                                                                ? Text(
+                                                                  "This amount goes to your delivery partner.",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    color:
+                                                                        blackColor,
+                                                                  ),
+                                                                )
+                                                                : Text(
+                                                                  "We thank you for your generosity!",
+                                                                  style:
                                                                       DeliveryTipStyles
-                                                                          .textGrey,
-                                                                  height:
-                                                                      15.6 / 12,
+                                                                          .subtitleStyle,
                                                                 ),
-                                                                children: <
-                                                                  TextSpan
-                                                                >[
-                                                                  TextSpan(
-                                                                    text:
-                                                                        tipAmount
-                                                                            .split(
-                                                                              ".",
-                                                                            )
-                                                                            .first
-                                                                            .toString(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 55),
+                                                      tipAmount == "0"
+                                                          ? SizedBox()
+                                                          : Container(
+                                                            padding:
+                                                                const EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      12,
+                                                                  vertical: 7,
+                                                                ),
+                                                            decoration: BoxDecoration(
+                                                              color:
+                                                                  DeliveryTipStyles
+                                                                      .lightGreen,
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    6,
+                                                                  ),
+                                                            ),
+                                                            child: Column(
+                                                              children: [
+                                                                RichText(
+                                                                  text: TextSpan(
+                                                                    text: '₹',
                                                                     style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
                                                                       fontSize:
                                                                           12,
                                                                       fontWeight:
@@ -2387,112 +2765,32 @@ class CartScreen extends StatelessWidget {
                                                                           15.6 /
                                                                           12,
                                                                     ),
+                                                                    children: <
+                                                                      TextSpan
+                                                                    >[
+                                                                      TextSpan(
+                                                                        text:
+                                                                            tipAmount.split(".").first.toString(),
+                                                                        style: TextStyle(
+                                                                          fontFamily:
+                                                                              'Poppins',
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight.w700,
+                                                                          color:
+                                                                              DeliveryTipStyles.textGrey,
+                                                                          height:
+                                                                              15.6 /
+                                                                              12,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              'Tipped',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                                color:
-                                                                    DeliveryTipStyles
-                                                                        .textGrey,
-                                                                height:
-                                                                    15.6 / 12,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 21),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                // left: 20,
-                                              ),
-                                              child: Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Wrap(
-                                                  alignment:
-                                                      WrapAlignment
-                                                          .start, // Ensures items start from the left
-                                                  spacing: 6,
-                                                  runSpacing: 6,
-                                                  children: [
-                                                    ...tipOptions.map(
-                                                      (value) => IntrinsicWidth(
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            debugPrint(
-                                                              value.toString(),
-                                                            );
-                                                            context
-                                                                .read<
-                                                                  CartBloc
-                                                                >()
-                                                                .add(
-                                                                  SelectTipEvent(
-                                                                    amount:
-                                                                        value
-                                                                            .toString(),
-                                                                  ),
-                                                                );
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets.symmetric(
-                                                                  horizontal:
-                                                                      12,
-                                                                  vertical: 7,
                                                                 ),
-                                                            decoration: BoxDecoration(
-                                                              color:
-                                                                  tipAmount ==
-                                                                          value
-                                                                              .toString()
-                                                                      ? DeliveryTipStyles
-                                                                          .lightGreen
-                                                                      : Colors
-                                                                          .white,
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    20,
-                                                                  ),
-                                                              border: Border.all(
-                                                                color:
-                                                                    tipAmount ==
-                                                                            value
-                                                                                .toString()
-                                                                        ? appColor
-                                                                        : DeliveryTipStyles
-                                                                            .borderGrey,
-                                                              ),
-                                                            ),
-                                                            child: Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center, // Align contents properly
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min, // Avoid stretching
-                                                              children: [
-                                                                Image.asset(
-                                                                  tipsImage,
-                                                                  width: 18,
-                                                                  height: 14,
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 1,
-                                                                ), // Added spacing manually
                                                                 Text(
-                                                                  '₹${value.toInt()}',
-                                                                  style: GoogleFonts.inter(
+                                                                  'Tipped',
+                                                                  style: GoogleFonts.poppins(
                                                                     fontSize:
                                                                         12,
                                                                     fontWeight:
@@ -2509,314 +2807,434 @@ class CartScreen extends StatelessWidget {
                                                               ],
                                                             ),
                                                           ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 21),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        // left: 20,
+                                                      ),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Wrap(
+                                                      alignment:
+                                                          WrapAlignment
+                                                              .start, // Ensures items start from the left
+                                                      spacing: 6,
+                                                      runSpacing: 6,
+                                                      children: [
+                                                        ...tipOptions.map(
+                                                          (
+                                                            value,
+                                                          ) => IntrinsicWidth(
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                debugPrint(
+                                                                  value
+                                                                      .toString(),
+                                                                );
+                                                                context
+                                                                    .read<
+                                                                      CartBloc
+                                                                    >()
+                                                                    .add(
+                                                                      SelectTipEvent(
+                                                                        amount:
+                                                                            value.toString(),
+                                                                      ),
+                                                                    );
+                                                              },
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          7,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                      tipAmount ==
+                                                                              value.toString()
+                                                                          ? DeliveryTipStyles
+                                                                              .lightGreen
+                                                                          : Colors.white,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        20,
+                                                                      ),
+                                                                  border: Border.all(
+                                                                    color:
+                                                                        tipAmount ==
+                                                                                value.toString()
+                                                                            ? appColor
+                                                                            : DeliveryTipStyles.borderGrey,
+                                                                  ),
+                                                                ),
+                                                                child: Row(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .center, // Align contents properly
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min, // Avoid stretching
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      tipsImage,
+                                                                      width: 18,
+                                                                      height:
+                                                                          14,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 1,
+                                                                    ), // Added spacing manually
+                                                                    Text(
+                                                                      '₹${value.toInt()}',
+                                                                      style: GoogleFonts.inter(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight.w700,
+                                                                        color:
+                                                                            DeliveryTipStyles.textGrey,
+                                                                        height:
+                                                                            15.6 /
+                                                                            12,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
+                                                        IntrinsicWidth(
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              context
+                                                                  .read<
+                                                                    CartBloc
+                                                                  >()
+                                                                  .add(
+                                                                    SelectTipEvent(
+                                                                      amount:
+                                                                          "0",
+                                                                    ),
+                                                                  );
+                                                            },
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical: 7,
+                                                                  ),
+                                                              child: Row(
+                                                                children: [
+                                                                  Text(
+                                                                    'Cancel',
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      letterSpacing:
+                                                                          0.8,
+                                                                      color:
+                                                                          Colors
+                                                                              .red,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 8),
+                                          //billsummary
+                                          Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.all(17),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      'Bill Summary',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 19,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: const Color(
+                                                              0xFF222222,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 7,
+                                                            vertical: 8,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                          0xFF034703,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        'Saved ₹${cartResponse.billSummary?.savings}',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 15,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFFE7F9E7,
+                                                                  ),
+                                                            ),
                                                       ),
                                                     ),
-                                                    IntrinsicWidth(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          context
-                                                              .read<CartBloc>()
-                                                              .add(
-                                                                SelectTipEvent(
-                                                                  amount: "0",
-                                                                ),
-                                                              );
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 7,
-                                                              ),
-                                                          child: Row(
-                                                            children: [
-                                                              Text(
-                                                                'Cancel',
-                                                                style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  letterSpacing:
-                                                                      0.8,
-                                                                  color:
-                                                                      Colors
-                                                                          .red,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 17),
+                                                buildBillItem(
+                                                  title: 'Item Total & GST',
+                                                  // originalPrice: '₹96',
+                                                  price:
+                                                      '₹${cartResponse.billSummary?.itemTotal + cartResponse.billSummary?.gst}',
+                                                  showInfo: true,
+                                                  context: context,
+                                                ),
+                                                buildBillItem(
+                                                  title: 'Handling charge',
+                                                  // originalPrice: '₹15',
+                                                  price:
+                                                      '₹${cartResponse.billSummary?.handlingCharges}',
+                                                  context: context,
+                                                ),
+                                                buildBillItem(
+                                                  title: 'Delivery Fee',
+                                                  // originalPrice: '₹35',
+                                                  price:
+                                                      '₹${cartResponse.billSummary?.deliveryFee}',
+                                                  context: context,
+                                                ),
+                                                buildBillItem(
+                                                  title: 'Delivery Tip',
+                                                  price:
+                                                      '₹${cartResponse.billSummary?.deliveryTip}',
+                                                  context: context,
+                                                ),
+                                                Container(
+                                                  height: 1,
+                                                  color: const Color(
+                                                    0xFFD9D4D4,
+                                                  ),
+                                                  margin:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 15,
+                                                      ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      'Total Bill',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 19,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: const Color(
+                                                              0xFF444444,
+                                                            ),
                                                           ),
+                                                    ),
+                                                    Text(
+                                                      '₹${cartResponse.billSummary?.totalBill}',
+                                                      style: GoogleFonts.inter(
+                                                        fontSize: 19,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: const Color(
+                                                          0xFF444444,
                                                         ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      SizedBox(height: 8),
-                                      //billsummary
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(17),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
+                                          ),
+                                          const SizedBox(height: 7),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.all(25),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  'Bill Summary',
+                                                  'Delivery Instructions',
                                                   style: GoogleFonts.poppins(
-                                                    fontSize: 19,
-                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w600,
                                                     color: const Color(
                                                       0xFF222222,
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(width: 6),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 7,
-                                                        vertical: 8,
-                                                      ),
-                                                  decoration: BoxDecoration(
+                                                Text(
+                                                  'Delivery partner will be notified',
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
                                                     color: const Color(
-                                                      0xFF034703,
+                                                      0xFF666666,
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
                                                   ),
-                                                  child: Text(
-                                                    'Saved ₹${cartResponse.billSummary?.savings}',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 15,
-                                                      color: const Color(
-                                                        0xFFE7F9E7,
+                                                ),
+                                                const SizedBox(height: 16),
+                                                SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Row(
+                                                    textDirection:
+                                                        TextDirection.ltr,
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          context
+                                                              .read<CartBloc>()
+                                                              .add(
+                                                                DeliveryInstructionSelectEvent(
+                                                                  one: true,
+                                                                  two: false,
+                                                                ),
+                                                              );
+                                                          deliveryIns =
+                                                              "No Contact Delivery";
+                                                        },
+                                                        child: DeliveryInstructionBox(
+                                                          icon: ncdsvg,
+                                                          title:
+                                                              'No Contact Delivery',
+                                                          subtitle:
+                                                              'Delivery partner will leave your order at your door',
+                                                          isSelected:
+                                                              isOneSelected,
+                                                        ),
                                                       ),
-                                                    ),
+                                                      SizedBox(width: 20),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          context
+                                                              .read<CartBloc>()
+                                                              .add(
+                                                                DeliveryInstructionSelectEvent(
+                                                                  one: false,
+                                                                  two: true,
+                                                                ),
+                                                              );
+                                                          deliveryIns =
+                                                              "Do Not Ring The Bell";
+                                                        },
+                                                        child: DeliveryInstructionBox(
+                                                          icon: drbsvg,
+                                                          title:
+                                                              'Do Not Ring The Bell',
+                                                          subtitle:
+                                                              'Delivery partner will not ring the bell',
+                                                          isSelected:
+                                                              isTwoSelected,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(height: 17),
-                                            buildBillItem(
-                                              title: 'Item Total & GST',
-                                              // originalPrice: '₹96',
-                                              price:
-                                                  '₹${cartResponse.billSummary?.itemTotal + cartResponse.billSummary?.gst}',
-                                              showInfo: true,
-                                              context: context,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.all(24),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
                                             ),
-                                            buildBillItem(
-                                              title: 'Handling charge',
-                                              // originalPrice: '₹15',
-                                              price:
-                                                  '₹${cartResponse.billSummary?.handlingCharges}',
-                                              context: context,
-                                            ),
-                                            buildBillItem(
-                                              title: 'Delivery Fee',
-                                              // originalPrice: '₹35',
-                                              price:
-                                                  '₹${cartResponse.billSummary?.deliveryFee}',
-                                              context: context,
-                                            ),
-                                            buildBillItem(
-                                              title: 'Delivery Tip',
-                                              price:
-                                                  '₹${cartResponse.billSummary?.deliveryTip}',
-                                              context: context,
-                                            ),
-                                            Container(
-                                              height: 1,
-                                              color: const Color(0xFFD9D4D4),
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 15,
-                                                  ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  'Total Bill',
+                                                  'Additional Note',
                                                   style: GoogleFonts.poppins(
-                                                    fontSize: 19,
+                                                    fontSize: 18,
                                                     fontWeight: FontWeight.w600,
                                                     color: const Color(
-                                                      0xFF444444,
+                                                      0xFF222222,
                                                     ),
                                                   ),
                                                 ),
-                                                Text(
-                                                  '₹${cartResponse.billSummary?.totalBill}',
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 19,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: const Color(
-                                                      0xFF444444,
-                                                    ),
+                                                const SizedBox(height: 10),
+                                                TextFormField(
+                                                  controller: additionalNote,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: blackColor,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 7),
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(25),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Delivery Instructions',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600,
-                                                color: const Color(0xFF222222),
-                                              ),
-                                            ),
-                                            Text(
-                                              'Delivery partner will be notified',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: const Color(0xFF666666),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                textDirection:
-                                                    TextDirection.ltr,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      context.read<CartBloc>().add(
-                                                        DeliveryInstructionSelectEvent(
-                                                          one: true,
-                                                          two: false,
-                                                        ),
-                                                      );
-                                                      deliveryIns =
-                                                          "No Contact Delivery";
-                                                    },
-                                                    child: DeliveryInstructionBox(
-                                                      icon: ncdsvg,
-                                                      title:
-                                                          'No Contact Delivery',
-                                                      subtitle:
-                                                          'Delivery partner will leave your order at your door',
-                                                      isSelected: isOneSelected,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 20),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      context.read<CartBloc>().add(
-                                                        DeliveryInstructionSelectEvent(
-                                                          one: false,
-                                                          two: true,
-                                                        ),
-                                                      );
-                                                      deliveryIns =
-                                                          "Do Not Ring The Bell";
-                                                    },
-                                                    child: DeliveryInstructionBox(
-                                                      icon: drbsvg,
-                                                      title:
-                                                          'Do Not Ring The Bell',
-                                                      subtitle:
-                                                          'Delivery partner will not ring the bell',
-                                                      isSelected: isTwoSelected,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(24),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
-                                            ),
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Additional Note',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600,
-                                                color: const Color(0xFF222222),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            TextFormField(
-                                              controller: additionalNote,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: blackColor,
-                                              ),
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                    color: Color(0xFFAAAAAA),
-                                                  ),
-                                                ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             12,
@@ -2825,103 +3243,289 @@ class CartScreen extends StatelessWidget {
                                                         color: Color(
                                                           0xFFAAAAAA,
                                                         ),
-                                                        width: 1.0,
                                                       ),
                                                     ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                    color: Color(
-                                                      0xFFAAAAAA,
-                                                    ), // Change this to whatever highlight color you want
-                                                    width: 2.0,
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                          borderSide:
+                                                              BorderSide(
+                                                                color: Color(
+                                                                  0xFFAAAAAA,
+                                                                ),
+                                                                width: 1.0,
+                                                              ),
+                                                        ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      borderSide: BorderSide(
+                                                        color: Color(
+                                                          0xFFAAAAAA,
+                                                        ), // Change this to whatever highlight color you want
+                                                        width: 2.0,
+                                                      ),
+                                                    ),
+                                                    // helperText: 'Add your special notes on your order',
+                                                    hintText:
+                                                        'Add your special notes on your order',
                                                   ),
                                                 ),
-                                                // helperText: 'Add your special notes on your order',
-                                                hintText:
-                                                    'Add your special notes on your order',
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Column(
-                                    children: [
-                                      // _buildDeliveryTipSection(),
-                                      const SizedBox(height: 7),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: isMobile ? 10 : 35,
-                                          vertical: 18,
-                                        ),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x40666666),
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
+                                      const SizedBox(width: 20),
+                                      Column(
+                                        children: [
+                                          // _buildDeliveryTipSection(),
+                                          const SizedBox(height: 7),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: isMobile ? 10 : 35,
+                                              vertical: 18,
                                             ),
-                                          ],
-                                        ),
-                                        child:
-                                            address != ""
-                                                //adress added
-                                                ? Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x40666666),
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child:
+                                                address != ""
+                                                    //adress added
+                                                    ? Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
-                                                        SizedBox(
-                                                          width:
-                                                              isMobile
-                                                                  ? 150
-                                                                  : 220,
-                                                          child: Text(
-                                                            address,
-                                                            style:
-                                                                GoogleFonts.poppins(
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            SizedBox(
+                                                              width:
+                                                                  isMobile
+                                                                      ? 150
+                                                                      : 220,
+                                                              child: Text(
+                                                                address,
+                                                                style: GoogleFonts.poppins(
                                                                   color: Color(
                                                                     0xFF666666,
                                                                   ),
                                                                   fontSize: 15,
                                                                 ),
 
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
+                                                                maxLines: 1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                            Row(
+                                                              spacing:
+                                                                  isMobile
+                                                                      ? 5
+                                                                      : 10,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                SvgPicture.string(
+                                                                  '''
+                                                        <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
+                                            fill="#034703"/>
+                                            </svg>
+                                            
+                                                        ''',
+                                                                  width: 20,
+                                                                  height: 22,
+                                                                ),
+                                                                Text(
+                                                                  'Change',
+                                                                  style: GoogleFonts.poppins(
+                                                                    color: const Color(
+                                                                      0xFF034703,
+                                                                    ),
+                                                                    fontSize:
+                                                                        isMobile
+                                                                            ? 12
+                                                                            : 14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    height:
+                                                                        1.32, // 29/22
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 27,
                                                         ),
                                                         Row(
-                                                          spacing:
-                                                              isMobile ? 5 : 10,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  'To Pay',
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color:
+                                                                        const Color.fromRGBO(
+                                                                          0,
+                                                                          0,
+                                                                          0,
+                                                                          0.75,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  '₹${cartResponse.billSummary?.totalBill}',
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontSize:
+                                                                        24,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        const Color.fromRGBO(
+                                                                          0,
+                                                                          0,
+                                                                          0,
+                                                                          0.85,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            ElevatedButton(
+                                                              onPressed: () {
+                                                                // showAddressPopup(context);
+                                                                showConfirmAddress(
+                                                                  context,
+                                                                );
+                                                                Navigator.push<
+                                                                  void
+                                                                >(
+                                                                  context,
+                                                                  MaterialPageRoute<
+                                                                    void
+                                                                  >(
+                                                                    builder:
+                                                                        (
+                                                                          BuildContext
+                                                                          context,
+                                                                        ) =>
+                                                                            OrderStatus(),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              style: ElevatedButton.styleFrom(
+                                                                // backgroundColor: Colors.green,
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        36,
+                                                                      ),
+                                                                ),
+                                                                backgroundColor:
+                                                                    const Color(
+                                                                      0xFF034703,
+                                                                    ),
+                                                              ),
+                                                              child: Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      isMobile
+                                                                          ? 0
+                                                                          : 10,
+                                                                ),
+                                                                // width: double.infinity,
+                                                                height: 45,
+                                                                decoration:
+                                                                    BoxDecoration(),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'Continue to Payment',
+                                                                    style: GoogleFonts.poppins(
+                                                                      color:
+                                                                          Colors
+                                                                              .white,
+                                                                      fontSize:
+                                                                          isMobile
+                                                                              ? 12
+                                                                              : 16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      height:
+                                                                          0.81, // 14.5/18
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                    : Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          spacing: 20,
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .center,
                                                           children: [
                                                             SvgPicture.string(
                                                               '''
-                                                  <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
-                                      fill="#034703"/>
-                                      </svg>
-                                      
-                                                  ''',
-                                                              width: 20,
-                                                              height: 22,
+                                                        <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
+                                            fill="#034703"/>
+                                            </svg>
+                                            
+                                                        ''',
+                                                              width:
+                                                                  isMobile
+                                                                      ? 22
+                                                                      : 24,
+                                                              height:
+                                                                  isMobile
+                                                                      ? 24
+                                                                      : 26,
                                                             ),
                                                             Text(
-                                                              'Change',
+                                                              'Enter your Delivery Address',
                                                               style: GoogleFonts.poppins(
                                                                 color:
                                                                     const Color(
@@ -2929,8 +3533,8 @@ class CartScreen extends StatelessWidget {
                                                                     ),
                                                                 fontSize:
                                                                     isMobile
-                                                                        ? 12
-                                                                        : 14,
+                                                                        ? 14
+                                                                        : 18,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -2940,74 +3544,15 @@ class CartScreen extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 27),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              'To Pay',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color:
-                                                                    const Color.fromRGBO(
-                                                                      0,
-                                                                      0,
-                                                                      0,
-                                                                      0.75,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              '₹${cartResponse.billSummary?.totalBill}',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 24,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color:
-                                                                    const Color.fromRGBO(
-                                                                      0,
-                                                                      0,
-                                                                      0,
-                                                                      0.85,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        const SizedBox(
+                                                          height: 27,
                                                         ),
                                                         ElevatedButton(
                                                           onPressed: () {
-                                                            // showAddressPopup(context);
-                                                            showConfirmAddress(
+                                                            showAddressPopup(
                                                               context,
                                                             );
-                                                            Navigator.push<
-                                                              void
-                                                            >(
-                                                              context,
-                                                              MaterialPageRoute<
-                                                                void
-                                                              >(
-                                                                builder:
-                                                                    (
-                                                                      BuildContext
-                                                                      context,
-                                                                    ) =>
-                                                                        OrderStatus(),
-                                                              ),
-                                                            );
+                                                            // showConfirmAddress(context);
                                                           },
                                                           style: ElevatedButton.styleFrom(
                                                             // backgroundColor: Colors.green,
@@ -3023,28 +3568,19 @@ class CartScreen extends StatelessWidget {
                                                                 ),
                                                           ),
                                                           child: Container(
-                                                            padding:
-                                                                EdgeInsets.symmetric(
-                                                                  horizontal:
-                                                                      isMobile
-                                                                          ? 0
-                                                                          : 10,
-                                                                ),
-                                                            // width: double.infinity,
+                                                            width:
+                                                                double.infinity,
                                                             height: 45,
                                                             decoration:
                                                                 BoxDecoration(),
                                                             child: Center(
                                                               child: Text(
-                                                                'Continue to Payment',
+                                                                'Add Address to Proceed',
                                                                 style: GoogleFonts.poppins(
                                                                   color:
                                                                       Colors
                                                                           .white,
-                                                                  fontSize:
-                                                                      isMobile
-                                                                          ? 12
-                                                                          : 16,
+                                                                  fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -3057,113 +3593,23 @@ class CartScreen extends StatelessWidget {
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                )
-                                                : Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      spacing: 20,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        SvgPicture.string(
-                                                          '''
-                                                  <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.3743 5.76411C21.0365 7.37333 21.9872 9.54538 22.0253 11.821C22.0634 14.0966 21.186 16.2974 19.5785 17.9579L19.3743 18.1624L15.1058 22.2942C14.5642 22.8183 13.8371 23.1234 13.0718 23.1479C12.3065 23.1723 11.5603 22.9141 10.9842 22.4257L10.8393 22.2942L6.56985 18.1615C4.87188 16.5175 3.91797 14.2877 3.91797 11.9628C3.91797 9.63783 4.87188 7.4081 6.56985 5.76411C8.26782 4.12012 10.5708 3.19653 12.9721 3.19653C15.3733 3.19653 17.6763 4.12012 19.3743 5.76411ZM12.9721 9.04072C12.5757 9.04072 12.1833 9.1163 11.8171 9.26315C11.4509 9.41 11.1182 9.62524 10.838 9.89658C10.5577 10.1679 10.3354 10.49 10.1838 10.8446C10.0321 11.1991 9.95404 11.5791 9.95404 11.9628C9.95404 12.3465 10.0321 12.7265 10.1838 13.081C10.3354 13.4355 10.5577 13.7577 10.838 14.029C11.1182 14.3003 11.4509 14.5156 11.8171 14.6624C12.1833 14.8093 12.5757 14.8849 12.9721 14.8849C13.7725 14.8849 14.5401 14.577 15.1061 14.029C15.6721 13.481 15.9901 12.7378 15.9901 11.9628C15.9901 11.1878 15.6721 10.4446 15.1061 9.89658C14.5401 9.34858 13.7725 9.04072 12.9721 9.04072Z" 
-                                      fill="#034703"/>
-                                      </svg>
-                                      
-                                                  ''',
-                                                          width:
-                                                              isMobile
-                                                                  ? 22
-                                                                  : 24,
-                                                          height:
-                                                              isMobile
-                                                                  ? 24
-                                                                  : 26,
-                                                        ),
-                                                        Text(
-                                                          'Enter your Delivery Address',
-                                                          style: GoogleFonts.poppins(
-                                                            color: const Color(
-                                                              0xFF034703,
-                                                            ),
-                                                            fontSize:
-                                                                isMobile
-                                                                    ? 14
-                                                                    : 18,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            height:
-                                                                1.32, // 29/22
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 27),
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        showAddressPopup(
-                                                          context,
-                                                        );
-                                                        // showConfirmAddress(context);
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        // backgroundColor: Colors.green,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                36,
-                                                              ),
-                                                        ),
-                                                        backgroundColor:
-                                                            const Color(
-                                                              0xFF034703,
-                                                            ),
-                                                      ),
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        height: 45,
-                                                        decoration:
-                                                            BoxDecoration(),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Add Address to Proceed',
-                                                            style: GoogleFonts.poppins(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              height:
-                                                                  0.81, // 14.5/18
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                          ),
+                                          // _buildAddressSection(),
+                                        ],
                                       ),
-                                      // _buildAddressSection(),
                                     ],
                                   ),
-                                ],
-                              ),
-                    ),
+                        ),
+                      ),
+                      SizedBox(height: 40),
+                      BottomImageWidget(),
+                      BottomCategoriesBarWidget(),
+                      BottomAppBarWidget(),
+                    ],
                   ),
-                  SizedBox(height: 40),
-                  BottomImageWidget(),
-                  BottomCategoriesBarWidget(),
-                  BottomAppBarWidget(),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           );
         },
       ),

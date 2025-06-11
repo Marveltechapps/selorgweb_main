@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:selorgweb_main/presentation/home/home_desktop_screen.dart';
-import 'package:selorgweb_main/presentation/home/home_mobile_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_screen.dart';
 import 'package:selorgweb_main/utils/widgets/responsive.dart';
 

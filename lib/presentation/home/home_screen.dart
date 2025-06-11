@@ -8,7 +8,6 @@ import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_mobile_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
 import 'package:selorgweb_main/presentation/category/categories_screen.dart';
-import 'package:selorgweb_main/presentation/search/search_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class HomeScreen extends StatelessWidget {
