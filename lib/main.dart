@@ -131,69 +131,74 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => Navigationprovider()),
       ],
-      child: BlocProvider(
-        create: (context) => CounterCubit(),
-        child: MaterialApp.router(
-          routerConfig: router,
-          debugShowCheckedModeBanner: false,
-          title: 'Selorg',
-          theme: ThemeData(
-            scaffoldBackgroundColor: const Color(0xFFFAFAFA),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Color.fromRGBO(3, 71, 3, 1),
-              iconTheme: IconThemeData(color: Colors.white),
-              titleTextStyle: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              elevation: 4,
-            ),
-            textSelectionTheme: TextSelectionThemeData(
-              cursorColor: appColor,
-              selectionColor: appColor,
-              selectionHandleColor: appColor,
-            ),
-            textTheme: const TextTheme(
-              titleMedium: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
-              labelMedium: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey,
-              ),
-              bodySmall: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 14,
-                color: Colors.black,
-              ),
-              displayMedium: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              bodyMedium: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 16,
-                color: Colors.white,
-              ),
-              bodyLarge: TextStyle(
-                fontFamily: "Poppins Bold",
-                fontSize: 30,
-                color: Colors.white,
-                height: 1,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
+      child: LayoutBuilder(
 
-          //  home: HomeMainScreen(),
-        ),
+        builder: (context , constraints) {
+          return BlocProvider(
+            create: (context) => CounterCubit(),
+            child: MaterialApp.router(
+              routerConfig: router,
+              debugShowCheckedModeBanner: false,
+              title: 'Selorg',
+              theme: ThemeData(
+                scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+                appBarTheme: const AppBarTheme(
+                  backgroundColor: Color.fromRGBO(3, 71, 3, 1),
+                  iconTheme: IconThemeData(color: Colors.white),
+                  titleTextStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  elevation: 4,
+                ),
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: appColor,
+                  selectionColor: appColor,
+                  selectionHandleColor: appColor,
+                ),
+                textTheme: const TextTheme(
+                  titleMedium: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                  labelMedium: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                  ),
+                  bodySmall: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                  displayMedium: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  bodyMedium: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                  bodyLarge: TextStyle(
+                    fontFamily: "Poppins Bold",
+                    fontSize: 30,
+                    color: Colors.white,
+                    height: 1,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+          
+              //  home: HomeMainScreen(),
+            ),
+          );
+        }
       ),
     );
   }

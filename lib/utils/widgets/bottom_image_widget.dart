@@ -12,6 +12,7 @@ class BottomImageWidget extends StatelessWidget {
     return isTablet
         ? SizedBox()
         : Stack(
+          alignment: Alignment.center,
           children: [
             // Background Image
             Image.asset(
@@ -22,66 +23,70 @@ class BottomImageWidget extends StatelessWidget {
               height: 450,
             ),
             // Content
-            Positioned(
-              left: 150,
-              top: 0,
-              bottom: 0,
+            Positioned.fill(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 10),
-                child: Container(
-                  constraints: BoxConstraints(maxWidth: 1280),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Download the Selorg app',
-                            style: TextStyle(
-                              color: const Color(0xFF034703),
-                              fontSize: 23,
-                              fontWeight: FontWeight.w600,
-                              height: 1,
-                            ),
-                          ),
-                          const SizedBox(height: 17),
-                          Text(
-                            'Download Selorg app available on Android & iOS',
-                            style: TextStyle(
-                              color: const Color(0xFF555555),
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              height: 1,
-                            ),
-                          ),
-                          const SizedBox(height: 21),
-                          Wrap(
-                            spacing: 20,
-                            runSpacing: 20,
-                            children: [
-                              AppStoreButton(
-                                icon:
-                                    'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                topText: 'Get it On',
-                                bottomText: 'Google Play',
-                                iconSize: const Size(47, 47),
+                padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 60),
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: 1280),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Download the Selorg app',
+                              style: TextStyle(
+                                color: const Color(0xFF034703),
+                                fontSize: 23,
+                                fontWeight: FontWeight.w600,
+                                height: 1,
                               ),
-                              AppStoreButton(
-                                icon:
-                                    'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                topText: 'Get it on',
-                                bottomText: 'App Store',
-                                iconSize: const Size(47, 47),
-                                // topTextStyle: const TextStyle(fontSize: 19),
-                                // bottomTextStyle: const TextStyle(fontSize: 22),
+                            ),
+                            const SizedBox(height: 17),
+                            Text(
+                              'Download Selorg app available on Android & iOS',
+                              style: TextStyle(
+                                color: const Color(0xFF555555),
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                                height: 1,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                            ),
+                            const SizedBox(height: 21),
+                            Wrap(
+                              spacing: 20,
+                              runSpacing: 20,
+                              children: [
+                                AppStoreButton(
+                                  icon:
+                                      'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                  topText: 'Get it On',
+                                  bottomText: 'Google Play',
+                                  iconSize: const Size(47, 47),
+                                ),
+                                AppStoreButton(
+                                  icon:
+                                      'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                  topText: 'Get it on',
+                                  bottomText: 'App Store',
+                                  iconSize: const Size(47, 47),
+                                  // topTextStyle: const TextStyle(fontSize: 19),
+                                  // bottomTextStyle: const TextStyle(fontSize: 22),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Image.asset(
+                          bannerimage.replaceAll(r'.png', '1.png'),
+                          height: 450,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

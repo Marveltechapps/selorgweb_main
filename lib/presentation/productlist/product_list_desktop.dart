@@ -2072,7 +2072,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                       TextOverflow.ellipsis,
                                                                                   style: const TextStyle(
                                                                                     fontSize:
-                                                                                        10,
+                                                                                        12,
                                                                                     color:
                                                                                         Colors.black,
                                                                                   ),

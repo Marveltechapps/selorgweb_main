@@ -2883,7 +2883,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                             TextOverflow.ellipsis,
                                                                         style: TextStyle(
                                                                           fontSize:
-                                                                              10,
+                                                                              12,
                                                                           color:
                                                                               Colors.black,
                                                                         ),
