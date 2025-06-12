@@ -5,15 +5,72 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
+import 'package:selorgweb_main/utils/widgets/cart_tool_tip.dart';
 
-class HeaderWidget extends StatelessWidget {
+class HeaderWidget extends StatefulWidget {
   final bool isHomeScreen;
   final Function()? onClick;
   const HeaderWidget({super.key, this.onClick, required this.isHomeScreen});
 
   @override
+  State<HeaderWidget> createState() => _HeaderWidgetState();
+}
+
+class _HeaderWidgetState extends State<HeaderWidget> {
+  bool showCartTooltip = false;
+  OverlayEntry? entry;
+
+  void _showCartPopup(BuildContext context) {
+    final overlay = Overlay.of(context);
+    if (entry != null) {
+      debugPrint(entry.toString());
+
+      return;
+    }
+    entry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            top: 80,
+            right: 30,
+            child: Material(
+              color: Colors.transparent,
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                // padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  // border: B,
+                  borderRadius: BorderRadius.circular(8),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black26,
+                  //     blurRadius: 6,
+                  //     offset: Offset(0, 4),
+                  //   ),
+                  // ],
+                ),
+                child: CartToolTip(entry: entry!, overlay: overlay),
+              ),
+            ),
+          ),
+    );
+
+    overlay.insert(entry!);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CounterCubit, int>(
+    return BlocConsumer<CounterCubit, int>(
+      listenWhen: (prev, curr) => curr != prev,
+      listener: (context, state) {
+        debugPrint("changes");
+        setState(() {
+          _showCartPopup(context);
+          showCartTooltip = true;
+        });
+
+        // Optional: hide after a delay
+      },
       builder: (context, count) {
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -30,7 +87,7 @@ class HeaderWidget extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            isHomeScreen ? null : context.push('/');
+                            widget.isHomeScreen ? null : context.push('/');
                           },
                           child: SvgPicture.asset(appTextImage, height: 12),
                         ),
@@ -41,7 +98,7 @@ class HeaderWidget extends StatelessWidget {
                         //   color: Colors.white,
                         // ),
                         InkWell(
-                          onTap: onClick,
+                          onTap: widget.onClick,
                           child: Row(
                             children: [
                               SizedBox(
@@ -222,7 +279,7 @@ class HeaderWidget extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              isHomeScreen ? null : context.push('/');
+                              widget.isHomeScreen ? null : context.push('/');
                             },
                             child: SvgPicture.asset(appTextImage, height: 20),
                           ),
@@ -233,7 +290,7 @@ class HeaderWidget extends StatelessWidget {
                             color: Colors.white,
                           ),
                           InkWell(
-                            onTap: onClick,
+                            onTap: widget.onClick,
                             child: Row(
                               children: [
                                 Text(

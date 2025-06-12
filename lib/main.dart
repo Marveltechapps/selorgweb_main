@@ -20,6 +20,28 @@ import 'package:selorgweb_main/presentation/settings/order/order_mobile_screen.d
 import 'package:selorgweb_main/presentation/settings/setting_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
+import 'package:selorg/presentation/home/home_screen.dart';
+import 'package:selorg/presentation/category/categories_screen.dart';
+import 'package:selorg/presentation/coupon/screens/applying_coupon_screen.dart';
+import 'package:selorg/presentation/entry/login/login_screen.dart';
+import 'package:selorg/presentation/entry/splash/splash_screen.dart';
+import 'package:selorg/presentation/payment/payment_screen.dart';
+import 'package:selorg/presentation/settings/address/address_screen.dart';
+import 'package:selorg/presentation/settings/customer_support/customer_support_screen.dart';
+import 'package:selorg/presentation/settings/general_info/general_policies_screen.dart';
+import 'package:selorg/presentation/settings/general_info/privacy_policy_screen.dart';
+import 'package:selorg/presentation/settings/general_info/terms_conditions_screen.dart';
+import 'package:selorg/presentation/settings/notifications/notifications_screen.dart';
+import 'package:selorg/presentation/settings/order/order_screen.dart';
+import 'package:selorg/presentation/settings/payment_management/payment_management_screen.dart';
+import 'package:selorg/presentation/settings/profile/profile_screen.dart';
+import 'package:selorg/presentation/settings/refunds/refunds_screen.dart';
+import 'package:selorg/presentation/settings/settings_screen.dart';
+import 'package:selorg/utils/constant.dart' as selorg_constants;
+import 'package:selorg/presentation/entry/otp/otp_screen.dart';
+
+
+
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     debugPrint('💥 Flutter error: ${details.exception}');
@@ -127,6 +149,101 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context , constraints) {
+ if (constraints.maxWidth < 500) {
+                return MaterialApp(
+      title: 'SelOrg',
+      debugShowCheckedModeBanner: false,
+
+      // ✅ Locks text and display scale
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(textScaler: const TextScaler.linear(1.0)),
+          child: child!,
+        );
+      },
+
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color.fromRGBO(3, 71, 3, 1),
+          iconTheme: IconThemeData(color: Colors.white),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          elevation: 4,
+        ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: selorg_constants.appColor,
+          selectionColor: selorg_constants.appColor,
+          selectionHandleColor: selorg_constants.appColor,
+        ),
+        textTheme: const TextTheme(
+          titleMedium: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+          labelMedium: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey,
+          ),
+          bodySmall: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 14,
+            color: Colors.black,
+          ),
+          displayMedium: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 16,
+            color: Colors.black,
+          ),
+          bodyMedium: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 16,
+            color: Colors.white,
+          ),
+          bodyLarge: TextStyle(
+            fontFamily: "Poppins Bold",
+            fontSize: 30,
+            color: Colors.white,
+            height: 1,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
+
+      initialRoute: '/',
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/otp': (context) => OtpScreen(),
+        '/home': (context) => HomeScreen(),
+        '/categories': (context) => CategoriesScreen(),
+        '/payment': (context) => PaymentScreen(),
+        '/ApplyingCouponScreen': (context) => ApplyingCouponScreen(),
+        '/settings': (context) => SettingsScreen(),
+        '/order': (context) => OrderScreen(),
+        '/customerSupport': (context) => CustomerSupportScreen(),
+        '/address': (context) => AddressScreen(),
+        '/refunds': (context) => RefundsScreen(),
+        '/profile': (context) => ProfileScreen(),
+        '/generalPolicies': (context) => GeneralPoliciesScreen(),
+        '/termsAndConditions': (context) => TermsConditionsScreen(),
+        '/privacyPolicy': (context) => PrivacyPolicyScreen(),
+        '/notifications': (context) => NotificationsScreen(),
+        '/paymentManagementScreen': (context) => PaymentManagementScreen(),
+      },
+
+      home: SplashScreen(),
+    );
+              } else {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => Navigationprovider()),
@@ -202,4 +319,6 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+      });
+      }
 }

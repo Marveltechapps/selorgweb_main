@@ -52,6 +52,8 @@ dependencies:
   go_router: ^15.1.2
   flutter_rating: ^2.0.2
   webview_flutter: ^4.13.0
+  selorg:
+    path: ./selorgapp
 
 dev_dependencies:
   flutter_test:
