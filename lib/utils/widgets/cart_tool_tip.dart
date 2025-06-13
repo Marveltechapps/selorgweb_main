@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/cart/widgets/cart_item_widget.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
@@ -18,8 +19,8 @@ import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/utils/widgets/network_image.dart';
 
 class CartToolTip extends StatefulWidget {
-  const CartToolTip({super.key, required this.entry, required this.overlay});
-  final OverlayEntry entry;
+  const CartToolTip({super.key, required this.overlay});
+  // final OverlayEntry entry;
   final OverlayState overlay;
   @override
   State<CartToolTip> createState() => _CartToolTipState();
@@ -160,8 +161,11 @@ class _CartToolTipState extends State<CartToolTip> {
                 children: [
                   // Triangle at top center
                   Positioned(
-                    top: -10,
-                    left: 140, // Adjust this to center the triangle
+                    top:-10,
+                    left:
+                        MediaQuery.of(context).size.width < 991
+                            ? 220
+                            : 140, // Adjust this to center the triangle
                     child: CustomPaint(
                       painter: TrianglePainter(color: Colors.white),
                       child: SizedBox(width: 20, height: 10),
@@ -186,296 +190,218 @@ class _CartToolTipState extends State<CartToolTip> {
                         ),
                       ],
                     ),
-                    child: SingleChildScrollView(
-                      child:
-                          cartResponse
-                                  .items!
-                                  .isEmpty /* || cartResponse.items![index]
-                                                                  .quantity ==
-                                                              0
-                                                          ?  */
-                              ? SizedBox(
-                                width: double.infinity,
-                                //color: appColor,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  // spacing: 20,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Cart Items',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        InkWell(
-                                          onTap: () => widget.entry.remove(),
-                                          child: CircleAvatar(
-                                            radius: 12,
-                                            backgroundColor: appColor,
-                                            child: Icon(
-                                              Icons.close,
-                                              size: 12,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 20),
-                                    Image.asset(emptyCartImage),
-                                    Text(
-                                      "Your cart is empty",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium
-                                          ?.copyWith(fontSize: 20),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) =>
-                                                        CategoriesScreen(),
-                                              ),
-                                            );
-                                            // Navigator.pop(context);
-                                            // Navigator.pushNamed(context, '/home');
-                                            // selectedIndex = 1;
-                                            // context
-                                            //     .read<CartBloc>()
-                                            //     .add(SelectTipEvent(amount: "0"));
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: const Color(
-                                              0xFF034703,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            // minimumSize: const Size(300, 50),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'Browse Now',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium?.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(color: Colors.transparent),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Cart Items',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  // widget.entry.remove()
+                                },
+                                child: CircleAvatar(
+                                  radius: 12,
+                                  backgroundColor: appColor,
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 12,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              )
-                              : Container(
-                                alignment: Alignment.center,
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Cart Items',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        InkWell(
-                                          onTap: () => widget.entry.remove(),
-                                          child: CircleAvatar(
-                                            radius: 12,
-                                            backgroundColor: appColor,
-                                            child: Icon(
-                                              Icons.close,
-                                              size: 12,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 20),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
 
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: cartResponse.items!.length,
-                                      itemBuilder: (context, index) {
-                                        // cartCount = cartResponse.items!.length;
-                                        return Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          cartResponse
-                                                                      .items![index]
-                                                                      .imageUrl ==
-                                                                  ""
-                                                              ? SizedBox()
-                                                              : ImageNetworkWidget(
-                                                                url:
-                                                                    cartResponse
-                                                                        .items![index]
-                                                                        .imageUrl ??
-                                                                    "",
-                                                                width: 50,
-                                                                height: 50,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .fitHeight,
-                                                              ),
-                                                          // Image.network('image', width: isMobile ? 70 : 90),
-                                                          const SizedBox(
-                                                            width: 5,
-                                                          ),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                cartResponse
-                                                                            .items![index]
-                                                                            .productId ==
-                                                                        null
-                                                                    ? ""
-                                                                    : cartResponse
-                                                                            .items![index]
-                                                                            .productId!
-                                                                            .skuName ??
-                                                                        "",
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: const Color(
-                                                                    0xFF444444,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                cartResponse
-                                                                        .items![index]
-                                                                        .variantLabel ??
-                                                                    "",
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 10,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                  color: const Color(
-                                                                    0xFF666666,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  Text(
-                                                                    '₹ ${cartResponse.items![index].discountPrice}',
-                                                                    style: GoogleFonts.inter(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: const Color(
-                                                                        0xFF444444,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    width: 5,
-                                                                  ),
-                                                                  Text(
-                                                                    '₹ ${cartResponse.items![index].price}',
-                                                                    style: GoogleFonts.inter(
-                                                                      fontSize:
-                                                                          10,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
-                                                                      color: const Color(
-                                                                        0xFF777777,
-                                                                      ),
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .lineThrough,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              // physics: NeverScrollableScrollPhysics(),
+                              itemCount: cartResponse.items!.length,
+                              itemBuilder: (context, index) {
+                                // cartCount = cartResponse.items!.length;
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  cartResponse
+                                                              .items![index]
+                                                              .imageUrl ==
+                                                          ""
+                                                      ? SizedBox()
+                                                      : ImageNetworkWidget(
+                                                        url:
+                                                            cartResponse
+                                                                .items![index]
+                                                                .imageUrl ??
+                                                            "",
+                                                        width: 50,
+                                                        height: 50,
+                                                        fit: BoxFit.fitHeight,
                                                       ),
-                                                      Center(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal:
-                                                                    10.0,
-                                                              ),
-                                                          child: Text(
-                                                            'x${cartResponse.items![index].quantity}',
-                                                            textAlign:
-                                                                TextAlign
-                                                                    .center,
-                                                            style: GoogleFonts.poppins(
-                                                              color:
-                                                                  const Color(
-                                                                    0xFF326A32,
-                                                                  ),
+                                                  // Image.network('image', width: isMobile ? 70 : 90),
+                                                  const SizedBox(width: 5),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        cartResponse
+                                                                    .items![index]
+                                                                    .productId ==
+                                                                null
+                                                            ? ""
+                                                            : cartResponse
+                                                                    .items![index]
+                                                                    .productId!
+                                                                    .skuName ??
+                                                                "",
+                                                        style:
+                                                            GoogleFonts.poppins(
                                                               fontSize: 14,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF444444,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                      Text(
+                                                        cartResponse
+                                                                .items![index]
+                                                                .variantLabel ??
+                                                            "",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF666666,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            '₹ ${cartResponse.items![index].discountPrice}',
+                                                            style: GoogleFonts.inter(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF444444,
+                                                                  ),
                                                             ),
                                                           ),
-                                                        ),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Text(
+                                                            '₹ ${cartResponse.items![index].price}',
+                                                            style: GoogleFonts.inter(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF777777,
+                                                                  ),
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .lineThrough,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
+                                                ],
+                                              ),
+                                              Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10.0,
+                                                      ),
+                                                  child: Text(
+                                                    'x${cartResponse.items![index].quantity}',
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.poppins(
+                                                      color: const Color(
+                                                        0xFF326A32,
+                                                      ),
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 10),
-                                          ],
-                                        );
-                                      },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 24),
+                                    SizedBox(height: 10),
                                   ],
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              padding: EdgeInsets.only(top: 8),
+                              decoration: BoxDecoration(color: Colors.white),
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  context.push('/cart');
+                                },
+                                icon: Icon(Icons.arrow_forward),
+                                iconAlignment: IconAlignment.end,
+                                label: Text("Go to Cart"),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 48),
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

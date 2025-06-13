@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
@@ -68,29 +69,34 @@ class AccountSidebarWidget extends StatelessWidget {
             3,
             context,
           ),
-          // const SizedBox(height: 27),
-          // Center(
-          //   child: Container(
-          //     width: 133,
-          //     height: 46,
-          //     decoration: BoxDecoration(
-          //       color: AppColors.white,
-          //       borderRadius: BorderRadius.circular(37),
-          //       border: Border.all(color: AppColors.red),
-          //     ),
-          //     child: Center(
-          //       child: Text(
-          //         'Log Out',
-          //         style: GoogleFonts.poppins(
-          //           color: AppColors.red,
-          //           fontSize: 16,
+          const SizedBox(height: 27),
+          Center(
+            child: InkWell(
+              onTap: () {
+                context.push('/login');
+              },
+              child: Container(
+                width: 133,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(37),
+                  border: Border.all(color: AppColors.red),
+                ),
+                child: Center(
+                  child: Text(
+                    'Log In',
+                    style: GoogleFonts.poppins(
+                      color: AppColors.red,
+                      fontSize: 16,
 
-          //           fontWeight: FontWeight.w500,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -111,9 +117,7 @@ class AccountSidebarWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : null,
-          border: Border(
-            bottom: BorderSide(color: AppColors.white),
-          ),
+          border: Border(bottom: BorderSide(color: AppColors.white)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

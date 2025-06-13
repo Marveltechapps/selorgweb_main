@@ -15,8 +15,8 @@ var locationSvg = 'assets/icons/location.svg';
 var orangeImage = 'assets/orange.png';
 
 var applogoImage = "assets/applogo.svg";
-var phoneNumber = "6385932548";
-var userId = "67e7c3c70d5dd4a47a57fe40";
+var phoneNumber = "";
+var userId = "";
 var locationInitiatted = "";
 String location = "No Location Found";
 int noOfIteminCart = 0;

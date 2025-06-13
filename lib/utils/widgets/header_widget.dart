@@ -18,19 +18,19 @@ class HeaderWidget extends StatefulWidget {
 
 class _HeaderWidgetState extends State<HeaderWidget> {
   bool showCartTooltip = false;
-  OverlayEntry? entry;
+  // OverlayEntry? entry;
 
   void _showCartPopup(BuildContext context) {
     final overlay = Overlay.of(context);
-    if (entry != null) {
-      debugPrint(entry.toString());
+    // if (entry != null) {
+    //   debugPrint(entry.toString());
 
-      return;
-    }
-    entry = OverlayEntry(
+    //   return;
+    // }
+    final entry = OverlayEntry(
       builder:
           (context) => Positioned(
-            top: 80,
+            top: MediaQuery.of(context).size.width < 991 ? 140 : 80,
             right: 30,
             child: Material(
               color: Colors.transparent,
@@ -49,25 +49,43 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   //   ),
                   // ],
                 ),
-                child: CartToolTip(entry: entry!, overlay: overlay),
+                child: CartToolTip(overlay: overlay),
               ),
             ),
           ),
     );
 
-    overlay.insert(entry!);
+    overlay.insert(entry);
+    try {
+      Future.delayed(Duration(seconds: 4), () {
+        // debugPrint('hi' + entry!.mounted.toString());
+        // if (entry!.mounted == true) {}
+        entry.remove();
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CounterCubit, int>(
-      listenWhen: (prev, curr) => curr != prev,
+      listenWhen: (prev, curr) {
+        // debugPrint(prev.toString() + curr.toString());
+
+        return (curr != prev) && (prev != 0);
+      },
       listener: (context, state) {
-        debugPrint("changes");
-        setState(() {
-          _showCartPopup(context);
-          showCartTooltip = true;
-        });
+        // debugPrint("changes");
+        final currentRoute = GoRouter.of(context).routerDelegate.state.fullPath;
+        // debugPrint('cart page or not : ${currentRoute.toString()}');
+        if (currentRoute.toString() == '/cart') {
+        } else {
+          setState(() {
+            _showCartPopup(context);
+            showCartTooltip = true;
+          });
+        }
 
         // Optional: hide after a delay
       },
