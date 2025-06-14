@@ -14,6 +14,12 @@ class PraductSuccessState extends BannerState {
   PraductSuccessState({required this.bannerProductResponse});
 }
 
+class CartUpdateLocal extends BannerState {
+  final int noOfItems;
+
+  CartUpdateLocal({required this.noOfItems});
+}
+
 class AddButtonPressedState extends BannerState {
   final int index;
   final int varientindex;

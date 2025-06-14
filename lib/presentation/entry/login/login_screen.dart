@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:selorg/presentation/widgets/network_image.dart';
 import 'package:selorgweb_main/presentation/entry/login/login_bloc.dart';
@@ -66,7 +67,7 @@ class LoginScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(height: 40),
-                            Image.asset(appLogo, height: 250),
+                            SvgPicture.asset(appLogo, height: 250),
                             SizedBox(height: 40),
                             Column(
                               spacing: 10,

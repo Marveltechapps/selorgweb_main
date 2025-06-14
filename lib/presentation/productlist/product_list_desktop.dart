@@ -905,6 +905,11 @@ class ProductListDesktopScreen extends StatelessWidget {
                       1;
                   context.read<ProductBloc>().add(
                     AddItemInCartApiEvent(
+                      skuName:
+                          productStyleResponse
+                              .data![state.selectedIndexes]
+                              .skuName ??
+                          "",
                       userId: userId,
                       productId:
                           productStyleResponse
@@ -984,6 +989,11 @@ class ProductListDesktopScreen extends StatelessWidget {
 
                   context.read<ProductBloc>().add(
                     AddItemInCartApiEvent(
+                      skuName:
+                          productStyleResponse
+                              .data![state.selectedIndexes]
+                              .skuName ??
+                          "",
                       userId: userId,
                       productId:
                           productStyleResponse
@@ -1046,20 +1056,24 @@ class ProductListDesktopScreen extends StatelessWidget {
                 }
                 // itemCount.add(1);
               } else if (state is ItemAddedToCartState) {
-                context.read<ProductBloc>().add(
-                  CartLengthEvent(userId: userId),
-                );
-                context.read<ProductBloc>().add(
-                  ProductStyleEvent(
-                    mobilNo: phoneNumber,
-                    userId: userId,
-                    isMainCategory: isMainCategory,
-                    mainCatId: mainCatId,
-                    isSubCategory: true,
-                    subCatId: subCatList[isSelected].id ?? "",
-                    page: page,
-                  ),
-                );
+                if (isLoggedInvalue) {
+                  context.read<ProductBloc>().add(
+                    CartLengthEvent(userId: userId),
+                  );
+                  context.read<ProductBloc>().add(
+                    ProductStyleEvent(
+                      mobilNo: phoneNumber,
+                      userId: userId,
+                      isMainCategory: isMainCategory,
+                      mainCatId: mainCatId,
+                      isSubCategory: true,
+                      subCatId: subCatList[isSelected].id ?? "",
+                      page: page,
+                    ),
+                  );
+                } else {
+                  context.read<CounterCubit>().increment(state.noOfItems);
+                }
               } else if (state is RemoveButtonClickedState) {
                 if (state.type == "screen") {
                   productStyleResponse

@@ -541,6 +541,7 @@ class HomeDesktopScreen extends StatelessWidget {
                   1;
               context.read<HomeBloc>().add(
                 AddItemInCartApiEvent(
+                  skuName: state.response.data![state.selectedIndexes].skuName??'Product',
                   userId: userId,
                   productId:
                       state.response.data![state.selectedIndexes].productId ??

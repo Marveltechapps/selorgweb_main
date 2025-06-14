@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
+import 'package:selorgweb_main/utils/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'colors.dart';
 
 class AccountSidebarWidget extends StatelessWidget {
@@ -72,8 +74,15 @@ class AccountSidebarWidget extends StatelessWidget {
           const SizedBox(height: 27),
           Center(
             child: InkWell(
-              onTap: () {
-                context.push('/login');
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('phone', '');
+                await prefs.setString('userid', '');
+                await prefs.setBool('isLoggedIn', false);
+                isLoggedInvalue = false;
+                phoneNumber = '';
+                userId = '';
+                context.push('/');
               },
               child: Container(
                 width: 133,
@@ -85,7 +94,7 @@ class AccountSidebarWidget extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    'Log In',
+                    'Log Out',
                     style: GoogleFonts.poppins(
                       color: AppColors.red,
                       fontSize: 16,

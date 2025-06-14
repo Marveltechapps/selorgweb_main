@@ -66,6 +66,7 @@ class AddItemInCartApiEvent extends HomeEvent {
   final int discountPrice;
   final String deliveryInstructions;
   final String addNotes;
+  final String skuName;
 
   AddItemInCartApiEvent({
     required this.userId,
@@ -77,6 +78,7 @@ class AddItemInCartApiEvent extends HomeEvent {
     required this.discountPrice,
     required this.deliveryInstructions,
     required this.addNotes,
+    required this.skuName
   });
 }
 

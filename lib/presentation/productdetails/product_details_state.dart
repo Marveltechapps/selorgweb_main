@@ -23,6 +23,12 @@ class CartCountLengthSuccessState extends ProductDetailState {
   CartCountLengthSuccessState({required this.cartResponse});
 }
 
+class CartUpdateLocal extends ProductDetailState {
+  final int noOfcartResponse;
+
+  CartUpdateLocal({required this.noOfcartResponse});
+}
+
 class SimilarProductSuccessState extends ProductDetailState {
   final SimilarProductResponse similarProductResponse;
 

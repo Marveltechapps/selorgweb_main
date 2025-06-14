@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
+import 'package:selorgweb_main/model/cart/cart_model.dart' as s1;
 import 'package:selorgweb_main/model/cart/update_cart_request_model.dart';
 import 'package:selorgweb_main/model/cart/update_cart_response_model.dart';
 import 'package:selorgweb_main/model/cart/update_delivery_tip_request_model.dart';
@@ -15,6 +18,7 @@ import 'package:selorgweb_main/presentation/cart/cart_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartInitialState()) {
@@ -89,16 +93,49 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = "$cartUrl${event.userId}";
       debugPrint(url);
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        var cartResponse = cartResponseFromJson(response.body);
-        int countvalue = 0;
-        for (int i = 0; i < cartResponse.items!.length; i++) {
-          countvalue = countvalue + cartResponse.items![i].quantity!;
+      if (isLoggedInvalue == true) {
+        final response = await http.get(Uri.parse(url));
+
+        if (response.statusCode == 200) {
+          var cartResponse = cartResponseFromJson(response.body);
+          int countvalue = 0;
+          for (int i = 0; i < cartResponse.items!.length; i++) {
+            countvalue = countvalue + cartResponse.items![i].quantity!;
+          }
+          emit(
+            CartDataSuccess(cartResponse: cartResponse, countvalue: countvalue),
+          );
+        } else {
+          emit(CartErrorState(errormsg: 'Failed to fetch data'));
         }
-        emit(CartDataSuccess(cartResponse: cartResponse, countvalue: countvalue));
       } else {
-        emit(CartErrorState(errormsg: 'Failed to fetch data'));
+        debugPrint('starts');
+        final prefs = await SharedPreferences.getInstance();
+        var cartResponse = cartResponseFromJson('{}');
+        debugPrint(cartResponse.toJson().toString());
+        debugPrint('ends ${jsonDecode(prefs.getString('cartdata') ?? '[]')}');
+        List<dynamic> data = jsonDecode(prefs.getString('cartdata') ?? '[]');
+        for (var e in data) {
+          debugPrint(e.toString());
+          cartResponse.items!.add(
+            s1.Item(
+              imageUrl: e['imageURL'],
+              price: e['price'],
+              discountPrice: e['discountPrice'],
+              quantity: e['quantity'],
+              variantLabel: e['variantLabel'],
+              productId: ProductId(id: e['productId'], skuName: e['skuName']),
+            ),
+          );
+        }
+        debugPrint(cartResponse.toJson().toString());
+        emit(
+          CartDataSuccess(
+            cartResponse: cartResponse,
+            countvalue: cartResponse.items!.length,
+          ),
+        );
+        // cartResponse.items = jsonDecode(prefs.getString('cartdata') ?? '[]');
       }
     } catch (e) {
       emit(CartErrorState(errormsg: e.toString()));

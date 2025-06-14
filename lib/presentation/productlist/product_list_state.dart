@@ -68,8 +68,9 @@ class AddButtonClickedState extends ProductState {
 
 class ItemAddedToCartState extends ProductState {
   final AddItemToCartResponse addItemToCartResponse;
+  final int noOfItems;
 
-  ItemAddedToCartState({required this.addItemToCartResponse});
+  ItemAddedToCartState({required this.addItemToCartResponse, required this.noOfItems});
 }
 
 class ItemRemovedToCartState extends ProductState {

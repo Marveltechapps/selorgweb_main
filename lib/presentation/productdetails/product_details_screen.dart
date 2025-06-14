@@ -1584,7 +1584,9 @@ class ProductDetailsScreen extends StatelessWidget {
               } else if (state is SimilarProductDetailSuccessState) {
                 similarProductDetailResponse =
                     state.similarProductDetailResponse;
-              } else if (state is LabelChangedState) {
+              } else if(state is CartUpdateLocal){
+            context.read<CounterCubit>().increment(state.noOfcartResponse);
+          }else if (state is LabelChangedState) {
                 // varientIndex = state.varientIndex;
                 // debugPrint(productDetailResponse
                 //     .data!.product!.variants![state.varientIndex].label);
@@ -1630,6 +1632,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
                   context.read<ProductDetailBloc>().add(
                     AddItemInCartApiEvent(
+                      skuName: productDetailResponse.data!.product!.skuName??"",
                       userId: userId,
                       productId: productDetailResponse.data!.product!.id ?? "",
                       quantity: 1,
@@ -1692,6 +1695,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           .variants![varientIndex];
                   context.read<ProductDetailBloc>().add(
                     AddItemInCartApiEvent(
+                      skuName: productDetailResponse.data!.product!.skuName??"",
                       userId: userId,
                       productId: productDetailResponse.data!.product!.id ?? "",
                       quantity: 1,
@@ -1743,6 +1747,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           .variants![similarvarientIndex];
                   context.read<ProductDetailBloc>().add(
                     AddItemInCartApiEvent(
+                      skuName: productDetailResponse.data!.product!.skuName??"",
                       userId: userId,
                       productId:
                           similarProductResponse
@@ -1794,6 +1799,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           .variants![similarvarientIndex];
                   context.read<ProductDetailBloc>().add(
                     AddItemInCartApiEvent(
+                      skuName: productDetailResponse.data!.product!.skuName??"",
                       userId: userId,
                       productId:
                           similarProductResponse
@@ -2990,7 +2996,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                     spacing: 20,
                                     children: [
                                       if (similarProductResponse.data != null)
-                                        Text("Similar Products"),
+                                        Text("Similar Products" , style: TextStyle(color: Colors.black),),
                                       if (similarProductResponse.data != null)
                                         SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,

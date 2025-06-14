@@ -42,6 +42,7 @@ class AddItemInCartApiEvent extends ProductDetailEvent {
   final int discountPrice;
   final String deliveryInstructions;
   final String addNotes;
+  final String skuName;
 
   AddItemInCartApiEvent(
       {required this.userId,
@@ -52,7 +53,9 @@ class AddItemInCartApiEvent extends ProductDetailEvent {
       required this.price,
       required this.discountPrice,
       required this.deliveryInstructions,
-      required this.addNotes});
+      required this.addNotes,
+      required this.skuName
+      });
 }
 
 class RemoveItemInCartApiEvent extends ProductDetailEvent {

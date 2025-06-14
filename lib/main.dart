@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -40,6 +42,7 @@ import 'package:selorg/presentation/settings/profile/profile_screen.dart';
 import 'package:selorg/presentation/settings/refunds/refunds_screen.dart';
 import 'package:selorg/presentation/settings/settings_screen.dart';
 import 'package:selorg/utils/constant.dart' as selorg_constants;
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:selorg/presentation/entry/otp/otp_screen.dart';
 
 void main() {
@@ -50,7 +53,7 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   static GoRouter router = GoRouter(
@@ -156,6 +159,28 @@ class MyApp extends StatelessWidget {
       ),
     ],
   );
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Future<void> getProps() async {
+    final prefs = await SharedPreferences.getInstance();
+    final success = await prefs.setString('cartdata', '[]');
+    debugPrint('Set success: $success');
+    phoneNumber = prefs.getString('phone')??'';
+    userId = prefs.getString('userid')??'';
+    isLoggedInvalue = prefs.getBool('isLoggedIn')??false;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getProps();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +291,7 @@ class MyApp extends StatelessWidget {
                 return BlocProvider(
                   create: (context) => CounterCubit(),
                   child: MaterialApp.router(
-                    routerConfig: router,
+                    routerConfig: MyApp.router,
                     debugShowCheckedModeBanner: false,
                     title: 'Selorg',
                     theme: ThemeData(

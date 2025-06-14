@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +16,7 @@ import 'package:selorgweb_main/model/category/similar_product_response_model.dar
 import 'package:selorgweb_main/presentation/productdetails/product_details_event.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   ProductDetailBloc() : super(ProductDetailInitialState()) {
@@ -30,46 +33,71 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   }
 
   updateSimilarIndex(
-      UpdateSimilarIndexEvent event, Emitter<ProductDetailState> emit) {
+    UpdateSimilarIndexEvent event,
+    Emitter<ProductDetailState> emit,
+  ) {
     emit(ProductDetailLoadingState());
-    emit(UpdateSimilarProductIndexState(
-        index: event.index, similarIndex: event.similarIndex));
+    emit(
+      UpdateSimilarProductIndexState(
+        index: event.index,
+        similarIndex: event.similarIndex,
+      ),
+    );
   }
 
   changeVarientFunction(
-      LabelVarientItemEvent event, Emitter<ProductDetailState> emit) {
+    LabelVarientItemEvent event,
+    Emitter<ProductDetailState> emit,
+  ) {
     emit(ProductDetailLoadingState());
-    emit(LabelChangedState(
-        productIndex: event.productIndex, varientIndex: event.varientIndex));
+    emit(
+      LabelChangedState(
+        productIndex: event.productIndex,
+        varientIndex: event.varientIndex,
+      ),
+    );
   }
 
   onAddbuttonclicked(
-      AddButtonClikedEvent event, Emitter<ProductDetailState> emit) {
+    AddButtonClikedEvent event,
+    Emitter<ProductDetailState> emit,
+  ) {
     emit(ProductDetailLoadingState());
-    emit(AddButtonClickedState(
+    emit(
+      AddButtonClickedState(
         type: event.type,
         selectedIndexes: event.index,
         similarIndex: event.similarIndex,
-        isSelected: event.isButtonPressed));
+        isSelected: event.isButtonPressed,
+      ),
+    );
   }
 
   onRemoveItembuttonclicked(
-      RemoveItemButtonClikedEvent event, Emitter<ProductDetailState> emit) {
+    RemoveItemButtonClikedEvent event,
+    Emitter<ProductDetailState> emit,
+  ) {
     emit(ProductDetailLoadingState());
-    emit(RemoveButtonClickedState(
+    emit(
+      RemoveButtonClickedState(
         type: event.type,
         selectedIndexes: event.index,
         similarIndex: event.similarIndex,
-        isSelected: event.isButtonPressed));
+        isSelected: event.isButtonPressed,
+      ),
+    );
   }
 
   addItemsToCartApifunction(
-      AddItemInCartApiEvent event, Emitter<ProductDetailState> emit) async {
+    AddItemInCartApiEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
     emit(ProductDetailLoadingState());
     AddItemToCartRequest addItemToCartRequest = AddItemToCartRequest();
     addItemToCartRequest.userId = event.userId;
     addItemToCartRequest.productId = event.productId;
     addItemToCartRequest.quantity = event.quantity;
+    addItemToCartRequest.skuName = event.skuName;
     addItemToCartRequest.variantLabel = event.variantLabel;
     addItemToCartRequest.imageUrl = event.imageUrl;
     addItemToCartRequest.price = event.price;
@@ -79,15 +107,30 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     try {
       String url = addCartUrl;
       // debugPrint(url);
-      api.Response response = await api.ApiService()
-          .postRequest(url, addItemToCartRequestToJson(addItemToCartRequest));
-      if (response.statusCode == 200) {
-        var addItemToCartResponse =
-            addItemToCartResponseFromJson(response.resBody);
-        emit(
-            ItemAddedToCartState(addItemToCartResponse: addItemToCartResponse));
+      if (isLoggedInvalue) {
+        api.Response response = await api.ApiService().postRequest(
+          url,
+          addItemToCartRequestToJson(addItemToCartRequest),
+        );
+        if (response.statusCode == 200) {
+          var addItemToCartResponse = addItemToCartResponseFromJson(
+            response.resBody,
+          );
+          emit(
+            ItemAddedToCartState(addItemToCartResponse: addItemToCartResponse),
+          );
+        } else {
+          emit(ProductDetailErrorState(errorMsg: response.resBody));
+        }
       } else {
-        emit(ProductDetailErrorState(errorMsg: response.resBody));
+        final prefs = await SharedPreferences.getInstance();
+        List<dynamic> cartdata = jsonDecode(prefs.getString('cartdata') ?? '');
+        String data = addItemToCartRequestToJson(addItemToCartRequest);
+        cartdata.add(jsonDecode(data));
+        debugPrint('add cart rough $cartdata');
+        await prefs.setString('cartdata', jsonEncode(cartdata));
+        debugPrint('hello');
+        emit(CartUpdateLocal(noOfcartResponse: cartdata.length));
       }
     } catch (e) {
       emit(ProductDetailErrorState(errorMsg: e.toString()));
@@ -95,7 +138,9 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   }
 
   removeItemsToCartApifunction(
-      RemoveItemInCartApiEvent event, Emitter<ProductDetailState> emit) async {
+    RemoveItemInCartApiEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
     emit(ProductDetailLoadingState());
     RemoveItemToCartRequest removeItemToCartRequest = RemoveItemToCartRequest();
     removeItemToCartRequest.userId = event.userId;
@@ -107,13 +152,31 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     try {
       String url = removeCartUrl;
       //  debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
-          url, removeItemToCartRequestToJson(removeItemToCartRequest));
-      if (response.statusCode == 200) {
-        var removeCartResponse = removeCartResponseFromJson(response.resBody);
-        emit(ItemRemovedToCartState(removeCartResponse: removeCartResponse));
+      if (isLoggedInvalue) {
+        api.Response response = await api.ApiService().postRequest(
+          url,
+          removeItemToCartRequestToJson(removeItemToCartRequest),
+        );
+        if (response.statusCode == 200) {
+          var removeCartResponse = removeCartResponseFromJson(response.resBody);
+          emit(ItemRemovedToCartState(removeCartResponse: removeCartResponse));
+        } else {
+          emit(ProductDetailErrorState(errorMsg: response.resBody));
+        }
       } else {
-        emit(ProductDetailErrorState(errorMsg: response.resBody));
+        final prefs = await SharedPreferences.getInstance();
+        List<dynamic> cartdata = jsonDecode(prefs.getString('cartdata') ?? '');
+        final index = cartdata.indexWhere(
+          (item) =>
+              item['productId'] == event.productId &&
+              item['quantity'] == event.quantity &&
+              item['variantLabel'] == event.variantLabel,
+        );
+        // cartdata.add(jsonDecode(data));
+        cartdata.removeAt(index);
+        debugPrint('add cart rough $cartdata');
+        await prefs.setString('cartdata', jsonEncode(cartdata));
+        emit(CartUpdateLocal(noOfcartResponse: cartdata.length));
       }
     } catch (e) {
       emit(ProductDetailErrorState(errorMsg: e.toString()));
@@ -121,7 +184,9 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   }
 
   getCartCountfunction(
-      GetCartCountLengthEvent event, Emitter<ProductDetailState> emit) async {
+    GetCartCountLengthEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
     emit(ProductDetailLoadingState());
     try {
       String url = "$cartUrl${event.userId}";
@@ -139,7 +204,9 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   }
 
   getProductDetail(
-      GetProductDetailEvent event, Emitter<ProductDetailState> emit) async {
+    GetProductDetailEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
     emit(ProductDetailLoadingState());
     try {
       String url =
@@ -151,8 +218,11 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
         emit(ProductDetailSuccessState(productDetailResponse: productDetail));
       } else {
         var errorResponse = productErrorResponseFromJson(response.body);
-        emit(ProductDetailErrorState(
-            errorMsg: errorResponse.message ?? "Failed to fetch data"));
+        emit(
+          ProductDetailErrorState(
+            errorMsg: errorResponse.message ?? "Failed to fetch data",
+          ),
+        );
       }
     } catch (e) {
       emit(ProductDetailErrorState(errorMsg: e.toString()));
@@ -160,7 +230,9 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   }
 
   getSimiralProductfunction(
-      GetSimilarProductEvent event, Emitter<ProductDetailState> emit) async {
+    GetSimilarProductEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
     emit(ProductDetailLoadingState());
     try {
       String url =
@@ -168,10 +240,14 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       debugPrint(url);
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        var similarProductResponse =
-            similarProductResponseFromJson(response.body);
-        emit(SimilarProductSuccessState(
-            similarProductResponse: similarProductResponse));
+        var similarProductResponse = similarProductResponseFromJson(
+          response.body,
+        );
+        emit(
+          SimilarProductSuccessState(
+            similarProductResponse: similarProductResponse,
+          ),
+        );
       } else {
         emit(ProductDetailErrorState(errorMsg: 'Failed to fetch data'));
       }
@@ -180,18 +256,24 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     }
   }
 
-  getSimiralProductDetailfunction(GetSimilarProductDetailEvent event,
-      Emitter<ProductDetailState> emit) async {
+  getSimiralProductDetailfunction(
+    GetSimilarProductDetailEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
     emit(ProductDetailLoadingState());
     try {
       String url = "$similarProductDetailUrl${event.productId}";
       debugPrint(url);
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        var similarProductDetailResponse =
-            similarProductDetailResponseFromJson(response.body);
-        emit(SimilarProductDetailSuccessState(
-            similarProductDetailResponse: similarProductDetailResponse));
+        var similarProductDetailResponse = similarProductDetailResponseFromJson(
+          response.body,
+        );
+        emit(
+          SimilarProductDetailSuccessState(
+            similarProductDetailResponse: similarProductDetailResponse,
+          ),
+        );
       } else {
         emit(ProductDetailErrorState(errorMsg: 'Failed to fetch data'));
       }

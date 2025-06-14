@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,6 +8,8 @@ import 'package:selorgweb_main/apiservice/post_method.dart' as api;
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
+import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart'
+    as r1;
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_error_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
@@ -15,6 +19,7 @@ import 'package:selorgweb_main/model/category/sub_category_model.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_event.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc() : super(ProductInitialState()) {
@@ -114,6 +119,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     addItemToCartRequest.userId = event.userId;
     addItemToCartRequest.productId = event.productId;
     addItemToCartRequest.quantity = event.quantity;
+    addItemToCartRequest.skuName = event.skuName;
     addItemToCartRequest.variantLabel = event.variantLabel;
     addItemToCartRequest.imageUrl = event.imageUrl;
     addItemToCartRequest.price = event.price;
@@ -124,19 +130,38 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       String url = addCartUrl;
       // debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
-        url,
-        addItemToCartRequestToJson(addItemToCartRequest),
-      );
-      if (response.statusCode == 200) {
-        var addItemToCartResponse = addItemToCartResponseFromJson(
-          response.resBody,
+      if (isLoggedInvalue) {
+        api.Response response = await api.ApiService().postRequest(
+          url,
+          addItemToCartRequestToJson(addItemToCartRequest),
         );
-        emit(
-          ItemAddedToCartState(addItemToCartResponse: addItemToCartResponse),
-        );
+        if (response.statusCode == 200) {
+          var addItemToCartResponse = addItemToCartResponseFromJson(
+            response.resBody,
+          );
+          emit(
+            ItemAddedToCartState(
+              addItemToCartResponse: addItemToCartResponse,
+              noOfItems: addItemToCartResponse.cart!.items!.length,
+            ),
+          );
+        } else {
+          emit(AddToCartErrorState(message: response.resBody));
+        }
       } else {
-        emit(AddToCartErrorState(message: response.resBody));
+        final prefs = await SharedPreferences.getInstance();
+        List<dynamic> cartdata = jsonDecode(prefs.getString('cartdata') ?? '');
+        String data = addItemToCartRequestToJson(addItemToCartRequest);
+        cartdata.add(jsonDecode(data));
+        debugPrint('add cart rough $cartdata');
+        await prefs.setString('cartdata', jsonEncode(cartdata));
+        debugPrint('hello');
+        emit(
+          ItemAddedToCartState(
+            addItemToCartResponse: AddItemToCartResponse(),
+            noOfItems: cartdata.length,
+          ),
+        );
       }
     } catch (e) {
       emit(AddToCartErrorState(message: e.toString()));
@@ -158,15 +183,42 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       String url = removeCartUrl;
       //  debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
-        url,
-        removeItemToCartRequestToJson(removeItemToCartRequest),
-      );
-      if (response.statusCode == 200) {
-        var removeCartResponse = removeCartResponseFromJson(response.resBody);
-        emit(ItemRemovedToCartState(removeCartResponse: removeCartResponse));
+      if (isLoggedInvalue) {
+        api.Response response = await api.ApiService().postRequest(
+          url,
+          removeItemToCartRequestToJson(removeItemToCartRequest),
+        );
+        if (response.statusCode == 200) {
+          var removeCartResponse = removeCartResponseFromJson(response.resBody);
+          emit(ItemRemovedToCartState(removeCartResponse: removeCartResponse));
+        } else {
+          emit(AddToCartErrorState(message: response.resBody));
+        }
       } else {
-        emit(AddToCartErrorState(message: response.resBody));
+        final prefs = await SharedPreferences.getInstance();
+        List<dynamic> cartdata = jsonDecode(prefs.getString('cartdata') ?? '');
+        final index = cartdata.indexWhere(
+          (item) =>
+              item['productId'] == event.productId &&
+              item['quantity'] == event.quantity &&
+              item['variantLabel'] == event.variantLabel,
+        );
+        // cartdata.add(jsonDecode(data));
+        cartdata.removeAt(index);
+        debugPrint('add cart rough $cartdata');
+        await prefs.setString('cartdata', jsonEncode(cartdata));
+        emit(
+          ItemAddedToCartState(
+            addItemToCartResponse: AddItemToCartResponse(),
+            noOfItems: cartdata.length,
+          ),
+        );
+        // emit(CartDataSuccess(noOfItems: cartdata.length));
+        // emit(
+        //   ItemAddedToCartInHomeScreenState(
+        //     addItemToCartResponse: addItemToCartResponseFromJson('[]'),
+        //   ),
+        // );
       }
     } catch (e) {
       emit(AddToCartErrorState(message: e.toString()));

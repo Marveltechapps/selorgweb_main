@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:selorgweb_main/model/banner/banner_error_response.dart';
@@ -12,6 +14,7 @@ import 'package:selorgweb_main/presentation/banner/banner_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BannerBloc extends Bloc<BannerEvent, BannerState> {
   BannerBloc() : super(BannerInitialState()) {
@@ -42,6 +45,7 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     addItemToCartRequest.quantity = event.quantity;
     addItemToCartRequest.variantLabel = event.variantLabel;
     addItemToCartRequest.imageUrl = event.imageUrl;
+    addItemToCartRequest.skuName = event.skuName;
     addItemToCartRequest.price = event.price;
     addItemToCartRequest.discountPrice = event.discountPrice;
     addItemToCartRequest.deliveryInstructions = event.deliveryInstructions;
@@ -49,17 +53,27 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     try {
       String url = addCartUrl;
       debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
-        url,
-        addItemToCartRequestToJson(addItemToCartRequest),
-      );
-      if (response.statusCode == 200) {
-        var addItemToCartResponse = addItemToCartResponseFromJson(
-          response.resBody,
+      if (isLoggedInvalue) {
+        api.Response response = await api.ApiService().postRequest(
+          url,
+          addItemToCartRequestToJson(addItemToCartRequest),
         );
-        emit(AddedToCartState(addItemToCartResponse: addItemToCartResponse));
+        if (response.statusCode == 200) {
+          var addItemToCartResponse = addItemToCartResponseFromJson(
+            response.resBody,
+          );
+          emit(AddedToCartState(addItemToCartResponse: addItemToCartResponse));
+        } else {
+          emit(BannerErrorState(errorMsg: response.resBody));
+        }
       } else {
-        emit(BannerErrorState(errorMsg: response.resBody));
+        final prefs = await SharedPreferences.getInstance();
+        List<dynamic> cartdata = jsonDecode(prefs.getString('cartdata') ?? '');
+        String data = addItemToCartRequestToJson(addItemToCartRequest);
+        cartdata.add(jsonDecode(data));
+        debugPrint('add cart rough $cartdata');
+        await prefs.setString('cartdata', jsonEncode(cartdata));
+        emit(CartUpdateLocal(noOfItems: cartdata.length));
       }
     } catch (e) {
       emit(BannerErrorState(errorMsg: e.toString()));
@@ -92,15 +106,31 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     try {
       String url = removeCartUrl;
       //  debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
-        url,
-        removeItemToCartRequestToJson(removeItemToCartRequest),
-      );
-      if (response.statusCode == 200) {
-        var removeCartResponse = removeCartResponseFromJson(response.resBody);
-        emit(RemoveItemFromCartState(removeCartResponse: removeCartResponse));
+      if (isLoggedInvalue) {
+        api.Response response = await api.ApiService().postRequest(
+          url,
+          removeItemToCartRequestToJson(removeItemToCartRequest),
+        );
+        if (response.statusCode == 200) {
+          var removeCartResponse = removeCartResponseFromJson(response.resBody);
+          emit(RemoveItemFromCartState(removeCartResponse: removeCartResponse));
+        } else {
+          emit(BannerErrorState(errorMsg: response.resBody));
+        }
       } else {
-        emit(BannerErrorState(errorMsg: response.resBody));
+        final prefs = await SharedPreferences.getInstance();
+        List<dynamic> cartdata = jsonDecode(prefs.getString('cartdata') ?? '');
+        final index = cartdata.indexWhere(
+          (item) =>
+              item['productId'] == event.productId &&
+              item['quantity'] == event.quantity &&
+              item['variantLabel'] == event.variantLabel,
+        );
+        // cartdata.add(jsonDecode(data));
+        cartdata.removeAt(index);
+        debugPrint('add cart rough $cartdata');
+        await prefs.setString('cartdata', jsonEncode(cartdata));
+        emit(CartUpdateLocal(noOfItems: cartdata.length));
       }
     } catch (e) {
       emit(BannerErrorState(errorMsg: e.toString()));

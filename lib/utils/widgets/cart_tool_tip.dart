@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +19,7 @@ import 'package:selorgweb_main/presentation/home/home_event.dart' as he;
 import 'package:selorgweb_main/presentation/home/home_state.dart' as hs;
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/utils/widgets/network_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartToolTip extends StatefulWidget {
   const CartToolTip({super.key, required this.overlay});
@@ -79,11 +82,10 @@ class _CartToolTipState extends State<CartToolTip> {
                 if (cartResponse.items!.isEmpty) {
                   tipAmount = "0";
                   cartCount = 0;
-                } else {
-                  tipAmount = cartResponse.billSummary!.deliveryTip.toString();
                 }
                 cartCount = state.countvalue;
                 context.read<CounterCubit>().increment(cartCount);
+
                 // debugPrint(state.cartResponse.billSummary!..toString());
               } else if (state is AddButtonClickedState) {
                 cartResponse.items![state.selectedIndex].quantity =
@@ -161,7 +163,7 @@ class _CartToolTipState extends State<CartToolTip> {
                 children: [
                   // Triangle at top center
                   Positioned(
-                    top:-10,
+                    top: -10,
                     left:
                         MediaQuery.of(context).size.width < 991
                             ? 220
@@ -267,15 +269,10 @@ class _CartToolTipState extends State<CartToolTip> {
                                                     children: [
                                                       Text(
                                                         cartResponse
-                                                                    .items![index]
-                                                                    .productId ==
-                                                                null
-                                                            ? ""
-                                                            : cartResponse
-                                                                    .items![index]
-                                                                    .productId!
-                                                                    .skuName ??
-                                                                "",
+                                                                .items![index]
+                                                                .productId!
+                                                                .skuName ??
+                                                            "",
                                                         style:
                                                             GoogleFonts.poppins(
                                                               fontSize: 14,
@@ -384,7 +381,9 @@ class _CartToolTipState extends State<CartToolTip> {
                               decoration: BoxDecoration(color: Colors.white),
                               child: ElevatedButton.icon(
                                 onPressed: () {
-                                  context.push('/cart');
+                                  isLoggedInvalue
+                                      ? context.push('/cart')
+                                      : context.push('/login');
                                 },
                                 icon: Icon(Icons.arrow_forward),
                                 iconAlignment: IconAlignment.end,

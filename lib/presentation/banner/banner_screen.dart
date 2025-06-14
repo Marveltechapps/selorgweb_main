@@ -756,6 +756,9 @@ class BannerScreen extends StatelessWidget {
             listener: (context, state) {
               if (state is PraductSuccessState) {
                 bannerProductResponse = state.bannerProductResponse;
+              }else if(state is CartUpdateLocal){
+                context.read<CounterCubit>().increment(state.noOfItems);
+
               } else if (state is AddButtonPressedState) {
                 if (state.type == "screen") {
                   bannerProductResponse
@@ -768,6 +771,8 @@ class BannerScreen extends StatelessWidget {
                       1;
                   context.read<BannerBloc>().add(
                     AddItemApiEvent(
+                      skuName: bannerProductResponse.data![state.index].skuName ??
+                          "",
                       userId: userId,
                       productId:
                           bannerProductResponse.data![state.index].productId ??
@@ -812,6 +817,8 @@ class BannerScreen extends StatelessWidget {
                       1;
                   context.read<BannerBloc>().add(
                     AddItemApiEvent(
+                      skuName: bannerProductResponse.data![state.index].skuName ??
+                          "",
                       userId: userId,
                       productId:
                           bannerProductResponse.data![state.index].productId ??

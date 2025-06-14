@@ -28,6 +28,7 @@ class ApiService {
         // "password": dataEncryption(password, encryptionKey),
         // "token": sessionId,
       });
+      debugPrint('object');
       debugPrint(object);
       var body = response.body;
       debugPrint("JSON Response -- $body");

@@ -25,6 +25,7 @@ class AddItemApiEvent extends BannerEvent {
   final int discountPrice;
   final String deliveryInstructions;
   final String addNotes;
+  final String skuName;
 
   AddItemApiEvent(
       {required this.userId,
@@ -35,7 +36,9 @@ class AddItemApiEvent extends BannerEvent {
       required this.price,
       required this.discountPrice,
       required this.deliveryInstructions,
-      required this.addNotes});
+      required this.addNotes,
+      required this.skuName
+      });
 }
 
 class RemoveItemApiEvent extends BannerEvent {

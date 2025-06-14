@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/utils/widgets/cart_tool_tip.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HeaderWidget extends StatefulWidget {
   final bool isHomeScreen;
@@ -57,7 +58,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
     overlay.insert(entry);
     try {
-      Future.delayed(Duration(seconds: 4), () {
+      Future.delayed(Duration(seconds: 3), () {
         // debugPrint('hi' + entry!.mounted.toString());
         // if (entry!.mounted == true) {}
         entry.remove();
@@ -79,7 +80,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         // debugPrint("changes");
         final currentRoute = GoRouter.of(context).routerDelegate.state.fullPath;
         // debugPrint('cart page or not : ${currentRoute.toString()}');
-        if (currentRoute.toString() == '/cart') {
+        if (currentRoute.toString() == '/cart' ) {
+
         } else {
           setState(() {
             _showCartPopup(context);
@@ -192,27 +194,49 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWell(
-                          onTap: () {
-                            context.push('/settings');
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) {
-                            //       return SettingMainScreen();
-                            //     },
-                            //   ),
-                            // );
-                          },
-                          child: Text(
-                            'My Account',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        isLoggedInvalue
+                            ? InkWell(
+                              onTap: () {
+                                context.push('/settings');
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) {
+                                //       return SettingMainScreen();
+                                //     },
+                                //   ),
+                                // );
+                              },
+                              child: Text(
+                                'My Account',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                            : InkWell(
+                              onTap: () {
+                                context.push('/login');
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) {
+                                //       return SettingMainScreen();
+                                //     },
+                                //   ),
+                                // );
+                              },
+                              child: Text(
+                                'Login',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                         // const SizedBox(width: 28),
                         InkWell(
                           onTap: () {
@@ -375,32 +399,54 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              context.push('/settings');
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) {
-                              //       return SettingMainScreen();
-                              //     },
-                              //   ),
-                              // );
-                            },
-                            child: Text(
-                              'My Account',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                          isLoggedInvalue
+                              ? InkWell(
+                                onTap: () {
+                                  context.push('/settings');
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return SettingMainScreen();
+                                  //     },
+                                  //   ),
+                                  // );
+                                },
+                                child: Text(
+                                  'My Account',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                              : InkWell(
+                                onTap: () {
+                                  context.push('/login');
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return SettingMainScreen();
+                                  //     },
+                                  //   ),
+                                  // );
+                                },
+                                child: Text(
+                                  'Login',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
                           const SizedBox(width: 28),
                           InkWell(
                             onTap: () {
                               debugPrint("cart screeen");
-                              context.push('/cart');
+                              isLoggedInvalue==true? context.push('/cart') : context.push('/login');
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(

@@ -14,6 +14,7 @@ class AddItemToCartRequest {
     int? discountPrice;
     String? deliveryInstructions;
     String? addNotes;
+    String? skuName;
 
     AddItemToCartRequest({
         this.userId,
@@ -25,6 +26,7 @@ class AddItemToCartRequest {
         this.discountPrice,
         this.deliveryInstructions,
         this.addNotes,
+        this.skuName
     });
 
     factory AddItemToCartRequest.fromJson(Map<String, dynamic> json) => AddItemToCartRequest(
@@ -37,6 +39,7 @@ class AddItemToCartRequest {
         discountPrice: json["discountPrice"],
         deliveryInstructions: json["deliveryInstructions"],
         addNotes: json["addNotes"],
+        skuName: json["skuName"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -49,5 +52,6 @@ class AddItemToCartRequest {
         "discountPrice": discountPrice,
         "deliveryInstructions": deliveryInstructions,
         "addNotes": addNotes,
+        "skuName":skuName
     };
 }

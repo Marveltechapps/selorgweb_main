@@ -588,6 +588,10 @@ class ProductListMobileScreen extends StatelessWidget {
                   1;
               context.read<ProductBloc>().add(
                 AddItemInCartApiEvent(
+                  skuName: productStyleResponse
+                              .data![state.selectedIndexes]
+                              .skuName ??
+                          "",
                   userId: userId,
                   productId:
                       productStyleResponse
@@ -668,6 +672,10 @@ class ProductListMobileScreen extends StatelessWidget {
               context.read<ProductBloc>().add(
                 AddItemInCartApiEvent(
                   userId: userId,
+                  skuName: productStyleResponse
+                              .data![state.selectedIndexes]
+                              .skuName ??
+                          "",
                   productId:
                       productStyleResponse
                           .data![state.selectedIndexes]
