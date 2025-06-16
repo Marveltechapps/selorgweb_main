@@ -241,7 +241,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                         InkWell(
                           onTap: () {
                             debugPrint("cart screeen");
-                            context.push('/cart');
+
+                            isLoggedInvalue? context.push('/cart'):context.push('/login');
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(

@@ -5,6 +5,7 @@ abstract class OtpState {}
 class OtpLoadingState extends OtpState {}
 
 class OtpInitialState extends OtpState {}
+class SPsaveSucess extends OtpState {}
 
 class TimerInitial extends OtpState {
   final int duration;

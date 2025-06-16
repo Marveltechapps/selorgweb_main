@@ -13,7 +13,7 @@
             "args": [
                 "--web-port=8080",
                 "--verbose",
-                // "--debug",
+                // "--release",
             ],
             "program": "lib/main.dart",
             "cwd": "${workspaceFolder}",

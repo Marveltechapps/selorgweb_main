@@ -8,8 +8,6 @@ import 'package:selorgweb_main/apiservice/post_method.dart' as api;
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
-import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart'
-    as r1;
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_error_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';

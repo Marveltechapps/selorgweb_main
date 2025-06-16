@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:selorgweb_main/presentation/entry/otp/otp_bloc.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_event.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_state.dart';
 import 'package:selorgweb_main/utils/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
@@ -15,8 +18,10 @@ class OtpScreen extends StatelessWidget {
   static int sec = 0;
 
   static TextEditingController c = TextEditingController();
-  static List<TextEditingController> controllers =
-      List.generate(4, (index) => TextEditingController());
+  static List<TextEditingController> controllers = List.generate(
+    4,
+    (index) => TextEditingController(),
+  );
   static List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
   static List<bool> isEntered = List.generate(4, (index) => false);
   static List<bool> isOtpWrong = List.generate(4, (index) => false);
@@ -31,46 +36,71 @@ class OtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => OtpBloc(),
-        child: BlocConsumer<OtpBloc, OtpState>(listener: (context, state) {
+      create: (context) => OtpBloc(),
+      child: BlocConsumer<OtpBloc, OtpState>(
+        listener: (context, state) async {
           if (state is OtpEnteredState) {
             isEntered[state.index] = state.isEntered;
             String otp =
                 controllers.map((controller) => controller.text).join();
             if (otp.length == 4) {
-              context
-                  .read<OtpBloc>()
-                  .add(VerifyOtpEvent(mobileNumber: phoneNumber, otp: otp));
+              context.read<OtpBloc>().add(
+                VerifyOtpEvent(mobileNumber: phoneNumber, otp: otp),
+              );
 
               // widget.onOtpComplete(otp); // Call the function when all fields are filled
             }
+          } else if (state is SPsaveSucess) {
+            final prefs = await SharedPreferences.getInstance();
+            List<dynamic> cartdata = jsonDecode(
+              prefs.getString('cartdata') ?? '[]',
+            );
+            debugPrint('cartdata $cartdata');
+            for (var e in cartdata) {
+              context.read<OtpBloc>().add(
+                AddItemInCartApiEvent(
+                  userId: userId,
+                  productId: e['productId'],
+                  quantity: e['quantity'],
+                  variantLabel: e['variantLabel'],
+                  imageUrl: e['imageURL'],
+                  discountPrice: e['discountPrice'],
+                  price: e['price'],
+                  deliveryInstructions: '',
+                  addNotes: '',
+                  skuName: e['skuName'],
+                ),
+              );
+            }
+            await prefs.setString('cartdata', '[]');
+            context.push('/cart');
           } else if (state is TimerRunning) {
             formatDuration(state.duration);
             // debugPrint(remainingTime);
           } else if (state is OtpSuccessState) {
-            context.push('/cart');
             userId = state.verifyOtpResponse.userId ?? "";
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.verifyOtpResponse.message ?? "")),
             );
-            context
-                .read<OtpBloc>()
-                .add(SaveDataEvent(phoneNo: phoneNumber, userId: userId));
+            context.read<OtpBloc>().add(
+              SaveDataEvent(phoneNo: phoneNumber, userId: userId),
+            );
           } else if (state is OtpErrorState) {
             isOtpWrong = List.generate(4, (index) => true);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
           } else if (state is OtpResendState) {
             isOtpWrong = List.generate(4, (index) => false);
             isEntered = List.generate(4, (index) => false);
             focusNodes[0].requestFocus();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
-        }, builder: (context, state) {
+        },
+        builder: (context, state) {
           if (state is OtpInitialState) {
             isOtpWrong = List.generate(4, (index) => false);
             controllers = List.generate(4, (index) => TextEditingController());
@@ -81,26 +111,29 @@ class OtpScreen extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: appColor,
               leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios_new,
-                    size: 16,
-                  )),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios_new, size: 16),
+              ),
               elevation: 0,
             ),
             body: SingleChildScrollView(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height - 60,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover, image: AssetImage(bgImage))),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage(bgImage),
+                  ),
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 450),
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Padding(
@@ -108,12 +141,15 @@ class OtpScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('OTP\nVerification',
-                                  style: Theme.of(context).textTheme.bodyLarge),
+                              Text(
+                                'OTP\nVerification',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
                               const SizedBox(height: 10),
-                              Text('OTP has been sent to +91 $phoneNumber',
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
+                              Text(
+                                'OTP has been sent to +91 $phoneNumber',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
                               const SizedBox(height: 80),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -123,9 +159,10 @@ class OtpScreen extends StatelessWidget {
                                     width: 50,
                                     height: 50,
                                     decoration: BoxDecoration(
-                                      color: isOtpWrong[index]
-                                          ? Colors.red
-                                          : isEntered[index]
+                                      color:
+                                          isOtpWrong[index]
+                                              ? Colors.red
+                                              : isEntered[index]
                                               ? greenColor
                                               : otpColor,
                                       borderRadius: BorderRadius.circular(10),
@@ -137,45 +174,53 @@ class OtpScreen extends StatelessWidget {
                                       cursorColor: appColor,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                       keyboardType: TextInputType.number,
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly
+                                        FilteringTextInputFormatter.digitsOnly,
                                       ],
                                       maxLength: 1,
                                       decoration: InputDecoration(
                                         counterText:
                                             "", // Hide character counter
-                                        border: InputBorder
-                                            .none, // Remove default border
+                                        border:
+                                            InputBorder
+                                                .none, // Remove default border
                                       ),
                                       onChanged: (value) {
                                         if (value.isEmpty) {
                                           context.read<OtpBloc>().add(
-                                              OtpEnteredEvent(
-                                                  isEntered: false,
-                                                  index: index,
-                                                  otp: value));
+                                            OtpEnteredEvent(
+                                              isEntered: false,
+                                              index: index,
+                                              otp: value,
+                                            ),
+                                          );
                                           isOtpWrong = List.generate(
-                                              4, (index) => false);
+                                            4,
+                                            (index) => false,
+                                          );
                                         } else {
                                           context.read<OtpBloc>().add(
-                                              OtpEnteredEvent(
-                                                  isEntered: true,
-                                                  index: index,
-                                                  otp: value));
+                                            OtpEnteredEvent(
+                                              isEntered: true,
+                                              index: index,
+                                              otp: value,
+                                            ),
+                                          );
                                         }
 
                                         if (value.isNotEmpty && index < 3) {
                                           FocusScope.of(context).requestFocus(
-                                              focusNodes[index +
-                                                  1]); // Move to next field
+                                            focusNodes[index + 1],
+                                          ); // Move to next field
                                         } else if (value.isEmpty && index > 0) {
                                           FocusScope.of(context).requestFocus(
-                                              focusNodes[index -
-                                                  1]); // Move to previous field
+                                            focusNodes[index - 1],
+                                          ); // Move to previous field
                                         }
                                       },
                                     ),
@@ -210,12 +255,14 @@ class OtpScreen extends StatelessWidget {
                                         for (var controller in controllers) {
                                           controller.clear();
                                         }
-                                        context
-                                            .read<OtpBloc>()
-                                            .add(ResetTimer());
                                         context.read<OtpBloc>().add(
-                                            ResendOtpEvent(
-                                                mobileNumber: phoneNumber));
+                                          ResetTimer(),
+                                        );
+                                        context.read<OtpBloc>().add(
+                                          ResendOtpEvent(
+                                            mobileNumber: phoneNumber,
+                                          ),
+                                        );
                                       },
                                       child: Text(
                                         'Resend',
@@ -228,7 +275,7 @@ class OtpScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -239,6 +286,8 @@ class OtpScreen extends StatelessWidget {
               ),
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 }

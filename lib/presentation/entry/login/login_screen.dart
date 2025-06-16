@@ -18,7 +18,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = 500.0;
+    var size = 400.0;
     return BlocProvider(
       create: (context) => LoginBloc(),
       child: BlocConsumer<LoginBloc, LoginState>(
@@ -46,7 +46,7 @@ class LoginScreen extends StatelessWidget {
             body: SingleChildScrollView(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height,
                 // constraints: BoxConstraints(maxWidth: 500),
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(35.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         constraints: BoxConstraints(maxWidth: 500),
@@ -67,7 +67,10 @@ class LoginScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(height: 40),
-                            SvgPicture.asset(appLogo, height: 250),
+                            SvgPicture.asset(
+                              "assets/Frame 7680.svg",
+                              height: 220,
+                            ),
                             SizedBox(height: 40),
                             Column(
                               spacing: 10,
@@ -86,7 +89,7 @@ class LoginScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                   width: size,
-                                  height: 48,
+                                  height: null,
                                   child: Row(
                                     children: [
                                       ImageNetwork(
@@ -144,7 +147,7 @@ class LoginScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                SizedBox(height: 10),
                                 InkWell(
                                   onTap: () {
                                     if (isButtonEnable) {
@@ -159,7 +162,7 @@ class LoginScreen extends StatelessWidget {
                                   },
                                   child: Container(
                                     width: size,
-                                    height: 48,
+                                    height: 45,
                                     decoration: BoxDecoration(
                                       color:
                                           isButtonEnable
@@ -183,6 +186,7 @@ class LoginScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                      SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [

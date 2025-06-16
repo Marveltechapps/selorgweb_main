@@ -36,6 +36,31 @@ class SaveDataEvent extends OtpEvent {
   SaveDataEvent({required this.phoneNo, required this.userId});
 }
 
+class AddItemInCartApiEvent extends OtpEvent {
+  final String userId;
+  final String productId;
+  final int quantity;
+  final String variantLabel;
+  final String imageUrl;
+  final int price;
+  final int discountPrice;
+  final String deliveryInstructions;
+  final String addNotes;
+  final String skuName;
+
+  AddItemInCartApiEvent({
+    required this.userId,
+    required this.productId,
+    required this.quantity,
+    required this.variantLabel,
+    required this.imageUrl,
+    required this.price,
+    required this.discountPrice,
+    required this.deliveryInstructions,
+    required this.addNotes,
+    required this.skuName
+  });
+}
 class ResendOtpEvent extends OtpEvent {
   final String mobileNumber;
 
