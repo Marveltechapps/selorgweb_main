@@ -169,9 +169,9 @@ class _MyAppState extends State<MyApp> {
     final prefs = await SharedPreferences.getInstance();
     final success = await prefs.setString('cartdata', '[]');
     debugPrint('Set success: $success');
-    phoneNumber = prefs.getString('phone')??'';
-    userId = prefs.getString('userid')??'';
-    isLoggedInvalue = prefs.getBool('isLoggedIn')??false;
+    phoneNumber = prefs.getString('phone') ?? '';
+    userId = prefs.getString('userid') ?? '';
+    isLoggedInvalue = prefs.getBool('isLoggedIn') ?? false;
     setState(() {});
   }
 
@@ -288,8 +288,11 @@ class _MyAppState extends State<MyApp> {
             ],
             child: LayoutBuilder(
               builder: (context, constraints) {
-                return BlocProvider(
-                  create: (context) => CounterCubit(),
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (context) => CounterCubit()),
+                    BlocProvider(create: (context) => AppBarCubit()),
+                  ],
                   child: MaterialApp.router(
                     routerConfig: MyApp.router,
                     debugShowCheckedModeBanner: false,

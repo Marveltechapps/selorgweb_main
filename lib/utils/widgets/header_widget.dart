@@ -70,446 +70,468 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CounterCubit, int>(
-      listenWhen: (prev, curr) {
-        // debugPrint(prev.toString() + curr.toString());
+    return BlocConsumer<AppBarCubit, String>(
+      listener: (context, state) {},
+      builder: (context, locationvalue) {
+        context.read<AppBarCubit>().updateTitle(location);
+        return BlocConsumer<CounterCubit, int>(
+          listenWhen: (prev, curr) {
+            // debugPrint(prev.toString() + curr.toString());
 
-        return (curr != prev) && (prev != 0);
-      },
-      listener: (context, state) {
-        // debugPrint("changes");
-        final currentRoute = GoRouter.of(context).routerDelegate.state.fullPath;
-        // debugPrint('cart page or not : ${currentRoute.toString()}');
-        if (currentRoute.toString() == '/cart' ) {
+            return (curr != prev) && (prev != 0);
+          },
+          listener: (context, state) {
+            // debugPrint("changes");
+            final currentRoute =
+                GoRouter.of(context).routerDelegate.state.fullPath;
+            // debugPrint('cart page or not : ${currentRoute.toString()}');
+            if (currentRoute.toString() == '/cart') {
+            } else {
+              setState(() {
+                _showCartPopup(context);
+                showCartTooltip = true;
+              });
+            }
 
-        } else {
-          setState(() {
-            _showCartPopup(context);
-            showCartTooltip = true;
-          });
-        }
-
-        // Optional: hide after a delay
-      },
-      builder: (context, count) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth < 991) {
-              // mobile view and tablet view
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 7),
-                color: const Color(0xFF052E16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Optional: hide after a delay
+          },
+          builder: (context, count) {
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth < 991) {
+                  // mobile view and tablet view
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 7),
+                    color: const Color(0xFF052E16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InkWell(
-                          onTap: () {
-                            widget.isHomeScreen ? null : context.push('/');
-                          },
-                          child: SvgPicture.asset(appTextImage, height: 12),
-                        ),
-                        // Container(
-                        //   width: 2,
-                        //   height: 30,
-                        //   margin: const EdgeInsets.symmetric(horizontal: 8),
-                        //   color: Colors.white,
-                        // ),
-                        InkWell(
-                          onTap: widget.onClick,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: constraints.maxWidth < 500 ? 130 : null,
-                                child: Text(
-                                  location,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              const SizedBox(width: 2),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.white,
-                                // size: 24,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    InkWell(
-                      onTap: () {
-                        context.push('/search');
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) {
-                        //       return SearchMainScreen();
-                        //     },
-                        //   ),
-                        // );
-                      },
-                      child: Container(
-                        width:
-                            constraints.maxWidth < 991
-                                ? double.infinity
-                                : MediaQuery.of(context).size.width / 3,
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(
-                              Icons.search,
-                              color: Color(0xFF666666),
-                              size: 20,
+                            InkWell(
+                              onTap: () {
+                                widget.isHomeScreen ? null : context.push('/');
+                              },
+                              child: SvgPicture.asset(appTextImage, height: 12),
                             ),
-                            const SizedBox(width: 14),
-                            Text(
-                              'Search For Products...',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: Color(0xFF666666),
+                            // Container(
+                            //   width: 2,
+                            //   height: 30,
+                            //   margin: const EdgeInsets.symmetric(horizontal: 8),
+                            //   color: Colors.white,
+                            // ),
+                            InkWell(
+                              onTap: widget.onClick,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width:
+                                        constraints.maxWidth < 500 ? 130 : null,
+                                    child: Text(
+                                      locationvalue,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.white,
+                                    // size: 24,
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        isLoggedInvalue
-                            ? InkWell(
-                              onTap: () {
-                                context.push('/settings');
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) {
-                                //       return SettingMainScreen();
-                                //     },
-                                //   ),
-                                // );
-                              },
-                              child: Text(
-                                'My Account',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                            : InkWell(
-                              onTap: () {
-                                context.push('/login');
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) {
-                                //       return SettingMainScreen();
-                                //     },
-                                //   ),
-                                // );
-                              },
-                              child: Text(
-                                'Login',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                        // const SizedBox(width: 28),
+                        const SizedBox(height: 10),
                         InkWell(
                           onTap: () {
-                            debugPrint("cart screeen");
-
-                            isLoggedInvalue? context.push('/cart'):context.push('/login');
+                            context.push('/search');
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
                             //     builder: (context) {
-                            //       return CartScreen();
+                            //       return SearchMainScreen();
                             //     },
                             //   ),
                             // );
                           },
                           child: Container(
-                            width: 100,
+                            width:
+                                constraints.maxWidth < 991
+                                    ? double.infinity
+                                    : MediaQuery.of(context).size.width / 3,
                             height: 40,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: Colors.black),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black,
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 0),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  color: Color(0xFF666666),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 14),
+                                Text(
+                                  'Search For Products...',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    color: Color(0xFF666666),
+                                  ),
                                 ),
                               ],
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    'My Cart',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF052E16),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: appColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(6.0),
-                                      child: Text(
-                                        count.toString(),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              // desktop view
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 150,
-                  vertical: 7,
-                ),
-                color: const Color(0xFF052E16),
-                height: 112,
-                child: FittedBox(
-                  child: Row(
-                    spacing: 20,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              widget.isHomeScreen ? null : context.push('/');
-                            },
-                            child: SvgPicture.asset(appTextImage, height: 20),
-                          ),
-                          Container(
-                            width: 2,
-                            height: 40,
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            color: Colors.white,
-                          ),
-                          InkWell(
-                            onTap: widget.onClick,
-                            child: Row(
-                              children: [
-                                Text(
-                                  location,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isLoggedInvalue
+                                ? InkWell(
+                                  onTap: () {
+                                    context.push('/settings');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) {
+                                    //       return SettingMainScreen();
+                                    //     },
+                                    //   ),
+                                    // );
+                                  },
+                                  child: Text(
+                                    'My Account',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                                : InkWell(
+                                  onTap: () {
+                                    context.push('/login');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) {
+                                    //       return SettingMainScreen();
+                                    //     },
+                                    //   ),
+                                    // );
+                                  },
+                                  child: Text(
+                                    'Login',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                Icon(
-                                  Icons.arrow_drop_down,
+                            // const SizedBox(width: 28),
+                            InkWell(
+                              onTap: () {
+                                debugPrint("cart screeen");
+
+                                isLoggedInvalue
+                                    ? context.push('/cart')
+                                    : context.push('/login');
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) {
+                                //       return CartScreen();
+                                //     },
+                                //   ),
+                                // );
+                              },
+                              child: Container(
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
                                   color: Colors.white,
-                                  size: 24,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: Colors.black),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black,
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      InkWell(
-                        onTap: () {
-                          context.push("/search");
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return SearchMainScreen();
-                          //     },
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3,
-                          height: 40,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 36,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search,
-                                color: Color(0xFF666666),
-                                size: 20,
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        'My Cart',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF052E16),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: appColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: Text(
+                                            count.toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              const SizedBox(width: 14),
-                              Text(
-                                'Search For Products...',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Color(0xFF666666),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  // desktop view
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 150,
+                      vertical: 7,
+                    ),
+                    color: const Color(0xFF052E16),
+                    height: 112,
+                    child: FittedBox(
+                      child: Row(
+                        spacing: 20,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  widget.isHomeScreen
+                                      ? null
+                                      : context.push('/');
+                                },
+                                child: SvgPicture.asset(
+                                  appTextImage,
+                                  height: 20,
+                                ),
+                              ),
+                              Container(
+                                width: 2,
+                                height: 40,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                color: Colors.white,
+                              ),
+                              InkWell(
+                                onTap: widget.onClick,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      location,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          isLoggedInvalue
-                              ? InkWell(
-                                onTap: () {
-                                  context.push('/settings');
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) {
-                                  //       return SettingMainScreen();
-                                  //     },
-                                  //   ),
-                                  // );
-                                },
-                                child: Text(
-                                  'My Account',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                              : InkWell(
-                                onTap: () {
-                                  context.push('/login');
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) {
-                                  //       return SettingMainScreen();
-                                  //     },
-                                  //   ),
-                                  // );
-                                },
-                                child: Text(
-                                  'Login',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                          const SizedBox(width: 28),
                           InkWell(
                             onTap: () {
-                              debugPrint("cart screeen");
-                              isLoggedInvalue==true? context.push('/cart') : context.push('/login');
+                              context.push("/search");
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
                               //     builder: (context) {
-                              //       return CartScreen();
+                              //       return SearchMainScreen();
                               //     },
                               //   ),
                               // );
                             },
                             child: Container(
-                              width: 127,
-                              height: 37,
+                              width: MediaQuery.of(context).size.width / 3,
+                              height: 40,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 36,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: Colors.black),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
                                 children: [
+                                  Icon(
+                                    Icons.search,
+                                    color: Color(0xFF666666),
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 14),
                                   Text(
-                                    'My Cart',
+                                    'Search For Products...',
                                     style: GoogleFonts.poppins(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF052E16),
+                                      color: Color(0xFF666666),
                                     ),
                                   ),
-                                  if (count != 0)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: appColor,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: Text(
-                                          count.toString(),
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
                                 ],
                               ),
                             ),
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              isLoggedInvalue
+                                  ? InkWell(
+                                    onTap: () {
+                                      context.push('/settings');
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) {
+                                      //       return SettingMainScreen();
+                                      //     },
+                                      //   ),
+                                      // );
+                                    },
+                                    child: Text(
+                                      'My Account',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                  : InkWell(
+                                    onTap: () {
+                                      context.push('/login');
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) {
+                                      //       return SettingMainScreen();
+                                      //     },
+                                      //   ),
+                                      // );
+                                    },
+                                    child: Text(
+                                      'Login',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                              const SizedBox(width: 28),
+                              InkWell(
+                                onTap: () {
+                                  debugPrint("cart screeen");
+                                  isLoggedInvalue == true
+                                      ? context.push('/cart')
+                                      : context.push('/login');
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return CartScreen();
+                                  //     },
+                                  //   ),
+                                  // );
+                                },
+                                child: Container(
+                                  width: 127,
+                                  height: 37,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: Colors.black),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        'My Cart',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF052E16),
+                                        ),
+                                      ),
+                                      if (count != 0)
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: appColor,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Text(
+                                              count.toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              );
-            }
+                    ),
+                  );
+                }
+              },
+            );
           },
         );
       },
