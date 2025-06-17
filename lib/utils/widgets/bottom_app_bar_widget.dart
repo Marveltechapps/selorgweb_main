@@ -33,7 +33,7 @@ class BottomAppBarWidget extends StatelessWidget {
               child:
                   isTablet
                       ? Wrap(
-                        alignment: WrapAlignment.start,
+                        alignment: WrapAlignment.center,
                         spacing: 20,
                         runSpacing: 50,
                         children: [
@@ -59,95 +59,80 @@ class BottomAppBarWidget extends StatelessWidget {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            // height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => HomeDesktopScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Home",
-                                    style: TextStyle(color: whiteColor),
-                                  ),
-                                ),
-                                // Text(
-                                //   "Career",
-                                //   style: TextStyle(color: whiteColor),
-                                // ),
-                                // Text(
-                                //   "Customer Support",
-                                //   style: TextStyle(color: whiteColor),
-                                // ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            // height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => PrivacyPolicy(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Privacy Policy",
-                                    style: TextStyle(color: whiteColor),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => TermsConditions(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Terms & Conditions",
-                                    style: TextStyle(color: whiteColor),
-                                  ),
-                                ),
-                                // Text(
-                                //   "Delivery Areas",
-                                //   style: TextStyle(color: whiteColor),
-                                // ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            // height: 200,
-                            width: 200,
-                            child: Column(
-                              spacing: 20,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Download App",
-                                  style: TextStyle(color: whiteColor),
-                                ),
-                                Column(
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            spacing: 30,
+                            children: [
+                              SizedBox(
+                                // height: 200,
+                                // width: 200,
+                                child: Row(
                                   spacing: 20,
-                                  // runSpacing: 20,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    HomeDesktopScreen(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Home",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => PrivacyPolicy(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Privacy Policy",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => TermsConditions(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Terms & Conditions",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                    ),
+                                    // Text(
+                                    //   "Career",
+                                    //   style: TextStyle(color: whiteColor),
+                                    // ),
+                                    // Text(
+                                    //   "Customer Support",
+                                    //   style: TextStyle(color: whiteColor),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(
+                                // height: 200,
+                                // width: 200,
+                                child: Row(
+                                  spacing: 20,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     InkWell(
                                       onTap: () {
@@ -175,178 +160,138 @@ class BottomAppBarWidget extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       )
                       : Row(
-                        spacing: 20,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 60,
                         children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 200,
-                              width: 200,
-                              child: Column(
-                                spacing: 20,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => HomeDesktopScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child: SvgPicture.asset(appLogo),
-                                  ),
-                                ],
-                              ),
+                          SizedBox(
+                            height: 200,
+                            width: 200,
+                            child: Column(
+                              spacing: 20,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => HomeDesktopScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: SvgPicture.asset(appLogo),
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: SizedBox(
-                              height: 200,
-                              width: 200,
-                              child: Column(
-                                spacing: 20,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => HomeDesktopScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      "Home",
-                                      style: TextStyle(color: whiteColor),
-                                    ),
-                                  ),
-                                  // Text(
-                                  //   "Career",
-                                  //   style: TextStyle(color: whiteColor),
-                                  // ),
-                                  // Text(
-                                  //   "Customer Support",
-                                  //   style: TextStyle(color: whiteColor),
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                              height: 200,
-                              width: 200,
-                              child: Column(
-                                spacing: 20,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => PrivacyPolicy(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      "Privacy Policy",
-                                      style: TextStyle(color: whiteColor),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => TermsConditions(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      "Terms & Conditions",
-                                      style: TextStyle(color: whiteColor),
-                                    ),
-                                  ),
-                                  // Text(
-                                  //   "Delivery Areas",
-                                  //   style: TextStyle(color: whiteColor),
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                              height: 200,
-                              width: 200,
-                              child: Column(
-                                spacing: 20,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 200,
-                                      width: 200,
-                                      child: Column(
-                                        spacing: 20,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Download App",
-                                            style: TextStyle(color: whiteColor),
+                          Column(
+                            spacing: 30,
+                            children: [
+                              SizedBox(
+                                // height: 100,
+                                // width: 200,
+                                child: Row(
+                                  spacing: 20,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    HomeDesktopScreen(),
                                           ),
-                                          Column(
-                                            spacing: 20,
-                                            // runSpacing: 20,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  html.window.open(
-                                                    'https://play.google.com/store/apps/details?id=com.selorg.app', // Replace with your app URL
-                                                    '_blank', // Opens in new tab
-                                                  );
-                                                },
-                                                child: AppStoreButton(
-                                                  icon:
-                                                      'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                                  topText: 'Get it On',
-                                                  bottomText: 'Google Play',
-                                                  iconSize: const Size(47, 47),
-                                                ),
-                                              ),
-                                              AppStoreButton(
-                                                icon:
-                                                    'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                                topText: 'Get it On',
-                                                bottomText: 'App Store',
-                                                iconSize: const Size(47, 47),
-                                                // topTextStyle: const TextStyle(fontSize: 19),
-                                                // bottomTextStyle: const TextStyle(fontSize: 22),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                        );
+                                      },
+                                      child: Text(
+                                        "Home",
+                                        style: TextStyle(color: whiteColor),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => PrivacyPolicy(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Privacy Policy",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => TermsConditions(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Terms & Conditions",
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                    ),
+                                    // Text(
+                                    //   "Career",
+                                    //   style: TextStyle(color: whiteColor),
+                                    // ),
+                                    // Text(
+                                    //   "Customer Support",
+                                    //   style: TextStyle(color: whiteColor),
+                                    // ),
+                                  ],
+                                ),
                               ),
-                            ),
+                              SizedBox(
+                                // height: 200,
+                                // width: 200,
+                                child: Row(
+                                  spacing: 20,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        html.window.open(
+                                          'https://play.google.com/store/apps/details?id=com.selorg.app', // Replace with your app URL
+                                          '_blank', // Opens in new tab
+                                        );
+                                      },
+                                      child: AppStoreButton(
+                                        icon:
+                                            'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                        topText: 'Get it On',
+                                        bottomText: 'Google Play',
+                                        iconSize: const Size(47, 47),
+                                      ),
+                                    ),
+                                    AppStoreButton(
+                                      icon:
+                                          'https://cdn.builder.io/api/v1/image/assets/TEMP/bc7388ec939068717da235abdfc46ffc125d7ead?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                      topText: 'Get it On',
+                                      bottomText: 'App Store',
+                                      iconSize: const Size(47, 47),
+                                      // topTextStyle: const TextStyle(fontSize: 19),
+                                      // bottomTextStyle: const TextStyle(fontSize: 22),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
