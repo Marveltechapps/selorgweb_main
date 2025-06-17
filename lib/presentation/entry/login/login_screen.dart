@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:selorg/presentation/widgets/network_image.dart';
 import 'package:selorgweb_main/presentation/entry/login/login_bloc.dart';
+import 'package:selorgweb_main/presentation/general/privacy_policy.dart';
+import 'package:selorgweb_main/presentation/general/terms_conditions.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 import 'login_event.dart';
@@ -49,10 +51,12 @@ class LoginScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 // constraints: BoxConstraints(maxWidth: 500),
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage(bgImage),
-                  ),
+                  color: appColor,
+                  // image: DecorationImage(
+                  //   fit: BoxFit.cover,
+                  //   image: AssetImage(bgImage),
+
+                  // ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(35.0),
@@ -69,9 +73,9 @@ class LoginScreen extends StatelessWidget {
                             SizedBox(height: 40),
                             SvgPicture.asset(
                               "assets/Frame 7680.svg",
-                              height: 220,
+                              height: 180,
                             ),
-                            SizedBox(height: 40),
+                            SizedBox(height: 30),
                             Column(
                               spacing: 10,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,11 +201,12 @@ class LoginScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              GestureDetector(
+                              InkWell(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/termsAndConditions',
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => TermsConditions(),
+                                    ),
                                   );
                                 },
                                 child: Text(
@@ -210,11 +215,12 @@ class LoginScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(" & ", textAlign: TextAlign.center),
-                              GestureDetector(
+                              InkWell(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/privacyPolicy',
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => PrivacyPolicy(),
+                                    ),
                                   );
                                 },
                                 child: Text(

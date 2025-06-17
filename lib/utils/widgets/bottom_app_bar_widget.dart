@@ -1,3 +1,5 @@
+import 'package:web/web.dart' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:selorgweb_main/presentation/general/privacy_policy.dart';
@@ -79,14 +81,14 @@ class BottomAppBarWidget extends StatelessWidget {
                                     style: TextStyle(color: whiteColor),
                                   ),
                                 ),
-                                Text(
-                                  "Career",
-                                  style: TextStyle(color: whiteColor),
-                                ),
-                                Text(
-                                  "Customer Support",
-                                  style: TextStyle(color: whiteColor),
-                                ),
+                                // Text(
+                                //   "Career",
+                                //   style: TextStyle(color: whiteColor),
+                                // ),
+                                // Text(
+                                //   "Customer Support",
+                                //   style: TextStyle(color: whiteColor),
+                                // ),
                               ],
                             ),
                           ),
@@ -124,10 +126,10 @@ class BottomAppBarWidget extends StatelessWidget {
                                     style: TextStyle(color: whiteColor),
                                   ),
                                 ),
-                                Text(
-                                  "Delivery Areas",
-                                  style: TextStyle(color: whiteColor),
-                                ),
+                                // Text(
+                                //   "Delivery Areas",
+                                //   style: TextStyle(color: whiteColor),
+                                // ),
                               ],
                             ),
                           ),
@@ -147,12 +149,20 @@ class BottomAppBarWidget extends StatelessWidget {
                                   spacing: 20,
                                   // runSpacing: 20,
                                   children: [
-                                    AppStoreButton(
-                                      icon:
-                                          'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                      topText: 'Get it On',
-                                      bottomText: 'Google Play',
-                                      iconSize: const Size(47, 47),
+                                    InkWell(
+                                      onTap: () {
+                                        html.window.open(
+                                          'https://play.google.com/store/apps/details?id=com.selorg.app', // Replace with your app URL
+                                          '_blank', // Opens in new tab
+                                        );
+                                      },
+                                      child: AppStoreButton(
+                                        icon:
+                                            'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                        topText: 'Get it On',
+                                        bottomText: 'Google Play',
+                                        iconSize: const Size(47, 47),
+                                      ),
                                     ),
                                     AppStoreButton(
                                       icon:
@@ -220,14 +230,14 @@ class BottomAppBarWidget extends StatelessWidget {
                                       style: TextStyle(color: whiteColor),
                                     ),
                                   ),
-                                  Text(
-                                    "Career",
-                                    style: TextStyle(color: whiteColor),
-                                  ),
-                                  Text(
-                                    "Customer Support",
-                                    style: TextStyle(color: whiteColor),
-                                  ),
+                                  // Text(
+                                  //   "Career",
+                                  //   style: TextStyle(color: whiteColor),
+                                  // ),
+                                  // Text(
+                                  //   "Customer Support",
+                                  //   style: TextStyle(color: whiteColor),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -268,10 +278,10 @@ class BottomAppBarWidget extends StatelessWidget {
                                       style: TextStyle(color: whiteColor),
                                     ),
                                   ),
-                                  Text(
-                                    "Delivery Areas",
-                                    style: TextStyle(color: whiteColor),
-                                  ),
+                                  // Text(
+                                  //   "Delivery Areas",
+                                  //   style: TextStyle(color: whiteColor),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -304,12 +314,20 @@ class BottomAppBarWidget extends StatelessWidget {
                                             spacing: 20,
                                             // runSpacing: 20,
                                             children: [
-                                              AppStoreButton(
-                                                icon:
-                                                    'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
-                                                topText: 'Get it On',
-                                                bottomText: 'Google Play',
-                                                iconSize: const Size(47, 47),
+                                              InkWell(
+                                                onTap: () {
+                                                  html.window.open(
+                                                    'https://play.google.com/store/apps/details?id=com.selorg.app', // Replace with your app URL
+                                                    '_blank', // Opens in new tab
+                                                  );
+                                                },
+                                                child: AppStoreButton(
+                                                  icon:
+                                                      'https://cdn.builder.io/api/v1/image/assets/TEMP/e63616af6b1623990b6e73b5785ab42480319283?placeholderIfAbsent=true&apiKey=06096b941d4746ae854b71463e363371',
+                                                  topText: 'Get it On',
+                                                  bottomText: 'Google Play',
+                                                  iconSize: const Size(47, 47),
+                                                ),
                                               ),
                                               AppStoreButton(
                                                 icon:

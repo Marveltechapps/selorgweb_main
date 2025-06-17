@@ -232,7 +232,7 @@ class _YourLocationState extends State<YourLocation> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: SizedBox(
-              width: MediaQuery.of(context).size.width,
+              width: 500,
               height: MediaQuery.of(context).size.height,
               child: Stack(
                 children: [
@@ -243,7 +243,7 @@ class _YourLocationState extends State<YourLocation> {
                         double.parse(widget.lat!),
                         double.parse(widget.long!),
                       ),
-                      zoom: 20,
+                      zoom: 18,
                     ),
                     // markers: _markers,
                     // onTap: _onMapTapped,
@@ -267,52 +267,57 @@ class _YourLocationState extends State<YourLocation> {
                   ),
                   Stack(
                     children: [
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "Order will be Delivered here",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                      Align(
+                        alignment: Alignment.center,
+                        child: FractionalTranslation(
+                          translation: const Offset(0, -0.5),
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "Order will be Delivered here",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    "Place the Pin to your exact Location",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                    SizedBox(height: 4),
+                                    Text(
+                                      "Place the Pin to your exact Location",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            CustomPaint(
-                              size: Size(20, 15),
-                              painter: TrianglePainter(),
-                            ),
-                            Icon(
-                              Icons.location_on,
-                              size: 50,
-                              color: Colors.red,
-                            ),
-                          ],
+                              CustomPaint(
+                                size: Size(20, 15),
+                                painter: TrianglePainter(),
+                              ),
+                              Icon(
+                                Icons.location_on,
+                                size: 50,
+                                color: Colors.red,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -350,7 +355,7 @@ class _YourLocationState extends State<YourLocation> {
                                                       place.subLocality
                                                           .toString(),
                                                       style: TextStyle(
-                                                        //  fontSize: 20,
+                                                        fontSize: 14,
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -371,7 +376,9 @@ class _YourLocationState extends State<YourLocation> {
                                               //"${place.name} ,${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}",
                                               style: TextStyle(
                                                 color: Colors.black,
+                                                fontSize: 14,
                                               ),
+                                              maxLines: 2,
                                             ),
                                           SizedBox(height: 8),
                                           if (!iserrorLocation)
@@ -452,7 +459,7 @@ class _YourLocationState extends State<YourLocation> {
                                                           : Text(
                                                             "Confirm & Continue",
                                                             style: TextStyle(
-                                                              //  fontSize: 20,
+                                                              fontSize: 14,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,

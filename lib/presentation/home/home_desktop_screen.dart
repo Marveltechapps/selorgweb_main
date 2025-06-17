@@ -541,7 +541,9 @@ class HomeDesktopScreen extends StatelessWidget {
                   1;
               context.read<HomeBloc>().add(
                 AddItemInCartApiEvent(
-                  skuName: state.response.data![state.selectedIndexes].skuName??'Product',
+                  skuName:
+                      state.response.data![state.selectedIndexes].skuName ??
+                      'Product',
                   userId: userId,
                   productId:
                       state.response.data![state.selectedIndexes].productId ??
@@ -1363,7 +1365,7 @@ class HomeDesktopScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 28),
+                                SizedBox(height: 50),
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: isMobile ? 20 : 60,

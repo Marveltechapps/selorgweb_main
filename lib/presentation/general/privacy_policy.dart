@@ -357,6 +357,7 @@ class PrivacyPolicy extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
+                            color: Colors.black
                           ),
                         ),
                       ),

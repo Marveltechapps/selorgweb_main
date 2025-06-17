@@ -123,10 +123,11 @@ class OtpScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height - 60,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage(bgImage),
-                  ),
+                  color: appColor,
+                  // image: DecorationImage(
+                  //   fit: BoxFit.cover,
+                  //   image: AssetImage(bgImage),
+                  // ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

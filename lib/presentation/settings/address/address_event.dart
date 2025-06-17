@@ -1,7 +1,7 @@
 abstract class AddressEvent {}
 
 class EditSavedAddressEvent extends AddressEvent {}
-
+class ContinueLocationEvent extends AddressEvent {}
 class DeleteSavedAddressEvent extends AddressEvent {
   final String label;
   final String houseNo;
@@ -28,6 +28,13 @@ class DeleteSavedAddressEvent extends AddressEvent {
       required this.longitude,
       required this.id});
 }
+
+class SearchLocationEvent extends AddressEvent {
+  final String searchText;
+
+  SearchLocationEvent({required this.searchText});
+}
+
 
 class GetSavedAddressEvent extends AddressEvent {
   final String userId;

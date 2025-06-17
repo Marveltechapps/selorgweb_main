@@ -12,7 +12,7 @@
             "flutterMode": "debug",
             "args": [
                 "--web-port=8080",
-                "--verbose",
+                // "--verbose",
                 // "--release",
             ],
             "program": "lib/main.dart",

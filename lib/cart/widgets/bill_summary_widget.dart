@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class BillSummaryWidget extends StatelessWidget {
   const BillSummaryWidget({super.key});
@@ -36,7 +37,7 @@ class BillSummaryWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF034703),
+                  color: appColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
