@@ -103,7 +103,7 @@ class TopNavigationWidget extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
+                         Text(
                           'My Cart',
                           style: TextStyle(
                             color: AppColors.primary,
@@ -116,7 +116,7 @@ class TopNavigationWidget extends StatelessWidget {
                         Container(
                           width: 18,
                           height: 18,
-                          decoration: const BoxDecoration(
+                          decoration:  BoxDecoration(
                             color: AppColors.primary,
                             shape: BoxShape.circle,
                           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorg/utils/constant.dart';
 
 class Addressdetails extends StatefulWidget {
   const Addressdetails({super.key});
@@ -37,7 +38,7 @@ class _AddressdetailsState extends State<Addressdetails> {
                           vertical: 12,
                         ),
                         foregroundColor: Colors.white,
-                        backgroundColor: Color(0xFF034703),
+                        backgroundColor: appColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -72,7 +73,7 @@ class _AddressdetailsState extends State<Addressdetails> {
                           vertical: 12,
                         ),
                         foregroundColor: Colors.white,
-                        backgroundColor: Color(0xFF034703),
+                        backgroundColor: appColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -90,7 +91,7 @@ class _AddressdetailsState extends State<Addressdetails> {
                   ],
                 ),
             SizedBox(height: 20),
-            Divider(color: Color(0xFF034703), thickness: 0.5),
+            Divider(color: appColor, thickness: 0.5),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,11 +133,11 @@ class _AddressdetailsState extends State<Addressdetails> {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.edit, color: Color(0xFF034703), size: 25),
+                    Icon(Icons.edit, color: appColor, size: 25),
                     SizedBox(width: 10),
                     Icon(
                       Icons.delete_rounded,
-                      color: Color(0xFF034703),
+                      color: appColor,
                       size: 25,
                     ),
                   ],

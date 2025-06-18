@@ -474,7 +474,7 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
                                         top: 8,
                                         right: 2,
                                       ),
-                                      thumbColor: Color(0xFF034703),
+                                      thumbColor: appColor,
                                       radius: Radius.circular(20),
                                       thickness: 8,
                                       thumbVisibility: true,
@@ -505,7 +505,7 @@ class _MyAccountOrdersState extends State<MyAccountOrders> {
                                 children: [
                                   RawScrollbar(
                                     padding: EdgeInsets.only(top: 8, right: 2),
-                                    thumbColor: Color(0xFF034703),
+                                    thumbColor: appColor,
                                     radius: Radius.circular(20),
                                     thickness: 8,
                                     thumbVisibility: true,

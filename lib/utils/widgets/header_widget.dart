@@ -102,7 +102,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   // mobile view and tablet view
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 7),
-                    color: const Color(0xFF052E16),
+                    color: secondAppColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -133,7 +133,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: primarytextColor,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -141,7 +141,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                   const SizedBox(width: 2),
                                   Icon(
                                     Icons.arrow_drop_down,
-                                    color: Colors.white,
+                                    color: primarytextColor,
                                     // size: 24,
                                   ),
                                 ],
@@ -217,7 +217,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                     style: GoogleFonts.poppins(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: primarytextColor,
                                     ),
                                   ),
                                 )
@@ -238,7 +238,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                     style: GoogleFonts.poppins(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: primarytextColor,
                                     ),
                                   ),
                                 ),
@@ -320,7 +320,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       horizontal: 150,
                       vertical: 7,
                     ),
-                    color: const Color(0xFF052E16),
+                    color: secondAppColor,
                     height: 112,
                     child: FittedBox(
                       child: Row(
@@ -346,7 +346,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 20,
                                 ),
-                                color: Colors.white,
+                                color: primarytextColor,
                               ),
                               InkWell(
                                 onTap: widget.onClick,
@@ -357,13 +357,13 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: primarytextColor,
                                       ),
                                     ),
                                     const SizedBox(width: 12),
                                     Icon(
                                       Icons.arrow_drop_down,
-                                      color: Colors.white,
+                                      color: primarytextColor,
                                       size: 24,
                                     ),
                                   ],
@@ -434,7 +434,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                                        color: primarytextColor,
                                       ),
                                     ),
                                   )
@@ -455,7 +455,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                                        color: primarytextColor,
                                       ),
                                     ),
                                   ),
@@ -481,10 +481,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: Colors.black),
+                                    border: Border.all(color: appColor),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black,
+                                        color: appColor,
                                         blurRadius: 4,
                                         offset: const Offset(0, 0),
                                       ),
@@ -499,7 +499,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                         style: GoogleFonts.poppins(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF052E16),
+                                          color: primarytextColor,
                                         ),
                                       ),
                                       if (count != 0)

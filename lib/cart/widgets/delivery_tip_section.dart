@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class DeliveryTipWidget extends StatefulWidget {
   final Function(int)? onTipSelected;
@@ -150,7 +151,7 @@ class DeliveryTipWidgetState extends State<DeliveryTipWidget> {
 
 class DeliveryTipStyles {
   static const Color primaryGreen = Color(0xFF24BB0C);
-  static const Color darkGreen = Color(0xFF034703);
+  static Color darkGreen = appColor;
   static const Color lightGreen = Color(0xFFE0FADC);
   static const Color textDark = Color(0xFF222222);
   static const Color textGrey = Color(0xFF444444);

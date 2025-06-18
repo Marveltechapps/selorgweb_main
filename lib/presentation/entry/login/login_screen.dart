@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 // constraints: BoxConstraints(maxWidth: 500),
                 decoration: BoxDecoration(
-                  color: appColor,
+                  color: backgroundAppColor,
                   // image: DecorationImage(
                   //   fit: BoxFit.cover,
                   //   image: AssetImage(bgImage),
@@ -83,7 +83,8 @@ class LoginScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Enter your 10 digits number',
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  style: Theme.of(context).textTheme.bodyMedium!
+                                      .copyWith(color: primarytextColor),
                                 ),
                                 // SizedBox(height: 20),
                                 Container(
@@ -169,9 +170,7 @@ class LoginScreen extends StatelessWidget {
                                     height: 45,
                                     decoration: BoxDecoration(
                                       color:
-                                          isButtonEnable
-                                              ? greenColor
-                                              : greyColor,
+                                          isButtonEnable ? appColor : greyColor,
                                       borderRadius: BorderRadius.circular(32),
                                     ),
                                     child: Center(
@@ -197,6 +196,7 @@ class LoginScreen extends StatelessWidget {
                           Text(
                             "By Continuing , You agree to our",
                             textAlign: TextAlign.center,
+                            style: TextStyle(color: primarytextColor),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -212,9 +212,14 @@ class LoginScreen extends StatelessWidget {
                                 child: Text(
                                   "Terms of Use",
                                   textAlign: TextAlign.center,
+                                  style: TextStyle(color: primarytextColor),
                                 ),
                               ),
-                              Text(" & ", textAlign: TextAlign.center),
+                              Text(
+                                " & ",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: primarytextColor),
+                              ),
                               InkWell(
                                 onTap: () {
                                   Navigator.of(context).push(
@@ -226,6 +231,7 @@ class LoginScreen extends StatelessWidget {
                                 child: Text(
                                   "Privacy Policy",
                                   textAlign: TextAlign.center,
+                                  style: TextStyle(color: primarytextColor),
                                 ),
                               ),
                             ],

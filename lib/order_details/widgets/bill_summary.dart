@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class BillSummary extends StatelessWidget {
   const BillSummary({super.key});
@@ -43,7 +44,7 @@ class BillSummary extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF034703),
+                          color: appColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -62,13 +63,13 @@ class BillSummary extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF034703)),
+                      border: Border.all(color: appColor),
                       borderRadius: BorderRadius.circular(20.359),
                     ),
                     child: Text(
                       'Download Invoice',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF034703),
+                        color: appColor,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                       ),
@@ -99,7 +100,7 @@ class BillSummary extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF034703),
+                          color: appColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -118,13 +119,13 @@ class BillSummary extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF034703)),
+                      border: Border.all(color: appColor),
                       borderRadius: BorderRadius.circular(20.359),
                     ),
                     child: Text(
                       'Download Invoice',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF034703),
+                        color: appColor,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                       ),

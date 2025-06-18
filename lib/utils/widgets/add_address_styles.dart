@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class AddAddressStyles {
-  static const Color primaryGreen = Color(0xFF034703);
+  static Color primaryGreen = appColor;
   static const Color backgroundColor = Color(0xFFFAFAFA);
   static const Color textPrimary = Color(0xFF000000);
   static const Color textSecondary = Color(0xFF202020);

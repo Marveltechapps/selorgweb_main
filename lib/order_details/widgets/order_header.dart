@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class OrderHeader extends StatelessWidget {
   const OrderHeader({super.key});
@@ -7,7 +8,7 @@ class OrderHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF034703),
+      color: appColor,
       padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 70),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -100,7 +101,7 @@ class OrderHeader extends StatelessWidget {
                           Text(
                             'My Cart',
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF034703),
+                              color: appColor,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -109,8 +110,8 @@ class OrderHeader extends StatelessWidget {
                           Container(
                             width: 18,
                             height: 18,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF034703),
+                            decoration: BoxDecoration(
+                              color: appColor,
                               shape: BoxShape.circle,
                             ),
                             child: Center(

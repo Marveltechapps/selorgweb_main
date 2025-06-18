@@ -128,7 +128,7 @@ class BannerScreen extends StatelessWidget {
                                                           3,
                                                         ),
                                                     border: Border.all(
-                                                      color: Colors.green,
+                                                      color: appColor,
                                                       width: 0.5,
                                                     ),
                                                   ),
@@ -289,10 +289,7 @@ class BannerScreen extends StatelessWidget {
                                                                   vertical: 1,
                                                                 ),
                                                             decoration: BoxDecoration(
-                                                              color:
-                                                                  const Color(
-                                                                    0xFF326A32,
-                                                                  ),
+                                                              color: appColor,
                                                               borderRadius:
                                                                   BorderRadius.circular(
                                                                     20,
@@ -357,9 +354,8 @@ class BannerScreen extends StatelessWidget {
                                                                           TextAlign
                                                                               .center,
                                                                       style: GoogleFonts.poppins(
-                                                                        color: const Color(
-                                                                          0xFF326A32,
-                                                                        ),
+                                                                        color:
+                                                                            appColor,
                                                                         fontSize:
                                                                             14,
                                                                         fontWeight:
@@ -756,9 +752,8 @@ class BannerScreen extends StatelessWidget {
             listener: (context, state) {
               if (state is PraductSuccessState) {
                 bannerProductResponse = state.bannerProductResponse;
-              }else if(state is CartUpdateLocal){
+              } else if (state is CartUpdateLocal) {
                 context.read<CounterCubit>().increment(state.noOfItems);
-
               } else if (state is AddButtonPressedState) {
                 if (state.type == "screen") {
                   bannerProductResponse
@@ -771,7 +766,8 @@ class BannerScreen extends StatelessWidget {
                       1;
                   context.read<BannerBloc>().add(
                     AddItemApiEvent(
-                      skuName: bannerProductResponse.data![state.index].skuName ??
+                      skuName:
+                          bannerProductResponse.data![state.index].skuName ??
                           "",
                       userId: userId,
                       productId:
@@ -817,7 +813,8 @@ class BannerScreen extends StatelessWidget {
                       1;
                   context.read<BannerBloc>().add(
                     AddItemApiEvent(
-                      skuName: bannerProductResponse.data![state.index].skuName ??
+                      skuName:
+                          bannerProductResponse.data![state.index].skuName ??
                           "",
                       userId: userId,
                       productId:
@@ -996,11 +993,11 @@ class BannerScreen extends StatelessWidget {
                                               SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount:
                                                     constraints.maxWidth < 600
-                                                        ? 2
+                                                        ? 3
                                                         : constraints.maxWidth <
                                                             991
-                                                        ? 3
-                                                        : 5,
+                                                        ? 4
+                                                        : 6,
                                                 mainAxisSpacing: 20,
                                                 crossAxisSpacing: 10,
                                                 childAspectRatio: 0.65,
@@ -1074,10 +1071,8 @@ class BannerScreen extends StatelessWidget {
                                                                         8,
                                                                     vertical: 4,
                                                                   ),
-                                                              decoration: const BoxDecoration(
-                                                                color: Color(
-                                                                  0xFF034703,
-                                                                ),
+                                                              decoration: BoxDecoration(
+                                                                color: appColor,
                                                                 borderRadius: BorderRadius.only(
                                                                   topLeft:
                                                                       Radius.circular(
@@ -1161,10 +1156,7 @@ class BannerScreen extends StatelessWidget {
                                                                 ),
                                                             decoration: BoxDecoration(
                                                               border: Border.all(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFFE0ECE0,
-                                                                    ),
+                                                                color: appColor,
                                                               ),
                                                               borderRadius:
                                                                   BorderRadius.circular(
@@ -1333,9 +1325,8 @@ class BannerScreen extends StatelessWidget {
                                                                                 1,
                                                                           ),
                                                                           decoration: BoxDecoration(
-                                                                            color: const Color(
-                                                                              0xFF326A32,
-                                                                            ),
+                                                                            color:
+                                                                                appColor,
                                                                             borderRadius: BorderRadius.circular(
                                                                               20,
                                                                             ),
@@ -1385,7 +1376,7 @@ class BannerScreen extends StatelessWidget {
                                                                                 //             16),
                                                                                 //  padding: const EdgeInsets.symmetric(vertical: 2),
                                                                                 width:
-                                                                                    37,
+                                                                                    28,
                                                                                 decoration: BoxDecoration(
                                                                                   color:
                                                                                       Colors.white,
@@ -1396,9 +1387,8 @@ class BannerScreen extends StatelessWidget {
                                                                                   textAlign:
                                                                                       TextAlign.center,
                                                                                   style: GoogleFonts.poppins(
-                                                                                    color: const Color(
-                                                                                      0xFF326A32,
-                                                                                    ),
+                                                                                    color:
+                                                                                        appColor,
                                                                                     fontSize:
                                                                                         14,
                                                                                     fontWeight:

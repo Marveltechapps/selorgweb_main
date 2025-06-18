@@ -2183,8 +2183,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                         ),
                                                                     border: Border.all(
                                                                       color:
-                                                                          Colors
-                                                                              .green,
+                                                                          appColor,
                                                                       width:
                                                                           0.5,
                                                                     ),
@@ -2344,9 +2343,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                   1,
                                                                             ),
                                                                             decoration: BoxDecoration(
-                                                                              color: const Color(
-                                                                                0xFF326A32,
-                                                                              ),
+                                                                              color:
+                                                                                  appColor,
                                                                               borderRadius: BorderRadius.circular(
                                                                                 20,
                                                                               ),
@@ -2407,9 +2405,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                       textAlign:
                                                                                           TextAlign.center,
                                                                                       style: GoogleFonts.poppins(
-                                                                                        color: const Color(
-                                                                                          0xFF326A32,
-                                                                                        ),
+                                                                                        color:
+                                                                                            appColor,
                                                                                         fontSize:
                                                                                             14,
                                                                                         fontWeight:
@@ -2575,8 +2572,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                       ),
                                                                   border: Border.all(
                                                                     color:
-                                                                        Colors
-                                                                            .green,
+                                                                        appColor,
                                                                     width: 0.5,
                                                                   ),
                                                                 ),
@@ -2728,9 +2724,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                 1,
                                                                           ),
                                                                           decoration: BoxDecoration(
-                                                                            color: const Color(
-                                                                              0xFF326A32,
-                                                                            ),
+                                                                            color:
+                                                                                appColor,
                                                                             borderRadius: BorderRadius.circular(
                                                                               20,
                                                                             ),
@@ -2791,9 +2786,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                     textAlign:
                                                                                         TextAlign.center,
                                                                                     style: GoogleFonts.poppins(
-                                                                                      color: const Color(
-                                                                                        0xFF326A32,
-                                                                                      ),
+                                                                                      color:
+                                                                                          appColor,
                                                                                       fontSize:
                                                                                           14,
                                                                                       fontWeight:
@@ -3021,7 +3015,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                           ),
                                 ),
                               ),
-                              
+
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: isTablet ? 20 : 60,
@@ -3130,10 +3124,9 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                       vertical:
                                                                           4,
                                                                     ),
-                                                                decoration: const BoxDecoration(
-                                                                  color: Color(
-                                                                    0xFF034703,
-                                                                  ),
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                      appColor,
                                                                   borderRadius: BorderRadius.only(
                                                                     topLeft:
                                                                         Radius.circular(

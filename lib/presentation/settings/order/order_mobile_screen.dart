@@ -660,7 +660,7 @@ class OrderMobileScreen extends StatelessWidget {
                             selectedIndex = 1;
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF034703),
+                            backgroundColor:  appColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32),
                             ),

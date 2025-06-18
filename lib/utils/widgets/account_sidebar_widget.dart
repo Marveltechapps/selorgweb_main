@@ -16,7 +16,7 @@ class AccountSidebarWidget extends StatelessWidget {
     return Container(
       height: 700,
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: backgroundAppColor,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           bottomLeft: Radius.circular(20),
@@ -29,7 +29,7 @@ class AccountSidebarWidget extends StatelessWidget {
           Text(
             'My Account',
             style: GoogleFonts.poppins(
-              color: AppColors.white,
+              color: primarytextColor,
               fontSize: 25,
 
               fontWeight: FontWeight.w500,
@@ -44,7 +44,7 @@ class AccountSidebarWidget extends StatelessWidget {
           //     fontWeight: FontWeight.w500,
           //   ),
           // ),
-          const Divider(color: AppColors.white),
+          Divider(color: primarytextColor),
           const SizedBox(height: 29),
           _buildMenuItem(
             'Orders',
@@ -125,8 +125,9 @@ class AccountSidebarWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : null,
-          border: Border(bottom: BorderSide(color: AppColors.white)),
+          // color: isSelected ? secondAppColor : null,
+          color: null,
+          border: Border(bottom: BorderSide(color: primarytextColor)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,13 +135,21 @@ class AccountSidebarWidget extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  SvgPicture.asset(iconUrl, width: 27, height: 27),
+                  SvgPicture.asset(
+                    iconUrl,
+                    width: 27,
+                    height: 27,
+                    colorFilter: ColorFilter.mode(
+                      primarytextColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       title,
                       style: GoogleFonts.poppins(
-                        color: AppColors.white,
+                        color: primarytextColor,
                         fontSize: 16,
 
                         fontWeight: FontWeight.w400,
@@ -153,7 +162,7 @@ class AccountSidebarWidget extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, size: 25, color: Colors.white),
+            Icon(Icons.chevron_right, size: 25, color: primarytextColor),
           ],
         ),
       ),

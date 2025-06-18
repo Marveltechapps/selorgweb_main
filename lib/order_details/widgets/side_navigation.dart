@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class SideNavigation extends StatelessWidget {
   const SideNavigation({super.key});
@@ -8,7 +9,7 @@ class SideNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF034703),
+        color: appColor,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           bottomLeft: Radius.circular(20),

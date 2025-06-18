@@ -109,12 +109,16 @@ class OtpScreen extends StatelessWidget {
           }
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: appColor,
+              backgroundColor: backgroundAppColor,
               leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.arrow_back_ios_new, size: 16),
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  size: 16,
+                  color: primarytextColor,
+                ),
               ),
               elevation: 0,
             ),
@@ -123,7 +127,7 @@ class OtpScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height - 60,
                 decoration: BoxDecoration(
-                  color: appColor,
+                  color: backgroundAppColor,
                   // image: DecorationImage(
                   //   fit: BoxFit.cover,
                   //   image: AssetImage(bgImage),
@@ -144,12 +148,14 @@ class OtpScreen extends StatelessWidget {
                             children: [
                               Text(
                                 'OTP\nVerification',
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                style: Theme.of(context).textTheme.bodyLarge!
+                                    .copyWith(color: primarytextColor),
                               ),
                               const SizedBox(height: 10),
                               Text(
                                 'OTP has been sent to +91 $phoneNumber',
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: Theme.of(context).textTheme.bodyMedium!
+                                    .copyWith(color: primarytextColor),
                               ),
                               const SizedBox(height: 80),
                               Row(
@@ -235,6 +241,7 @@ class OtpScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
+                                    color: primarytextColor,
                                   ),
                                 ),
                               ),
@@ -249,6 +256,7 @@ class OtpScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w600,
+                                        color: primarytextColor,
                                       ),
                                     ),
                                     TextButton(
@@ -270,7 +278,7 @@ class OtpScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 17,
                                           fontWeight: FontWeight.w600,
-                                          color: greenColor,
+                                          color: appColor,
                                         ),
                                       ),
                                     ),

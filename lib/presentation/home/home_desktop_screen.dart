@@ -146,24 +146,21 @@ class HomeDesktopScreen extends StatelessWidget {
                           searchLocationController.clear();
                         },
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                            color: Color(0xFF004D00),
-                            width: 2,
-                          ),
+                          side: BorderSide(color: appColor, width: 2),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.search, color: Color(0xFF004D00)),
+                          children: [
+                            Icon(Icons.search, color: appColor),
                             SizedBox(width: 8),
                             Text(
                               "Search your location",
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF004D00),
+                                color: appColor,
                                 fontSize: 16,
                               ),
                             ),
@@ -471,7 +468,7 @@ class HomeDesktopScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width < 991;
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final isMobile = MediaQuery.of(context).size.width < 500;
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => HomeBloc()),
@@ -813,8 +810,8 @@ class HomeDesktopScreen extends StatelessWidget {
                                   constraints: BoxConstraints(maxHeight: 160),
                                   height: 200,
                                   width: MediaQuery.of(context).size.width,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF052E16),
+                                  decoration: BoxDecoration(
+                                    color: secondAppColor,
                                   ),
                                   child: const Row(children: []),
                                 ),
@@ -832,7 +829,7 @@ class HomeDesktopScreen extends StatelessWidget {
                                           fontWeight: FontWeight.w600,
                                           wordSpacing: 2,
                                           letterSpacing: 2,
-                                          color: Colors.white,
+                                          color: primarytextColor,
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
@@ -1406,7 +1403,7 @@ class HomeDesktopScreen extends StatelessWidget {
                                                   style: GoogleFonts.poppins(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w600,
-                                                    color: Color(0xFF034703),
+                                                    color: appColor,
                                                   ),
                                                 ),
                                                 const SizedBox(width: 6),
@@ -3076,10 +3073,9 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                         vertical:
                                                                             4,
                                                                       ),
-                                                                  decoration: const BoxDecoration(
-                                                                    color: Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                  decoration: BoxDecoration(
+                                                                    color:
+                                                                        appColor,
                                                                     borderRadius: BorderRadius.only(
                                                                       topLeft:
                                                                           Radius.circular(
@@ -3331,9 +3327,8 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           textAlign:
                                                                                               TextAlign.center,
                                                                                           style: GoogleFonts.poppins(
-                                                                                            color: const Color(
-                                                                                              0xFF326A32,
-                                                                                            ),
+                                                                                            color:
+                                                                                                appColor,
                                                                                             fontSize:
                                                                                                 14,
                                                                                             fontWeight:
@@ -3552,10 +3547,9 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                         vertical:
                                                                             4,
                                                                       ),
-                                                                  decoration: const BoxDecoration(
-                                                                    color: Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                  decoration: BoxDecoration(
+                                                                    color:
+                                                                        appColor,
                                                                     borderRadius: BorderRadius.only(
                                                                       topLeft:
                                                                           Radius.circular(
@@ -3807,9 +3801,8 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           textAlign:
                                                                                               TextAlign.center,
                                                                                           style: GoogleFonts.poppins(
-                                                                                            color: const Color(
-                                                                                              0xFF326A32,
-                                                                                            ),
+                                                                                            color:
+                                                                                                appColor,
                                                                                             fontSize:
                                                                                                 14,
                                                                                             fontWeight:
@@ -4029,10 +4022,9 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                         vertical:
                                                                             4,
                                                                       ),
-                                                                  decoration: const BoxDecoration(
-                                                                    color: Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                  decoration: BoxDecoration(
+                                                                    color:
+                                                                        appColor,
                                                                     borderRadius: BorderRadius.only(
                                                                       topLeft:
                                                                           Radius.circular(
@@ -4286,9 +4278,8 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           textAlign:
                                                                                               TextAlign.center,
                                                                                           style: GoogleFonts.poppins(
-                                                                                            color: const Color(
-                                                                                              0xFF326A32,
-                                                                                            ),
+                                                                                            color:
+                                                                                                appColor,
                                                                                             fontSize:
                                                                                                 14,
                                                                                             fontWeight:
@@ -4510,10 +4501,9 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                         vertical:
                                                                             4,
                                                                       ),
-                                                                  decoration: const BoxDecoration(
-                                                                    color: Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                  decoration: BoxDecoration(
+                                                                    color:
+                                                                        appColor,
                                                                     borderRadius: BorderRadius.only(
                                                                       topLeft:
                                                                           Radius.circular(
@@ -4767,9 +4757,8 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                                           textAlign:
                                                                                               TextAlign.center,
                                                                                           style: GoogleFonts.poppins(
-                                                                                            color: const Color(
-                                                                                              0xFF326A32,
-                                                                                            ),
+                                                                                            color:
+                                                                                                appColor,
                                                                                             fontSize:
                                                                                                 14,
                                                                                             fontWeight:

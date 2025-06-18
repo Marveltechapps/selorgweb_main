@@ -163,7 +163,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                           3,
                                                         ),
                                                     border: Border.all(
-                                                      color: Colors.green,
+                                                      color: appColor,
                                                       width: 0.5,
                                                     ),
                                                   ),
@@ -302,9 +302,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                     productStyleResponse.data![productIndex].variants![i].cartQuantity ==
                                                                             0
                                                                         ? whiteColor
-                                                                        : const Color(
-                                                                          0xFF326A32,
-                                                                        ),
+                                                                        : appColor,
                                                                 borderRadius:
                                                                     BorderRadius.circular(
                                                                       20,
@@ -348,9 +346,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                               .cartQuantity ==
                                                                           0
                                                                       ? whiteColor
-                                                                      : const Color(
-                                                                        0xFF326A32,
-                                                                      ),
+                                                                      : appColor,
                                                               borderRadius:
                                                                   BorderRadius.circular(
                                                                     20,
@@ -442,9 +438,8 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                         TextAlign
                                                                             .center,
                                                                     style: GoogleFonts.poppins(
-                                                                      color: const Color(
-                                                                        0xFF326A32,
-                                                                      ),
+                                                                      color:
+                                                                          appColor,
                                                                       fontSize:
                                                                           14,
                                                                       fontWeight:
@@ -1344,7 +1339,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                               height: 70,
                                               color:
                                                   isSelected == i
-                                                      ? const Color(0xFFE9FBE9)
+                                                      ? backgroundTileColor
                                                       : Colors.white,
                                               child: Column(
                                                 children: [
@@ -1632,10 +1627,9 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                               vertical:
                                                                                   4,
                                                                             ),
-                                                                            decoration: const BoxDecoration(
-                                                                              color: Color(
-                                                                                0xFF034703,
-                                                                              ),
+                                                                            decoration: BoxDecoration(
+                                                                              color:
+                                                                                  appColor,
                                                                               borderRadius: BorderRadius.only(
                                                                                 topLeft: Radius.circular(
                                                                                   20,
@@ -1892,9 +1886,8 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                   1,
                                                                             ),
                                                                             decoration: BoxDecoration(
-                                                                              color: const Color(
-                                                                                0xFF326A32,
-                                                                              ),
+                                                                              color:
+                                                                                  appColor,
                                                                               borderRadius: BorderRadius.circular(
                                                                                 20,
                                                                               ),
@@ -1955,9 +1948,8 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                     textAlign:
                                                                                         TextAlign.center,
                                                                                     style: GoogleFonts.poppins(
-                                                                                      color: const Color(
-                                                                                        0xFF326A32,
-                                                                                      ),
+                                                                                      color:
+                                                                                          appColor,
                                                                                       fontSize:
                                                                                           14,
                                                                                       fontWeight:
@@ -2063,9 +2055,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                 height: 85,
                                                 color:
                                                     isSelected == i
-                                                        ? const Color(
-                                                          0xFFE9FBE9,
-                                                        )
+                                                        ? backgroundTileColor
                                                         : Colors.white,
                                                 child: Row(
                                                   children: [
@@ -2357,10 +2347,9 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                   vertical:
                                                                                       4,
                                                                                 ),
-                                                                                decoration: const BoxDecoration(
-                                                                                  color: Color(
-                                                                                    0xFF034703,
-                                                                                  ),
+                                                                                decoration: BoxDecoration(
+                                                                                  color:
+                                                                                      appColor,
                                                                                   borderRadius: BorderRadius.only(
                                                                                     topLeft: Radius.circular(
                                                                                       20,
@@ -2620,9 +2609,8 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                       1,
                                                                                 ),
                                                                                 decoration: BoxDecoration(
-                                                                                  color: const Color(
-                                                                                    0xFF326A32,
-                                                                                  ),
+                                                                                  color:
+                                                                                      appColor,
                                                                                   borderRadius: BorderRadius.circular(
                                                                                     20,
                                                                                   ),
@@ -2683,9 +2671,8 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                         textAlign:
                                                                                             TextAlign.center,
                                                                                         style: GoogleFonts.poppins(
-                                                                                          color: const Color(
-                                                                                            0xFF326A32,
-                                                                                          ),
+                                                                                          color:
+                                                                                              appColor,
                                                                                           fontSize:
                                                                                               14,
                                                                                           fontWeight:

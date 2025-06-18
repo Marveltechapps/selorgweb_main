@@ -40,7 +40,7 @@ class BottomImageWidget extends StatelessWidget {
                             Text(
                               'Download the Selorg app',
                               style: TextStyle(
-                                color: const Color(0xFF034703),
+                                color: appColor,
                                 fontSize: 23,
                                 fontWeight: FontWeight.w600,
                                 height: 1,

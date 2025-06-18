@@ -219,7 +219,7 @@ class CartWithNoAddress extends StatelessWidget {
 
   // Widget _buildHeader() {
   //   return Container(
-  //     color: const Color(0xFF034703),
+  //     color: appColor,
   //     padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 26),
   //     child: Row(
   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -320,7 +320,7 @@ class CartWithNoAddress extends StatelessWidget {
   //               child: Text(
   //                 'My Cart',
   //                 style: GoogleFonts.poppins(
-  //                   color: const Color(0xFF034703),
+  //                   color: appColor,
   //                   fontSize: 16,
   //                   fontWeight: FontWeight.w600,
   //                 ),

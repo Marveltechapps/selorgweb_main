@@ -415,7 +415,7 @@ class CategoriesScreen extends StatelessWidget {
                       //           //         style: GoogleFonts.poppins(
                       //           //           fontSize: 13,
                       //           //           fontWeight: FontWeight.w600,
-                      //           //           color: Color(0xFF034703),
+                      //           //           color: appColor,
                       //           //         ),
                       //           //       ),
                       //           //       const SizedBox(width: 6),
@@ -1553,7 +1553,7 @@ class CategoriesScreen extends StatelessWidget {
                                 //         style: GoogleFonts.poppins(
                                 //           fontSize: 13,
                                 //           fontWeight: FontWeight.w600,
-                                //           color: Color(0xFF034703),
+                                //           color: appColor,
                                 //         ),
                                 //       ),
                                 //       const SizedBox(width: 6),

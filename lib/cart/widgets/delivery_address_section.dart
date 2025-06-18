@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/order/screens/order_status.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class AddressItem {
   final String title;
@@ -90,12 +91,12 @@ class DeliveryAddressSection extends StatelessWidget {
                 ''',
                     width: 20,
                     height: 22,
-                    // color: Color(0xFF034703),
+                    // color: appColor,
                   ),
                   Text(
                     'Change',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF034703),
+                      color: appColor,
                       fontSize: isMobile ? 12 : 14,
                       fontWeight: FontWeight.w500,
                       height: 1.32, // 29/22
@@ -145,7 +146,7 @@ class DeliveryAddressSection extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(36),
                   ),
-                  backgroundColor: const Color(0xFF034703),
+                  backgroundColor: appColor,
                 ),
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : 10),
@@ -198,7 +199,7 @@ class DeliveryAddressSection extends StatelessWidget {
                         onTap: () => Navigator.of(context).pop(),
                         child: CircleAvatar(
                           radius: 12,
-                          backgroundColor: Color(0xFF034703),
+                          backgroundColor: appColor,
                           child: Icon(
                             Icons.close,
                             size: 14,
@@ -238,7 +239,7 @@ class DeliveryAddressSection extends StatelessWidget {
                           return ListTile(
                             leading: SvgPicture.asset(
                               'icons/location.svg',
-                              //    color: Color(0xFF034703),
+                              //    color: appColor,
                               width: 30,
                             ),
                             title: Text(
@@ -315,7 +316,7 @@ class DeliveryAddressSection extends StatelessWidget {
                 SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF034703),
+                    backgroundColor: appColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

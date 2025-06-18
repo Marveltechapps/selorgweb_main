@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF034703);
+  static Color primary = appColor;
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color grey = Color(0xFF666666);

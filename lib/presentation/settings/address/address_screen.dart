@@ -548,12 +548,12 @@ class AddressScreen extends StatelessWidget {
                               vertical: 12,
                             ),
                             foregroundColor: Colors.white,
-                            backgroundColor: Color(0xFF034703),
+                            backgroundColor: appColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () async{
+                          onPressed: () async {
                             // showSearchLocationAlertDialog(
                             //   context,
                             //   context.read<AddressBloc>(),
@@ -661,7 +661,7 @@ class AddressScreen extends StatelessWidget {
                               vertical: 14,
                             ),
                             foregroundColor: Colors.white,
-                            backgroundColor: Color(0xFF034703),
+                            backgroundColor: appColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -759,7 +759,7 @@ class AddressScreen extends StatelessWidget {
                       ],
                     ),
                 SizedBox(height: 10),
-                Divider(color: Color(0xFF034703), thickness: 0.5),
+                Divider(color: greyColor, thickness: 0.5),
                 SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -794,6 +794,10 @@ class AddressScreen extends StatelessWidget {
                                           SvgPicture.asset(
                                             'icons/mingcute_location-line-dark.svg',
                                             width: 24,
+                                            colorFilter: ColorFilter.mode(
+                                              appColor,
+                                              BlendMode.srcIn,
+                                            ),
                                           ),
                                           SizedBox(width: 20),
                                           SizedBox(
@@ -1070,7 +1074,7 @@ class AddressScreen extends StatelessWidget {
                                             },
                                             child: Icon(
                                               Icons.edit,
-                                              color: Color(0xFF034703),
+                                              color: appColor,
                                               size: 25,
                                             ),
                                           ),
@@ -1148,7 +1152,7 @@ class AddressScreen extends StatelessWidget {
                                             },
                                             child: Icon(
                                               Icons.delete_rounded,
-                                              color: Color(0xFF034703),
+                                              color: appColor,
                                               size: 25,
                                             ),
                                           ),

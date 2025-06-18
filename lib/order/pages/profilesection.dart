@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class Profilesection extends StatefulWidget {
   const Profilesection({super.key});
@@ -87,7 +88,7 @@ class _ProfilesectionState extends State<Profilesection> {
                       child: ElevatedButton(
                         onPressed: _handleSubmit,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF034703),
+                          backgroundColor: appColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(34.961),
                           ),

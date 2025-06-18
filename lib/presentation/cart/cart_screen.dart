@@ -3642,7 +3642,7 @@ class CartScreen extends StatelessWidget {
                         onTap: () => Navigator.of(context).pop(),
                         child: CircleAvatar(
                           radius: 12,
-                          backgroundColor: Color(0xFF034703),
+                          backgroundColor: appColor,
                           child: Icon(
                             Icons.close,
                             size: 14,
@@ -3780,7 +3780,7 @@ class CartScreen extends StatelessWidget {
                 SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF034703),
+                    backgroundColor: appColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -3825,7 +3825,7 @@ class ResponsiveRowColumn extends StatelessWidget {
 
 class DeliveryTipStyles {
   static const Color primaryGreen = Color(0xFF24BB0C);
-  static const Color darkGreen = Color(0xFF034703);
+  static Color darkGreen = appColor;
   static const Color lightGreen = Color(0xFFE0FADC);
   static const Color textDark = Color(0xFF222222);
   static const Color textGrey = Color(0xFF444444);

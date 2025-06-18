@@ -465,9 +465,7 @@ class AddAddress extends StatelessWidget {
                                 }
                               },
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(
-                                  color: AddAddressStyles.primaryGreen,
-                                ),
+                                side: const BorderSide(color: Colors.red),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
                                 ),
@@ -503,8 +501,6 @@ class AddAddress extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget _buildAddressForm(AddAddressBloc addAddressBloc, context) {
     return Form(

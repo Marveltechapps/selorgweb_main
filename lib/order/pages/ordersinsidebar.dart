@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import 'package:selorgweb_main/order/widgets/order_card_widget.dart';
+import 'package:selorgweb_main/utils/constant.dart';
 
 class OrdersList extends StatefulWidget {
   const OrdersList({super.key});
@@ -89,7 +90,7 @@ class _OrdersListState extends State<OrdersList> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
-                            backgroundColor: Color(0xFF034703),
+                            backgroundColor: appColor,
                           ),
                           onPressed: () {
                             // Handle browse action
@@ -100,7 +101,7 @@ class _OrdersListState extends State<OrdersList> {
                               horizontal: 17,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF034703),
+                              color: appColor,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: Text(

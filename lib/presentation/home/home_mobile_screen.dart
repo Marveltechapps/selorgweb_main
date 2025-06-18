@@ -954,12 +954,12 @@ class HomeMobileScreen extends StatelessWidget {
                                 visible: true, // mainCategory.data!.length > 2,
                                 child: Row(
                                   children: [
-                                    const Text(
+                                     Text(
                                       'See All',
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF034703),
+                                        color: appColor,
                                       ),
                                     ),
                                     const SizedBox(width: 6),
@@ -1330,8 +1330,8 @@ class HomeMobileScreen extends StatelessWidget {
                                                         horizontal: 8,
                                                         vertical: 4,
                                                       ),
-                                                  decoration: const BoxDecoration(
-                                                    color: Color(0xFF034703),
+                                                  decoration:  BoxDecoration(
+                                                    color: appColor,
                                                     borderRadius:
                                                         BorderRadius.only(
                                                           topLeft:
@@ -1729,8 +1729,8 @@ class HomeMobileScreen extends StatelessWidget {
                                                         horizontal: 8,
                                                         vertical: 4,
                                                       ),
-                                                  decoration: const BoxDecoration(
-                                                    color: Color(0xFF034703),
+                                                  decoration:  BoxDecoration(
+                                                    color: appColor,
                                                     borderRadius:
                                                         BorderRadius.only(
                                                           topLeft:
@@ -2128,8 +2128,8 @@ class HomeMobileScreen extends StatelessWidget {
                                                         horizontal: 8,
                                                         vertical: 4,
                                                       ),
-                                                  decoration: const BoxDecoration(
-                                                    color: Color(0xFF034703),
+                                                  decoration:  BoxDecoration(
+                                                    color: appColor,
                                                     borderRadius:
                                                         BorderRadius.only(
                                                           topLeft:
@@ -2529,8 +2529,8 @@ class HomeMobileScreen extends StatelessWidget {
                                                         horizontal: 8,
                                                         vertical: 4,
                                                       ),
-                                                  decoration: const BoxDecoration(
-                                                    color: Color(0xFF034703),
+                                                  decoration: BoxDecoration(
+                                                    color: appColor,
                                                     borderRadius:
                                                         BorderRadius.only(
                                                           topLeft:
