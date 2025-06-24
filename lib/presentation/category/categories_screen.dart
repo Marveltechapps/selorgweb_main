@@ -1621,8 +1621,9 @@ class CategoriesScreen extends StatelessWidget {
                                                     id =
                                                         categorydata[i].id ??
                                                         "";
-                                                    isMainCategory = false;
-                                                    mainCatId = "";
+                                                    isMainCategory = true;
+                                                    mainCatId = categorydata[i].id ??
+                                                        "";
                                                     isCategory = true;
                                                     catId =
                                                         categorydata[i].id ??
@@ -1643,8 +1644,9 @@ class CategoriesScreen extends StatelessWidget {
                                                                       .id ??
                                                                   "",
                                                               isMainCategory:
-                                                                  false,
-                                                              mainCatId: "",
+                                                                  true,
+                                                              mainCatId: categorydata[i].id ??
+                                                        "",
                                                               isCategory: true,
                                                               catId:
                                                                   categorydata[i]

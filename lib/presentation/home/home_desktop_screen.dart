@@ -1445,7 +1445,10 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                 "";
                                                             isMainCategory =
                                                                 true;
-                                                            mainCatId = "";
+                                                            mainCatId =
+                                                                categorydata[i]
+                                                                    .id ??
+                                                                "";
                                                             isCategory = true;
                                                             catId =
                                                                 categorydata[i]
@@ -1469,6 +1472,8 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                       isMainCategory:
                                                                           true,
                                                                       mainCatId:
+                                                                          categorydata[i]
+                                                                              .id ??
                                                                           "",
                                                                       isCategory:
                                                                           true,
