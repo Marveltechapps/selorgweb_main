@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selorgweb_main/model/category/dynamic_category_model.dart'
+    as dm;
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
 import 'package:selorgweb_main/model/category/main_category_model.dart';
@@ -23,7 +26,7 @@ class CategoriesScreen extends StatelessWidget {
 
   static List<Category> categories = [];
   static MainCategory mainCategory = MainCategory();
-
+  static dm.DynamicCategories dynamicCategories = dm.DynamicCategories();
   static List<SearchedLocationResponse> searchedLocations = [];
 
   static TextEditingController searchLocationController =
@@ -353,6 +356,8 @@ class CategoriesScreen extends StatelessWidget {
               } else if (state is CategoryLoadedState) {
                 debugPrint("CategoryLoadedState");
                 categories = state.categories;
+              } else if (state is DynamicCategoryLoadedState) {
+                dynamicCategories = state.categories;
               } else if (state is CategoryErrorState) {
                 debugPrint("CategoryErrorState");
               }
@@ -362,6 +367,7 @@ class CategoriesScreen extends StatelessWidget {
                 debugPrint("CategoryInitialState");
                 context.read<CategoryBloc>().add(GetMainCategoryDataEvent());
                 context.read<CategoryBloc>().add(GetCategoryDataEvent());
+                context.read<CategoryBloc>().add(GetDynamicCategoryDataEvent());
               }
               return Scaffold(
                 body: SingleChildScrollView(
@@ -1517,760 +1523,110 @@ class CategoriesScreen extends StatelessWidget {
                       // ),
                       Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 20 : 150,
+                          horizontal:
+                              isMobile
+                                  ? 20
+                                  : isTablet
+                                  ? 20
+                                  : 60,
                         ),
-                        child: Column(
-                          spacing: 20,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Explore by Categories',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: blackColor,
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: 1280),
+                          child: Column(
+                            spacing: 20,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Explore by Categories',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: blackColor,
+                                    ),
                                   ),
-                                ),
-                                // if (mainCategory.data != null)
-                                // InkWell(
-                                //   onTap: () {
-                                //     Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(
-                                //         builder: (context) {
-                                //           return CategoriesScreen();
-                                //         },
-                                //       ),
-                                //     );
-                                //   },
-                                //   child: Row(
-                                //     children: [
-                                //       Text(
-                                //         'See All',
-                                //         style: GoogleFonts.poppins(
-                                //           fontSize: 13,
-                                //           fontWeight: FontWeight.w600,
-                                //           color: appColor,
-                                //         ),
-                                //       ),
-                                //       const SizedBox(width: 6),
-                                //       Icon(
-                                //         Icons.arrow_forward_ios_rounded,
-                                //         size: 14,
-                                //         color: appColor,
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                              ],
-                            ),
-                            isTablet
-                                ? Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.start,
-                                  spacing: 20,
-                                  runSpacing: 20,
-                                  children: [
-                                    SizedBox(
-                                      // height: 150,
-                                      // width: 130,
-                                      //  color: redColor,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        spacing: 16,
-                                        children: [
-                                          if (mainCategory.data != null)
-                                            for (
-                                              int i = 0;
-                                              i < mainCategory.data!.length;
-                                              i++
-                                            )
-                                              Expanded(
-                                                child: InkWell(
-                                                  hoverColor:
-                                                      Colors.transparent,
-                                                  onTap: () {
-                                                    title =
-                                                        mainCategory
-                                                            .data![i]
-                                                            .name ??
-                                                        "";
-                                                    id =
-                                                        mainCategory
-                                                            .data![i]
-                                                            .id ??
-                                                        "";
-                                                    isMainCategory = true;
-                                                    mainCatId =
-                                                        mainCategory
-                                                            .data![i]
-                                                            .id ??
-                                                        "";
-                                                    isCategory = false;
-                                                    catId = "";
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (
-                                                              context,
-                                                            ) => ProductListMainScreen(
-                                                              title:
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .name ??
-                                                                  "",
-                                                              id:
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .id ??
-                                                                  "",
-                                                              isMainCategory:
-                                                                  true,
-                                                              mainCatId:
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .id ??
-                                                                  "",
-                                                              isCategory: false,
-                                                              catId: "",
-                                                            ),
-                                                      ),
-                                                    ).then((value) {
-                                                      // if (!context
-                                                      //     .mounted) {
-                                                      //   return;
-                                                      // }
-                                                      // context
-                                                      //     .read<
-                                                      //       HomeBloc
-                                                      //     >()
-                                                      //     .add(
-                                                      //       GetCartCountEvent(
-                                                      //         userId:
-                                                      //             userId,
-                                                      //       ),
-                                                      //     );
-                                                      // // context
-                                                      // //     .read<CounterCubit>()
-                                                      // //     .decrement(cartCount);
-                                                      // context
-                                                      //     .read<
-                                                      //       CounterCubit
-                                                      //     >()
-                                                      //     .increment(
-                                                      //       cartCount,
-                                                      //     );
-                                                      // noOfIteminCart =
-                                                      //     cartCount;
-                                                    });
-                                                  },
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .stretch,
-                                                    children: [
-                                                      Container(
-                                                        height: 130,
-                                                        width: null,
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFFE5EEC3,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                5,
-                                                              ),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: greyColor,
-                                                              blurRadius: 3,
-                                                              offset:
-                                                                  const Offset(
-                                                                    0,
-                                                                    1,
-                                                                  ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            ImageNetworkWidget(
-                                                              url:
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .imageUrl ??
-                                                                  "",
-                                                              height: 100,
-                                                              width:
-                                                                  double
-                                                                      .infinity,
-                                                              fit:
-                                                                  BoxFit
-                                                                      .contain,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                        mainCategory
-                                                                .data![i]
-                                                                .name ??
-                                                            "",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Color(
-                                                            0xFF222222,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      // height: 150,
-                                      // width: 130,
-                                      // color: redColor,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        spacing: 20,
-                                        children: [
-                                          if (categories.isNotEmpty)
-                                            for (
-                                              int i = 0;
-                                              i <
-                                                  (categories.length > 3
-                                                      ? 3
-                                                      : categories.length);
-                                              i++
-                                            )
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    debugPrint(
-                                                      categories[i].name ?? "",
-                                                    );
-                                                    title =
-                                                        categories[i].name ??
-                                                        "";
-                                                    id = categories[i].id ?? "";
-                                                    isMainCategory = false;
-                                                    mainCatId = "";
-                                                    isCategory = true;
-                                                    catId =
-                                                        categories[i].id ?? "";
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (
-                                                              context,
-                                                            ) => ProductListMainScreen(
-                                                              title:
-                                                                  categories[i]
-                                                                      .name ??
-                                                                  "",
-                                                              id:
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "",
-                                                              isMainCategory:
-                                                                  false,
-                                                              mainCatId: "",
-                                                              isCategory: true,
-                                                              catId:
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "",
-                                                            ),
-                                                      ),
-                                                    ).then((value) {
-                                                      // if (!context
-                                                      //     .mounted) {
-                                                      //   return;
-                                                      // }
-                                                      // context
-                                                      //     .read<
-                                                      //       HomeBloc
-                                                      //     >()
-                                                      //     .add(
-                                                      //       GetCartCountEvent(
-                                                      //         userId:
-                                                      //             userId,
-                                                      //       ),
-                                                      //     );
-                                                      // // context
-                                                      // //     .read<CounterCubit>()
-                                                      // //     .decrement(cartCount);
-                                                      // context
-                                                      //     .read<
-                                                      //       CounterCubit
-                                                      //     >()
-                                                      //     .increment(
-                                                      //       cartCount,
-                                                      //     );
-                                                      // noOfIteminCart =
-                                                      //     cartCount;
-                                                    });
-                                                  },
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        height: 130,
-                                                        width: null,
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFFE5EEC3,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                5,
-                                                              ),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: greyColor,
-                                                              blurRadius: 3,
-                                                              offset:
-                                                                  const Offset(
-                                                                    0,
-                                                                    1,
-                                                                  ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            ImageNetworkWidget(
-                                                              url:
-                                                                  categories[i]
-                                                                      .imageUrl ??
-                                                                  "",
-                                                              height: 100,
-                                                              width:
-                                                                  double
-                                                                      .infinity,
-                                                              fit:
-                                                                  BoxFit
-                                                                      .contain,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                        categories[i].name ??
-                                                            "",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Color(
-                                                            0xFF222222,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                ],
+                              ),
+                              if (dynamicCategories.data != null)
+                                for (
+                                  int categoryIndex = 0;
+                                  categoryIndex <
+                                      dynamicCategories.data!.length;
+                                  categoryIndex++
                                 )
-                                : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  spacing: 20,
-                                  children: [
-                                    Expanded(
-                                      child: SizedBox(
-                                        // height: 150,
-                                        // width: 130,
-                                        //  color: redColor,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          spacing: 16,
+                                  Column(
+                                    children: [
+                                      if (dynamicCategories.data!.length > 1)
+                                        Row(
                                           children: [
-                                            if (mainCategory.data != null)
+                                            Text(
+                                              dynamicCategories
+                                                  .data![categoryIndex]
+                                                  .categoryTitleName!,
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.titleMedium,
+                                            ),
+                                          ],
+                                        ),
+                                      if (dynamicCategories.data!.length > 1)
+                                        SizedBox(height: 20),
+                                      LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          double maxWidth =
+                                              constraints.maxWidth;
+                                          int itemsPerRow = 6;
+
+                                          if (maxWidth < 991) {
+                                            itemsPerRow = 3;
+                                          }
+
+                                          // base width per item
+                                          double baseWidth =
+                                              maxWidth / itemsPerRow;
+
+                                          List<dm.Category>? categorydata = [
+                                            ...dynamicCategories
+                                                .data![categoryIndex]
+                                                .categories!,
+                                          ]..sort(
+                                            (a, b) =>
+                                                a.index!.compareTo(b.index!),
+                                          );
+                                          return Wrap(
+                                            spacing: 16,
+                                            runSpacing: 25,
+                                            alignment: WrapAlignment.start,
+                                            children: [
                                               for (
                                                 int i = 0;
-                                                i < mainCategory.data!.length;
+                                                i < categorydata.length;
                                                 i++
                                               )
-                                                Expanded(
-                                                  child: InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      debugPrint("0000000000");
-                                                      title =
-                                                          mainCategory
-                                                              .data![i]
-                                                              .name ??
-                                                          "";
-                                                      id =
-                                                          mainCategory
-                                                              .data![i]
-                                                              .id ??
-                                                          "";
-                                                      isMainCategory = true;
-                                                      mainCatId =
-                                                          mainCategory
-                                                              .data![i]
-                                                              .id ??
-                                                          "";
-                                                      isCategory = false;
-                                                      catId = "";
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                              ) => ProductListMainScreen(
-                                                                title:
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .name ??
-                                                                    "",
-                                                                id:
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .id ??
-                                                                    "",
-                                                                isMainCategory:
-                                                                    true,
-                                                                mainCatId:
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .id ??
-                                                                    "",
-                                                                isCategory:
-                                                                    false,
-                                                                catId: "",
-                                                              ),
-                                                        ),
-                                                      ).then((value) {
-                                                        // if (!context
-                                                        //     .mounted) {
-                                                        //   return;
-                                                        // }
-                                                        // context
-                                                        //     .read<
-                                                        //       HomeBloc
-                                                        //     >()
-                                                        //     .add(
-                                                        //       GetCartCountEvent(
-                                                        //         userId:
-                                                        //             userId,
-                                                        //       ),
-                                                        //     );
-                                                        // // context
-                                                        // //     .read<CounterCubit>()
-                                                        // //     .decrement(cartCount);
-                                                        // context
-                                                        //     .read<
-                                                        //       CounterCubit
-                                                        //     >()
-                                                        //     .increment(
-                                                        //       cartCount,
-                                                        //     );
-                                                        // noOfIteminCart =
-                                                        //     cartCount;
-                                                      });
-                                                    },
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .stretch,
-                                                      children: [
-                                                        Container(
-                                                          height: 130,
-                                                          width: null,
-                                                          decoration: BoxDecoration(
-                                                            color: const Color(
-                                                              0xFFE5EEC3,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  5,
-                                                                ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color:
-                                                                    greyColor,
-                                                                blurRadius: 3,
-                                                                offset:
-                                                                    const Offset(
-                                                                      0,
-                                                                      1,
-                                                                    ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              ImageNetworkWidget(
-                                                                url:
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .imageUrl ??
-                                                                    "",
-                                                                height: 100,
-                                                                width:
-                                                                    double
-                                                                        .infinity,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .contain,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          mainCategory
-                                                                  .data![i]
-                                                                  .name ??
-                                                              "",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: Color(
-                                                              0xFF222222,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: SizedBox(
-                                        // height: 150,
-                                        // width: 130,
-                                        // color: redColor,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          spacing: 20,
-                                          children: [
-                                            if (categories.isNotEmpty)
-                                              for (int i = 0; i < 3; i++)
-                                                Expanded(
-                                                  child: InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      debugPrint(
-                                                        categories[i].name ??
-                                                            "",
-                                                      );
-                                                      title =
-                                                          categories[i].name ??
-                                                          "";
-                                                      id =
-                                                          categories[i].id ??
-                                                          "";
-                                                      isMainCategory = false;
-                                                      mainCatId = "";
-                                                      isCategory = true;
-                                                      catId =
-                                                          categories[i].id ??
-                                                          "";
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                              ) => ProductListMainScreen(
-                                                                title:
-                                                                    categories[i]
-                                                                        .name ??
-                                                                    "",
-                                                                id:
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "",
-                                                                isMainCategory:
-                                                                    false,
-                                                                mainCatId: "",
-                                                                isCategory:
-                                                                    true,
-                                                                catId:
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "",
-                                                              ),
-                                                        ),
-                                                      ).then((value) {
-                                                        // if (!context
-                                                        //     .mounted) {
-                                                        //   return;
-                                                        // }
-                                                        // context
-                                                        //     .read<
-                                                        //       HomeBloc
-                                                        //     >()
-                                                        //     .add(
-                                                        //       GetCartCountEvent(
-                                                        //         userId:
-                                                        //             userId,
-                                                        //       ),
-                                                        //     );
-                                                        // // context
-                                                        // //     .read<CounterCubit>()
-                                                        // //     .decrement(cartCount);
-                                                        // context
-                                                        //     .read<
-                                                        //       CounterCubit
-                                                        //     >()
-                                                        //     .increment(
-                                                        //       cartCount,
-                                                        //     );
-                                                        // noOfIteminCart =
-                                                        //     cartCount;
-                                                      });
-                                                    },
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          height: 130,
-                                                          width: null,
-                                                          decoration: BoxDecoration(
-                                                            color: const Color(
-                                                              0xFFE5EEC3,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  5,
-                                                                ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color:
-                                                                    greyColor,
-                                                                blurRadius: 3,
-                                                                offset:
-                                                                    const Offset(
-                                                                      0,
-                                                                      1,
-                                                                    ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              ImageNetworkWidget(
-                                                                url:
-                                                                    categories[i]
-                                                                        .imageUrl ??
-                                                                    "",
-                                                                height: 100,
-                                                                width:
-                                                                    double
-                                                                        .infinity,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .contain,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          categories[i].name ??
-                                                              "",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
-                                                                ),
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                            isTablet
-                                ? Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.start,
-                                  spacing: 20,
-                                  runSpacing: 20,
-                                  children: [
-                                    SizedBox(
-                                      // height: 150,
-                                      // width: 130,
-                                      //   color: redColor,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        spacing: 20,
-                                        children: [
-                                          if (categories.isNotEmpty)
-                                            for (int i = 3; i < 6; i++)
-                                              Expanded(
-                                                child: InkWell(
+                                                InkWell(
+                                                  hoverColor:
+                                                      Colors.transparent,
                                                   onTap: () {
                                                     debugPrint(
-                                                      categories[i].name ?? "",
+                                                      categorydata[i].name ??
+                                                          "",
                                                     );
                                                     title =
-                                                        categories[i].name ??
+                                                        categorydata[i].name ??
                                                         "";
-                                                    id = categories[i].id ?? "";
+                                                    id =
+                                                        categorydata[i].id ??
+                                                        "";
                                                     isMainCategory = false;
                                                     mainCatId = "";
                                                     isCategory = true;
                                                     catId =
-                                                        categories[i].id ?? "";
+                                                        categorydata[i].id ??
+                                                        "";
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -2279,11 +1635,11 @@ class CategoriesScreen extends StatelessWidget {
                                                               context,
                                                             ) => ProductListMainScreen(
                                                               title:
-                                                                  categories[i]
+                                                                  categorydata[i]
                                                                       .name ??
                                                                   "",
                                                               id:
-                                                                  categories[i]
+                                                                  categorydata[i]
                                                                       .id ??
                                                                   "",
                                                               isMainCategory:
@@ -2291,163 +1647,7 @@ class CategoriesScreen extends StatelessWidget {
                                                               mainCatId: "",
                                                               isCategory: true,
                                                               catId:
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "",
-                                                            ),
-                                                      ),
-                                                    ).then((value) {
-                                                      // if (!context
-                                                      //     .mounted) {
-                                                      //   return;
-                                                      // }
-                                                      // context
-                                                      //     .read<
-                                                      //       HomeBloc
-                                                      //     >()
-                                                      //     .add(
-                                                      //       GetCartCountEvent(
-                                                      //         userId:
-                                                      //             userId,
-                                                      //       ),
-                                                      //     );
-                                                      // // context
-                                                      // //     .read<CounterCubit>()
-                                                      // //     .decrement(cartCount);
-                                                      // context
-                                                      //     .read<
-                                                      //       CounterCubit
-                                                      //     >()
-                                                      //     .increment(
-                                                      //       cartCount,
-                                                      //     );
-                                                      // noOfIteminCart =
-                                                      //     cartCount;
-                                                    });
-                                                  },
-                                                  hoverColor:
-                                                      Colors.transparent,
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        height: 130,
-                                                        // width: 130,
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFFE5EEC3,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                5,
-                                                              ),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: greyColor,
-                                                              blurRadius: 3,
-                                                              offset:
-                                                                  const Offset(
-                                                                    0,
-                                                                    1,
-                                                                  ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            ImageNetworkWidget(
-                                                              url:
-                                                                  categories[i]
-                                                                      .imageUrl ??
-                                                                  "",
-                                                              height: 100,
-                                                              width:
-                                                                  double
-                                                                      .infinity,
-                                                              fit:
-                                                                  BoxFit
-                                                                      .contain,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                        categories[i].name ??
-                                                            "",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Color(
-                                                            0xFF222222,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      // height: 150,
-                                      // width: 130,
-                                      //   color: redColor,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        spacing: 20,
-                                        children: [
-                                          if (categories.isNotEmpty)
-                                            for (
-                                              int i = 6;
-                                              i < categories.length;
-                                              i++
-                                            )
-                                              Expanded(
-                                                child: InkWell(
-                                                  hoverColor:
-                                                      Colors.transparent,
-                                                  onTap: () {
-                                                    debugPrint(
-                                                      categories[i].name ?? "",
-                                                    );
-                                                    title =
-                                                        categories[i].name ??
-                                                        "";
-                                                    id = categories[i].id ?? "";
-                                                    isMainCategory = false;
-                                                    mainCatId = "";
-                                                    isCategory = true;
-                                                    catId =
-                                                        categories[i].id ?? "";
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (
-                                                              context,
-                                                            ) => ProductListMainScreen(
-                                                              title:
-                                                                  categories[i]
-                                                                      .name ??
-                                                                  "",
-                                                              id:
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "",
-                                                              isMainCategory:
-                                                                  false,
-                                                              mainCatId: "",
-                                                              isCategory: true,
-                                                              catId:
-                                                                  categories[i]
+                                                                  categorydata[i]
                                                                       .id ??
                                                                   "",
                                                             ),
@@ -2485,7 +1685,14 @@ class CategoriesScreen extends StatelessWidget {
                                                     children: [
                                                       Container(
                                                         height: 130,
-                                                        // width: 130,
+                                                        width:
+                                                            categorydata[i]
+                                                                    .isHighlight!
+                                                                ? baseWidth *
+                                                                        1.5 -
+                                                                    16
+                                                                : baseWidth -
+                                                                    16,
                                                         decoration: BoxDecoration(
                                                           color: const Color(
                                                             0xFFE5EEC3,
@@ -2513,7 +1720,7 @@ class CategoriesScreen extends StatelessWidget {
                                                           children: [
                                                             ImageNetworkWidget(
                                                               url:
-                                                                  categories[i]
+                                                                  categorydata[i]
                                                                       .imageUrl ??
                                                                   "",
                                                               height: 100,
@@ -2529,7 +1736,7 @@ class CategoriesScreen extends StatelessWidget {
                                                       ),
                                                       SizedBox(height: 10),
                                                       Text(
-                                                        categories[i].name ??
+                                                        categorydata[i].name ??
                                                             "",
                                                         textAlign:
                                                             TextAlign.center,
@@ -2545,339 +1752,1374 @@ class CategoriesScreen extends StatelessWidget {
                                                     ],
                                                   ),
                                                 ),
-                                              ),
-                                        ],
+                                            ],
+                                          );
+                                        },
                                       ),
-                                    ),
-                                  ],
-                                )
-                                : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  spacing: 20,
-                                  children: [
-                                    Expanded(
-                                      child: SizedBox(
-                                        // height: 150,
-                                        width: 130,
-                                        //   color: redColor,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          spacing: 20,
-                                          children: [
-                                            if (categories.isNotEmpty)
-                                              for (int i = 3; i < 6; i++)
-                                                Expanded(
-                                                  child: InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      debugPrint(
-                                                        categories[i].name ??
-                                                            "",
-                                                      );
-                                                      title =
-                                                          categories[i].name ??
-                                                          "";
-                                                      id =
-                                                          categories[i].id ??
-                                                          "";
-                                                      isMainCategory = false;
-                                                      mainCatId = "";
-                                                      isCategory = true;
-                                                      catId =
-                                                          categories[i].id ??
-                                                          "";
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                              ) => ProductListMainScreen(
-                                                                title:
-                                                                    categories[i]
-                                                                        .name ??
-                                                                    "",
-                                                                id:
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "",
-                                                                isMainCategory:
-                                                                    false,
-                                                                mainCatId: "",
-                                                                isCategory:
-                                                                    true,
-                                                                catId:
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "",
-                                                              ),
-                                                        ),
-                                                      ).then((value) {
-                                                        // if (!context
-                                                        //     .mounted) {
-                                                        //   return;
-                                                        // }
-                                                        // context
-                                                        //     .read<
-                                                        //       HomeBloc
-                                                        //     >()
-                                                        //     .add(
-                                                        //       GetCartCountEvent(
-                                                        //         userId:
-                                                        //             userId,
-                                                        //       ),
-                                                        //     );
-                                                        // // context
-                                                        // //     .read<CounterCubit>()
-                                                        // //     .decrement(cartCount);
-                                                        // context
-                                                        //     .read<
-                                                        //       CounterCubit
-                                                        //     >()
-                                                        //     .increment(
-                                                        //       cartCount,
-                                                        //     );
-                                                        // noOfIteminCart =
-                                                        //     cartCount;
-                                                      });
-                                                    },
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          height: 130,
-                                                          // width: 130,
-                                                          decoration: BoxDecoration(
-                                                            color: const Color(
-                                                              0xFFE5EEC3,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  5,
-                                                                ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color:
-                                                                    greyColor,
-                                                                blurRadius: 3,
-                                                                offset:
-                                                                    const Offset(
-                                                                      0,
-                                                                      1,
-                                                                    ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              ImageNetworkWidget(
-                                                                url:
-                                                                    categories[i]
-                                                                        .imageUrl ??
-                                                                    "",
-                                                                height: 100,
-                                                                width:
-                                                                    double
-                                                                        .infinity,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .contain,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          categories[i].name ??
-                                                              "",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
-                                                                ),
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: SizedBox(
-                                        // height: 150,
-                                        width: 130,
-                                        //   color: redColor,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          spacing: 20,
-                                          children: [
-                                            if (categories.isNotEmpty)
-                                              for (
-                                                int i = 6;
-                                                i < categories.length;
-                                                i++
-                                              )
-                                                Expanded(
-                                                  child: InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      title =
-                                                          categories[i].name ??
-                                                          "";
-                                                      id =
-                                                          categories[i].id ??
-                                                          "";
-                                                      isMainCategory = false;
-                                                      mainCatId = "";
-                                                      isCategory = true;
-                                                      catId =
-                                                          categories[i].id ??
-                                                          "";
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                              ) => ProductListMainScreen(
-                                                                title:
-                                                                    categories[i]
-                                                                        .name ??
-                                                                    "",
-                                                                id:
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "",
-                                                                isMainCategory:
-                                                                    false,
-                                                                mainCatId: "",
-                                                                isCategory:
-                                                                    true,
-                                                                catId:
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "",
-                                                              ),
-                                                        ),
-                                                      ).then((value) {
-                                                        // if (!context
-                                                        //     .mounted) {
-                                                        //   return;
-                                                        // }
-                                                        // context
-                                                        //     .read<
-                                                        //       HomeBloc
-                                                        //     >()
-                                                        //     .add(
-                                                        //       GetCartCountEvent(
-                                                        //         userId:
-                                                        //             userId,
-                                                        //       ),
-                                                        //     );
-                                                        // // context
-                                                        // //     .read<CounterCubit>()
-                                                        // //     .decrement(cartCount);
-                                                        // context
-                                                        //     .read<
-                                                        //       CounterCubit
-                                                        //     >()
-                                                        //     .increment(
-                                                        //       cartCount,
-                                                        //     );
-                                                        // noOfIteminCart =
-                                                        //     cartCount;
-                                                      });
-                                                    },
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          height: 130,
-                                                          // width: 130,
-                                                          decoration: BoxDecoration(
-                                                            color: const Color(
-                                                              0xFFE5EEC3,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  5,
-                                                                ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color:
-                                                                    greyColor,
-                                                                blurRadius: 3,
-                                                                offset:
-                                                                    const Offset(
-                                                                      0,
-                                                                      1,
-                                                                    ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              ImageNetworkWidget(
-                                                                url:
-                                                                    categories[i]
-                                                                        .imageUrl ??
-                                                                    "",
-                                                                height: 100,
-                                                                width:
-                                                                    double
-                                                                        .infinity,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .contain,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          categories[i].name ??
-                                                              "",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Color(
-                                                                  0xFF222222,
-                                                                ),
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                          ],
+                                      if (dynamicCategories.data!.length > 1)
+                                        SizedBox(height: 20),
+                                    ],
+                                  ),
+
+                              // isTablet
+                              //     ? Wrap(
+                              //       crossAxisAlignment:
+                              //           WrapCrossAlignment.start,
+                              //       spacing: 20,
+                              //       runSpacing: 20,
+                              //       children: [
+                              //         SizedBox(
+                              //           // height: 150,
+                              //           // width: 130,
+                              //           //  color: redColor,
+                              //           child: Row(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             spacing: 16,
+                              //             children: [
+                              //               if (mainCategory.data != null)
+                              //                 for (
+                              //                   int i = 0;
+                              //                   i < mainCategory.data!.length;
+                              //                   i++
+                              //                 )
+                              //                   Expanded(
+                              //                     child: InkWell(
+                              //                       hoverColor:
+                              //                           Colors.transparent,
+                              //                       onTap: () {
+                              //                         title =
+                              //                             mainCategory
+                              //                                 .data![i]
+                              //                                 .name ??
+                              //                             "";
+                              //                         id =
+                              //                             mainCategory
+                              //                                 .data![i]
+                              //                                 .id ??
+                              //                             "";
+                              //                         isMainCategory = true;
+                              //                         mainCatId =
+                              //                             mainCategory
+                              //                                 .data![i]
+                              //                                 .id ??
+                              //                             "";
+                              //                         isCategory = false;
+                              //                         catId = "";
+                              //                         Navigator.push(
+                              //                           context,
+                              //                           MaterialPageRoute(
+                              //                             builder:
+                              //                                 (
+                              //                                   context,
+                              //                                 ) => ProductListMainScreen(
+                              //                                   title:
+                              //                                       mainCategory
+                              //                                           .data![i]
+                              //                                           .name ??
+                              //                                       "",
+                              //                                   id:
+                              //                                       mainCategory
+                              //                                           .data![i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                   isMainCategory:
+                              //                                       true,
+                              //                                   mainCatId:
+                              //                                       mainCategory
+                              //                                           .data![i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                   isCategory:
+                              //                                       false,
+                              //                                   catId: "",
+                              //                                 ),
+                              //                           ),
+                              //                         ).then((value) {
+                              //                           // if (!context
+                              //                           //     .mounted) {
+                              //                           //   return;
+                              //                           // }
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       HomeBloc
+                              //                           //     >()
+                              //                           //     .add(
+                              //                           //       GetCartCountEvent(
+                              //                           //         userId:
+                              //                           //             userId,
+                              //                           //       ),
+                              //                           //     );
+                              //                           // // context
+                              //                           // //     .read<CounterCubit>()
+                              //                           // //     .decrement(cartCount);
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       CounterCubit
+                              //                           //     >()
+                              //                           //     .increment(
+                              //                           //       cartCount,
+                              //                           //     );
+                              //                           // noOfIteminCart =
+                              //                           //     cartCount;
+                              //                         });
+                              //                       },
+                              //                       child: Column(
+                              //                         crossAxisAlignment:
+                              //                             CrossAxisAlignment
+                              //                                 .stretch,
+                              //                         children: [
+                              //                           Container(
+                              //                             height: 130,
+                              //                             width: null,
+                              //                             decoration: BoxDecoration(
+                              //                               color: const Color(
+                              //                                 0xFFE5EEC3,
+                              //                               ),
+                              //                               borderRadius:
+                              //                                   BorderRadius.circular(
+                              //                                     5,
+                              //                                   ),
+                              //                               boxShadow: [
+                              //                                 BoxShadow(
+                              //                                   color:
+                              //                                       greyColor,
+                              //                                   blurRadius: 3,
+                              //                                   offset:
+                              //                                       const Offset(
+                              //                                         0,
+                              //                                         1,
+                              //                                       ),
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                             child: Column(
+                              //                               mainAxisAlignment:
+                              //                                   MainAxisAlignment
+                              //                                       .center,
+                              //                               children: [
+                              //                                 ImageNetworkWidget(
+                              //                                   url:
+                              //                                       mainCategory
+                              //                                           .data![i]
+                              //                                           .imageUrl ??
+                              //                                       "",
+                              //                                   height: 100,
+                              //                                   width:
+                              //                                       double
+                              //                                           .infinity,
+                              //                                   fit:
+                              //                                       BoxFit
+                              //                                           .contain,
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                           ),
+                              //                           SizedBox(height: 10),
+                              //                           Text(
+                              //                             mainCategory
+                              //                                     .data![i]
+                              //                                     .name ??
+                              //                                 "",
+                              //                             textAlign:
+                              //                                 TextAlign.center,
+                              //                             style: TextStyle(
+                              //                               fontSize: 14,
+                              //                               fontWeight:
+                              //                                   FontWeight.w600,
+                              //                               color: Color(
+                              //                                 0xFF222222,
+                              //                               ),
+                              //                             ),
+                              //                           ),
+                              //                         ],
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //         SizedBox(
+                              //           // height: 150,
+                              //           // width: 130,
+                              //           // color: redColor,
+                              //           child: Row(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             spacing: 20,
+                              //             children: [
+                              //               if (categories.isNotEmpty)
+                              //                 for (
+                              //                   int i = 0;
+                              //                   i <
+                              //                       (categories.length > 3
+                              //                           ? 3
+                              //                           : categories.length);
+                              //                   i++
+                              //                 )
+                              //                   Expanded(
+                              //                     child: InkWell(
+                              //                       onTap: () {
+                              //                         debugPrint(
+                              //                           categories[i].name ??
+                              //                               "",
+                              //                         );
+                              //                         title =
+                              //                             categories[i].name ??
+                              //                             "";
+                              //                         id =
+                              //                             categories[i].id ??
+                              //                             "";
+                              //                         isMainCategory = false;
+                              //                         mainCatId = "";
+                              //                         isCategory = true;
+                              //                         catId =
+                              //                             categories[i].id ??
+                              //                             "";
+                              //                         Navigator.push(
+                              //                           context,
+                              //                           MaterialPageRoute(
+                              //                             builder:
+                              //                                 (
+                              //                                   context,
+                              //                                 ) => ProductListMainScreen(
+                              //                                   title:
+                              //                                       categories[i]
+                              //                                           .name ??
+                              //                                       "",
+                              //                                   id:
+                              //                                       categories[i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                   isMainCategory:
+                              //                                       false,
+                              //                                   mainCatId: "",
+                              //                                   isCategory:
+                              //                                       true,
+                              //                                   catId:
+                              //                                       categories[i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                 ),
+                              //                           ),
+                              //                         ).then((value) {
+                              //                           // if (!context
+                              //                           //     .mounted) {
+                              //                           //   return;
+                              //                           // }
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       HomeBloc
+                              //                           //     >()
+                              //                           //     .add(
+                              //                           //       GetCartCountEvent(
+                              //                           //         userId:
+                              //                           //             userId,
+                              //                           //       ),
+                              //                           //     );
+                              //                           // // context
+                              //                           // //     .read<CounterCubit>()
+                              //                           // //     .decrement(cartCount);
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       CounterCubit
+                              //                           //     >()
+                              //                           //     .increment(
+                              //                           //       cartCount,
+                              //                           //     );
+                              //                           // noOfIteminCart =
+                              //                           //     cartCount;
+                              //                         });
+                              //                       },
+                              //                       child: Column(
+                              //                         children: [
+                              //                           Container(
+                              //                             height: 130,
+                              //                             width: null,
+                              //                             decoration: BoxDecoration(
+                              //                               color: const Color(
+                              //                                 0xFFE5EEC3,
+                              //                               ),
+                              //                               borderRadius:
+                              //                                   BorderRadius.circular(
+                              //                                     5,
+                              //                                   ),
+                              //                               boxShadow: [
+                              //                                 BoxShadow(
+                              //                                   color:
+                              //                                       greyColor,
+                              //                                   blurRadius: 3,
+                              //                                   offset:
+                              //                                       const Offset(
+                              //                                         0,
+                              //                                         1,
+                              //                                       ),
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                             child: Column(
+                              //                               mainAxisAlignment:
+                              //                                   MainAxisAlignment
+                              //                                       .center,
+                              //                               children: [
+                              //                                 ImageNetworkWidget(
+                              //                                   url:
+                              //                                       categories[i]
+                              //                                           .imageUrl ??
+                              //                                       "",
+                              //                                   height: 100,
+                              //                                   width:
+                              //                                       double
+                              //                                           .infinity,
+                              //                                   fit:
+                              //                                       BoxFit
+                              //                                           .contain,
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                           ),
+                              //                           SizedBox(height: 10),
+                              //                           Text(
+                              //                             categories[i].name ??
+                              //                                 "",
+                              //                             textAlign:
+                              //                                 TextAlign.center,
+                              //                             style:
+                              //                                 const TextStyle(
+                              //                                   fontSize: 14,
+                              //                                   fontWeight:
+                              //                                       FontWeight
+                              //                                           .w600,
+                              //                                   color: Color(
+                              //                                     0xFF222222,
+                              //                                   ),
+                              //                                 ),
+                              //                           ),
+                              //                         ],
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     )
+                              //     : Row(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       spacing: 20,
+                              //       children: [
+                              //         Expanded(
+                              //           child: SizedBox(
+                              //             // height: 150,
+                              //             // width: 130,
+                              //             //  color: redColor,
+                              //             child: Row(
+                              //               crossAxisAlignment:
+                              //                   CrossAxisAlignment.start,
+                              //               spacing: 16,
+                              //               children: [
+                              //                 if (mainCategory.data != null)
+                              //                   for (
+                              //                     int i = 0;
+                              //                     i < mainCategory.data!.length;
+                              //                     i++
+                              //                   )
+                              //                     Expanded(
+                              //                       child: InkWell(
+                              //                         hoverColor:
+                              //                             Colors.transparent,
+                              //                         onTap: () {
+                              //                           debugPrint(
+                              //                             "0000000000",
+                              //                           );
+                              //                           title =
+                              //                               mainCategory
+                              //                                   .data![i]
+                              //                                   .name ??
+                              //                               "";
+                              //                           id =
+                              //                               mainCategory
+                              //                                   .data![i]
+                              //                                   .id ??
+                              //                               "";
+                              //                           isMainCategory = true;
+                              //                           mainCatId =
+                              //                               mainCategory
+                              //                                   .data![i]
+                              //                                   .id ??
+                              //                               "";
+                              //                           isCategory = false;
+                              //                           catId = "";
+                              //                           Navigator.push(
+                              //                             context,
+                              //                             MaterialPageRoute(
+                              //                               builder:
+                              //                                   (
+                              //                                     context,
+                              //                                   ) => ProductListMainScreen(
+                              //                                     title:
+                              //                                         mainCategory
+                              //                                             .data![i]
+                              //                                             .name ??
+                              //                                         "",
+                              //                                     id:
+                              //                                         mainCategory
+                              //                                             .data![i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                     isMainCategory:
+                              //                                         true,
+                              //                                     mainCatId:
+                              //                                         mainCategory
+                              //                                             .data![i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                     isCategory:
+                              //                                         false,
+                              //                                     catId: "",
+                              //                                   ),
+                              //                             ),
+                              //                           ).then((value) {
+                              //                             // if (!context
+                              //                             //     .mounted) {
+                              //                             //   return;
+                              //                             // }
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       HomeBloc
+                              //                             //     >()
+                              //                             //     .add(
+                              //                             //       GetCartCountEvent(
+                              //                             //         userId:
+                              //                             //             userId,
+                              //                             //       ),
+                              //                             //     );
+                              //                             // // context
+                              //                             // //     .read<CounterCubit>()
+                              //                             // //     .decrement(cartCount);
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       CounterCubit
+                              //                             //     >()
+                              //                             //     .increment(
+                              //                             //       cartCount,
+                              //                             //     );
+                              //                             // noOfIteminCart =
+                              //                             //     cartCount;
+                              //                           });
+                              //                         },
+                              //                         child: Column(
+                              //                           crossAxisAlignment:
+                              //                               CrossAxisAlignment
+                              //                                   .stretch,
+                              //                           children: [
+                              //                             Container(
+                              //                               height: 130,
+                              //                               width: null,
+                              //                               decoration: BoxDecoration(
+                              //                                 color:
+                              //                                     const Color(
+                              //                                       0xFFE5EEC3,
+                              //                                     ),
+                              //                                 borderRadius:
+                              //                                     BorderRadius.circular(
+                              //                                       5,
+                              //                                     ),
+                              //                                 boxShadow: [
+                              //                                   BoxShadow(
+                              //                                     color:
+                              //                                         greyColor,
+                              //                                     blurRadius: 3,
+                              //                                     offset:
+                              //                                         const Offset(
+                              //                                           0,
+                              //                                           1,
+                              //                                         ),
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                               child: Column(
+                              //                                 mainAxisAlignment:
+                              //                                     MainAxisAlignment
+                              //                                         .center,
+                              //                                 children: [
+                              //                                   ImageNetworkWidget(
+                              //                                     url:
+                              //                                         mainCategory
+                              //                                             .data![i]
+                              //                                             .imageUrl ??
+                              //                                         "",
+                              //                                     height: 100,
+                              //                                     width:
+                              //                                         double
+                              //                                             .infinity,
+                              //                                     fit:
+                              //                                         BoxFit
+                              //                                             .contain,
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                             ),
+                              //                             SizedBox(height: 10),
+                              //                             Text(
+                              //                               mainCategory
+                              //                                       .data![i]
+                              //                                       .name ??
+                              //                                   "",
+                              //                               textAlign:
+                              //                                   TextAlign
+                              //                                       .center,
+                              //                               style: TextStyle(
+                              //                                 fontSize: 14,
+                              //                                 fontWeight:
+                              //                                     FontWeight
+                              //                                         .w600,
+                              //                                 color: Color(
+                              //                                   0xFF222222,
+                              //                                 ),
+                              //                               ),
+                              //                             ),
+                              //                           ],
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         Expanded(
+                              //           child: SizedBox(
+                              //             // height: 150,
+                              //             // width: 130,
+                              //             // color: redColor,
+                              //             child: Row(
+                              //               crossAxisAlignment:
+                              //                   CrossAxisAlignment.start,
+                              //               spacing: 20,
+                              //               children: [
+                              //                 if (categories.isNotEmpty)
+                              //                   for (int i = 0; i < 3; i++)
+                              //                     Expanded(
+                              //                       child: InkWell(
+                              //                         hoverColor:
+                              //                             Colors.transparent,
+                              //                         onTap: () {
+                              //                           debugPrint(
+                              //                             categories[i].name ??
+                              //                                 "",
+                              //                           );
+                              //                           title =
+                              //                               categories[i]
+                              //                                   .name ??
+                              //                               "";
+                              //                           id =
+                              //                               categories[i].id ??
+                              //                               "";
+                              //                           isMainCategory = false;
+                              //                           mainCatId = "";
+                              //                           isCategory = true;
+                              //                           catId =
+                              //                               categories[i].id ??
+                              //                               "";
+                              //                           Navigator.push(
+                              //                             context,
+                              //                             MaterialPageRoute(
+                              //                               builder:
+                              //                                   (
+                              //                                     context,
+                              //                                   ) => ProductListMainScreen(
+                              //                                     title:
+                              //                                         categories[i]
+                              //                                             .name ??
+                              //                                         "",
+                              //                                     id:
+                              //                                         categories[i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                     isMainCategory:
+                              //                                         false,
+                              //                                     mainCatId: "",
+                              //                                     isCategory:
+                              //                                         true,
+                              //                                     catId:
+                              //                                         categories[i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                   ),
+                              //                             ),
+                              //                           ).then((value) {
+                              //                             // if (!context
+                              //                             //     .mounted) {
+                              //                             //   return;
+                              //                             // }
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       HomeBloc
+                              //                             //     >()
+                              //                             //     .add(
+                              //                             //       GetCartCountEvent(
+                              //                             //         userId:
+                              //                             //             userId,
+                              //                             //       ),
+                              //                             //     );
+                              //                             // // context
+                              //                             // //     .read<CounterCubit>()
+                              //                             // //     .decrement(cartCount);
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       CounterCubit
+                              //                             //     >()
+                              //                             //     .increment(
+                              //                             //       cartCount,
+                              //                             //     );
+                              //                             // noOfIteminCart =
+                              //                             //     cartCount;
+                              //                           });
+                              //                         },
+                              //                         child: Column(
+                              //                           children: [
+                              //                             Container(
+                              //                               height: 130,
+                              //                               width: null,
+                              //                               decoration: BoxDecoration(
+                              //                                 color:
+                              //                                     const Color(
+                              //                                       0xFFE5EEC3,
+                              //                                     ),
+                              //                                 borderRadius:
+                              //                                     BorderRadius.circular(
+                              //                                       5,
+                              //                                     ),
+                              //                                 boxShadow: [
+                              //                                   BoxShadow(
+                              //                                     color:
+                              //                                         greyColor,
+                              //                                     blurRadius: 3,
+                              //                                     offset:
+                              //                                         const Offset(
+                              //                                           0,
+                              //                                           1,
+                              //                                         ),
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                               child: Column(
+                              //                                 mainAxisAlignment:
+                              //                                     MainAxisAlignment
+                              //                                         .center,
+                              //                                 children: [
+                              //                                   ImageNetworkWidget(
+                              //                                     url:
+                              //                                         categories[i]
+                              //                                             .imageUrl ??
+                              //                                         "",
+                              //                                     height: 100,
+                              //                                     width:
+                              //                                         double
+                              //                                             .infinity,
+                              //                                     fit:
+                              //                                         BoxFit
+                              //                                             .contain,
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                             ),
+                              //                             SizedBox(height: 10),
+                              //                             Text(
+                              //                               categories[i]
+                              //                                       .name ??
+                              //                                   "",
+                              //                               textAlign:
+                              //                                   TextAlign
+                              //                                       .center,
+                              //                               style:
+                              //                                   const TextStyle(
+                              //                                     fontSize: 14,
+                              //                                     fontWeight:
+                              //                                         FontWeight
+                              //                                             .w600,
+                              //                                     color: Color(
+                              //                                       0xFF222222,
+                              //                                     ),
+                              //                                   ),
+                              //                             ),
+                              //                           ],
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              // isTablet
+                              //     ? Wrap(
+                              //       crossAxisAlignment:
+                              //           WrapCrossAlignment.start,
+                              //       spacing: 20,
+                              //       runSpacing: 20,
+                              //       children: [
+                              //         SizedBox(
+                              //           // height: 150,
+                              //           // width: 130,
+                              //           //   color: redColor,
+                              //           child: Row(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             spacing: 20,
+                              //             children: [
+                              //               if (categories.isNotEmpty)
+                              //                 for (int i = 3; i < 6; i++)
+                              //                   Expanded(
+                              //                     child: InkWell(
+                              //                       onTap: () {
+                              //                         debugPrint(
+                              //                           categories[i].name ??
+                              //                               "",
+                              //                         );
+                              //                         title =
+                              //                             categories[i].name ??
+                              //                             "";
+                              //                         id =
+                              //                             categories[i].id ??
+                              //                             "";
+                              //                         isMainCategory = false;
+                              //                         mainCatId = "";
+                              //                         isCategory = true;
+                              //                         catId =
+                              //                             categories[i].id ??
+                              //                             "";
+                              //                         Navigator.push(
+                              //                           context,
+                              //                           MaterialPageRoute(
+                              //                             builder:
+                              //                                 (
+                              //                                   context,
+                              //                                 ) => ProductListMainScreen(
+                              //                                   title:
+                              //                                       categories[i]
+                              //                                           .name ??
+                              //                                       "",
+                              //                                   id:
+                              //                                       categories[i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                   isMainCategory:
+                              //                                       false,
+                              //                                   mainCatId: "",
+                              //                                   isCategory:
+                              //                                       true,
+                              //                                   catId:
+                              //                                       categories[i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                 ),
+                              //                           ),
+                              //                         ).then((value) {
+                              //                           // if (!context
+                              //                           //     .mounted) {
+                              //                           //   return;
+                              //                           // }
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       HomeBloc
+                              //                           //     >()
+                              //                           //     .add(
+                              //                           //       GetCartCountEvent(
+                              //                           //         userId:
+                              //                           //             userId,
+                              //                           //       ),
+                              //                           //     );
+                              //                           // // context
+                              //                           // //     .read<CounterCubit>()
+                              //                           // //     .decrement(cartCount);
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       CounterCubit
+                              //                           //     >()
+                              //                           //     .increment(
+                              //                           //       cartCount,
+                              //                           //     );
+                              //                           // noOfIteminCart =
+                              //                           //     cartCount;
+                              //                         });
+                              //                       },
+                              //                       hoverColor:
+                              //                           Colors.transparent,
+                              //                       child: Column(
+                              //                         children: [
+                              //                           Container(
+                              //                             height: 130,
+                              //                             // width: 130,
+                              //                             decoration: BoxDecoration(
+                              //                               color: const Color(
+                              //                                 0xFFE5EEC3,
+                              //                               ),
+                              //                               borderRadius:
+                              //                                   BorderRadius.circular(
+                              //                                     5,
+                              //                                   ),
+                              //                               boxShadow: [
+                              //                                 BoxShadow(
+                              //                                   color:
+                              //                                       greyColor,
+                              //                                   blurRadius: 3,
+                              //                                   offset:
+                              //                                       const Offset(
+                              //                                         0,
+                              //                                         1,
+                              //                                       ),
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                             child: Column(
+                              //                               mainAxisAlignment:
+                              //                                   MainAxisAlignment
+                              //                                       .center,
+                              //                               children: [
+                              //                                 ImageNetworkWidget(
+                              //                                   url:
+                              //                                       categories[i]
+                              //                                           .imageUrl ??
+                              //                                       "",
+                              //                                   height: 100,
+                              //                                   width:
+                              //                                       double
+                              //                                           .infinity,
+                              //                                   fit:
+                              //                                       BoxFit
+                              //                                           .contain,
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                           ),
+                              //                           SizedBox(height: 10),
+                              //                           Text(
+                              //                             categories[i].name ??
+                              //                                 "",
+                              //                             textAlign:
+                              //                                 TextAlign.center,
+                              //                             style:
+                              //                                 const TextStyle(
+                              //                                   fontSize: 14,
+                              //                                   fontWeight:
+                              //                                       FontWeight
+                              //                                           .w600,
+                              //                                   color: Color(
+                              //                                     0xFF222222,
+                              //                                   ),
+                              //                                 ),
+                              //                           ),
+                              //                         ],
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //         SizedBox(
+                              //           // height: 150,
+                              //           // width: 130,
+                              //           //   color: redColor,
+                              //           child: Row(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             spacing: 20,
+                              //             children: [
+                              //               if (categories.isNotEmpty)
+                              //                 for (
+                              //                   int i = 6;
+                              //                   i < categories.length;
+                              //                   i++
+                              //                 )
+                              //                   Expanded(
+                              //                     child: InkWell(
+                              //                       hoverColor:
+                              //                           Colors.transparent,
+                              //                       onTap: () {
+                              //                         debugPrint(
+                              //                           categories[i].name ??
+                              //                               "",
+                              //                         );
+                              //                         title =
+                              //                             categories[i].name ??
+                              //                             "";
+                              //                         id =
+                              //                             categories[i].id ??
+                              //                             "";
+                              //                         isMainCategory = false;
+                              //                         mainCatId = "";
+                              //                         isCategory = true;
+                              //                         catId =
+                              //                             categories[i].id ??
+                              //                             "";
+                              //                         Navigator.push(
+                              //                           context,
+                              //                           MaterialPageRoute(
+                              //                             builder:
+                              //                                 (
+                              //                                   context,
+                              //                                 ) => ProductListMainScreen(
+                              //                                   title:
+                              //                                       categories[i]
+                              //                                           .name ??
+                              //                                       "",
+                              //                                   id:
+                              //                                       categories[i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                   isMainCategory:
+                              //                                       false,
+                              //                                   mainCatId: "",
+                              //                                   isCategory:
+                              //                                       true,
+                              //                                   catId:
+                              //                                       categories[i]
+                              //                                           .id ??
+                              //                                       "",
+                              //                                 ),
+                              //                           ),
+                              //                         ).then((value) {
+                              //                           // if (!context
+                              //                           //     .mounted) {
+                              //                           //   return;
+                              //                           // }
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       HomeBloc
+                              //                           //     >()
+                              //                           //     .add(
+                              //                           //       GetCartCountEvent(
+                              //                           //         userId:
+                              //                           //             userId,
+                              //                           //       ),
+                              //                           //     );
+                              //                           // // context
+                              //                           // //     .read<CounterCubit>()
+                              //                           // //     .decrement(cartCount);
+                              //                           // context
+                              //                           //     .read<
+                              //                           //       CounterCubit
+                              //                           //     >()
+                              //                           //     .increment(
+                              //                           //       cartCount,
+                              //                           //     );
+                              //                           // noOfIteminCart =
+                              //                           //     cartCount;
+                              //                         });
+                              //                       },
+                              //                       child: Column(
+                              //                         children: [
+                              //                           Container(
+                              //                             height: 130,
+                              //                             // width: 130,
+                              //                             decoration: BoxDecoration(
+                              //                               color: const Color(
+                              //                                 0xFFE5EEC3,
+                              //                               ),
+                              //                               borderRadius:
+                              //                                   BorderRadius.circular(
+                              //                                     5,
+                              //                                   ),
+                              //                               boxShadow: [
+                              //                                 BoxShadow(
+                              //                                   color:
+                              //                                       greyColor,
+                              //                                   blurRadius: 3,
+                              //                                   offset:
+                              //                                       const Offset(
+                              //                                         0,
+                              //                                         1,
+                              //                                       ),
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                             child: Column(
+                              //                               mainAxisAlignment:
+                              //                                   MainAxisAlignment
+                              //                                       .center,
+                              //                               children: [
+                              //                                 ImageNetworkWidget(
+                              //                                   url:
+                              //                                       categories[i]
+                              //                                           .imageUrl ??
+                              //                                       "",
+                              //                                   height: 100,
+                              //                                   width:
+                              //                                       double
+                              //                                           .infinity,
+                              //                                   fit:
+                              //                                       BoxFit
+                              //                                           .contain,
+                              //                                 ),
+                              //                               ],
+                              //                             ),
+                              //                           ),
+                              //                           SizedBox(height: 10),
+                              //                           Text(
+                              //                             categories[i].name ??
+                              //                                 "",
+                              //                             textAlign:
+                              //                                 TextAlign.center,
+                              //                             style:
+                              //                                 const TextStyle(
+                              //                                   fontSize: 14,
+                              //                                   fontWeight:
+                              //                                       FontWeight
+                              //                                           .w600,
+                              //                                   color: Color(
+                              //                                     0xFF222222,
+                              //                                   ),
+                              //                                 ),
+                              //                           ),
+                              //                         ],
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     )
+                              //     : Row(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       spacing: 20,
+                              //       children: [
+                              //         Expanded(
+                              //           child: SizedBox(
+                              //             // height: 150,
+                              //             width: 130,
+                              //             //   color: redColor,
+                              //             child: Row(
+                              //               crossAxisAlignment:
+                              //                   CrossAxisAlignment.start,
+                              //               spacing: 20,
+                              //               children: [
+                              //                 if (categories.isNotEmpty)
+                              //                   for (int i = 3; i < 6; i++)
+                              //                     Expanded(
+                              //                       child: InkWell(
+                              //                         hoverColor:
+                              //                             Colors.transparent,
+                              //                         onTap: () {
+                              //                           debugPrint(
+                              //                             categories[i].name ??
+                              //                                 "",
+                              //                           );
+                              //                           title =
+                              //                               categories[i]
+                              //                                   .name ??
+                              //                               "";
+                              //                           id =
+                              //                               categories[i].id ??
+                              //                               "";
+                              //                           isMainCategory = false;
+                              //                           mainCatId = "";
+                              //                           isCategory = true;
+                              //                           catId =
+                              //                               categories[i].id ??
+                              //                               "";
+                              //                           Navigator.push(
+                              //                             context,
+                              //                             MaterialPageRoute(
+                              //                               builder:
+                              //                                   (
+                              //                                     context,
+                              //                                   ) => ProductListMainScreen(
+                              //                                     title:
+                              //                                         categories[i]
+                              //                                             .name ??
+                              //                                         "",
+                              //                                     id:
+                              //                                         categories[i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                     isMainCategory:
+                              //                                         false,
+                              //                                     mainCatId: "",
+                              //                                     isCategory:
+                              //                                         true,
+                              //                                     catId:
+                              //                                         categories[i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                   ),
+                              //                             ),
+                              //                           ).then((value) {
+                              //                             // if (!context
+                              //                             //     .mounted) {
+                              //                             //   return;
+                              //                             // }
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       HomeBloc
+                              //                             //     >()
+                              //                             //     .add(
+                              //                             //       GetCartCountEvent(
+                              //                             //         userId:
+                              //                             //             userId,
+                              //                             //       ),
+                              //                             //     );
+                              //                             // // context
+                              //                             // //     .read<CounterCubit>()
+                              //                             // //     .decrement(cartCount);
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       CounterCubit
+                              //                             //     >()
+                              //                             //     .increment(
+                              //                             //       cartCount,
+                              //                             //     );
+                              //                             // noOfIteminCart =
+                              //                             //     cartCount;
+                              //                           });
+                              //                         },
+                              //                         child: Column(
+                              //                           children: [
+                              //                             Container(
+                              //                               height: 130,
+                              //                               // width: 130,
+                              //                               decoration: BoxDecoration(
+                              //                                 color:
+                              //                                     const Color(
+                              //                                       0xFFE5EEC3,
+                              //                                     ),
+                              //                                 borderRadius:
+                              //                                     BorderRadius.circular(
+                              //                                       5,
+                              //                                     ),
+                              //                                 boxShadow: [
+                              //                                   BoxShadow(
+                              //                                     color:
+                              //                                         greyColor,
+                              //                                     blurRadius: 3,
+                              //                                     offset:
+                              //                                         const Offset(
+                              //                                           0,
+                              //                                           1,
+                              //                                         ),
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                               child: Column(
+                              //                                 mainAxisAlignment:
+                              //                                     MainAxisAlignment
+                              //                                         .center,
+                              //                                 children: [
+                              //                                   ImageNetworkWidget(
+                              //                                     url:
+                              //                                         categories[i]
+                              //                                             .imageUrl ??
+                              //                                         "",
+                              //                                     height: 100,
+                              //                                     width:
+                              //                                         double
+                              //                                             .infinity,
+                              //                                     fit:
+                              //                                         BoxFit
+                              //                                             .contain,
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                             ),
+                              //                             SizedBox(height: 10),
+                              //                             Text(
+                              //                               categories[i]
+                              //                                       .name ??
+                              //                                   "",
+                              //                               textAlign:
+                              //                                   TextAlign
+                              //                                       .center,
+                              //                               style:
+                              //                                   const TextStyle(
+                              //                                     fontSize: 14,
+                              //                                     fontWeight:
+                              //                                         FontWeight
+                              //                                             .w600,
+                              //                                     color: Color(
+                              //                                       0xFF222222,
+                              //                                     ),
+                              //                                   ),
+                              //                             ),
+                              //                           ],
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         Expanded(
+                              //           child: SizedBox(
+                              //             // height: 150,
+                              //             width: 130,
+                              //             //   color: redColor,
+                              //             child: Row(
+                              //               crossAxisAlignment:
+                              //                   CrossAxisAlignment.start,
+                              //               spacing: 20,
+                              //               children: [
+                              //                 if (categories.isNotEmpty)
+                              //                   for (
+                              //                     int i = 6;
+                              //                     i < categories.length;
+                              //                     i++
+                              //                   )
+                              //                     Expanded(
+                              //                       child: InkWell(
+                              //                         hoverColor:
+                              //                             Colors.transparent,
+                              //                         onTap: () {
+                              //                           title =
+                              //                               categories[i]
+                              //                                   .name ??
+                              //                               "";
+                              //                           id =
+                              //                               categories[i].id ??
+                              //                               "";
+                              //                           isMainCategory = false;
+                              //                           mainCatId = "";
+                              //                           isCategory = true;
+                              //                           catId =
+                              //                               categories[i].id ??
+                              //                               "";
+                              //                           Navigator.push(
+                              //                             context,
+                              //                             MaterialPageRoute(
+                              //                               builder:
+                              //                                   (
+                              //                                     context,
+                              //                                   ) => ProductListMainScreen(
+                              //                                     title:
+                              //                                         categories[i]
+                              //                                             .name ??
+                              //                                         "",
+                              //                                     id:
+                              //                                         categories[i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                     isMainCategory:
+                              //                                         false,
+                              //                                     mainCatId: "",
+                              //                                     isCategory:
+                              //                                         true,
+                              //                                     catId:
+                              //                                         categories[i]
+                              //                                             .id ??
+                              //                                         "",
+                              //                                   ),
+                              //                             ),
+                              //                           ).then((value) {
+                              //                             // if (!context
+                              //                             //     .mounted) {
+                              //                             //   return;
+                              //                             // }
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       HomeBloc
+                              //                             //     >()
+                              //                             //     .add(
+                              //                             //       GetCartCountEvent(
+                              //                             //         userId:
+                              //                             //             userId,
+                              //                             //       ),
+                              //                             //     );
+                              //                             // // context
+                              //                             // //     .read<CounterCubit>()
+                              //                             // //     .decrement(cartCount);
+                              //                             // context
+                              //                             //     .read<
+                              //                             //       CounterCubit
+                              //                             //     >()
+                              //                             //     .increment(
+                              //                             //       cartCount,
+                              //                             //     );
+                              //                             // noOfIteminCart =
+                              //                             //     cartCount;
+                              //                           });
+                              //                         },
+                              //                         child: Column(
+                              //                           children: [
+                              //                             Container(
+                              //                               height: 130,
+                              //                               // width: 130,
+                              //                               decoration: BoxDecoration(
+                              //                                 color:
+                              //                                     const Color(
+                              //                                       0xFFE5EEC3,
+                              //                                     ),
+                              //                                 borderRadius:
+                              //                                     BorderRadius.circular(
+                              //                                       5,
+                              //                                     ),
+                              //                                 boxShadow: [
+                              //                                   BoxShadow(
+                              //                                     color:
+                              //                                         greyColor,
+                              //                                     blurRadius: 3,
+                              //                                     offset:
+                              //                                         const Offset(
+                              //                                           0,
+                              //                                           1,
+                              //                                         ),
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                               child: Column(
+                              //                                 mainAxisAlignment:
+                              //                                     MainAxisAlignment
+                              //                                         .center,
+                              //                                 children: [
+                              //                                   ImageNetworkWidget(
+                              //                                     url:
+                              //                                         categories[i]
+                              //                                             .imageUrl ??
+                              //                                         "",
+                              //                                     height: 100,
+                              //                                     width:
+                              //                                         double
+                              //                                             .infinity,
+                              //                                     fit:
+                              //                                         BoxFit
+                              //                                             .contain,
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                             ),
+                              //                             SizedBox(height: 10),
+                              //                             Text(
+                              //                               categories[i]
+                              //                                       .name ??
+                              //                                   "",
+                              //                               textAlign:
+                              //                                   TextAlign
+                              //                                       .center,
+                              //                               style:
+                              //                                   const TextStyle(
+                              //                                     fontSize: 14,
+                              //                                     fontWeight:
+                              //                                         FontWeight
+                              //                                             .w600,
+                              //                                     color: Color(
+                              //                                       0xFF222222,
+                              //                                     ),
+                              //                                   ),
+                              //                             ),
+                              //                           ],
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: 40),

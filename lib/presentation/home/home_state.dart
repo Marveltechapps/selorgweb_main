@@ -2,10 +2,13 @@ import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_mo
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
+import 'package:selorgweb_main/model/category/category_model.dart' as cat;
+import 'package:selorgweb_main/model/category/dynamic_category_model.dart' as dm;
 import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/category/remove_cart_response_model.dart';
 import 'package:selorgweb_main/model/home/banner_model.dart';
+import 'package:selorgweb_main/model/home/dynamic_product_style_response_model.dart';
 import 'package:selorgweb_main/model/home/grab_essentials_model.dart';
 
 abstract class HomeState {}
@@ -23,7 +26,7 @@ class UpdateLocationState extends HomeState {
 }
 
 class AddButtonClickedState extends HomeState {
-  ProductStyleResponse response;
+  Product response;
   String type;
   int selectedIndexes;
   bool isSelected;
@@ -100,7 +103,7 @@ class LatLongAddressSuccessState extends HomeState {
 class BottomSheetVisible extends HomeState {}
 
 class RemoveButtonClickedState extends HomeState {
-  ProductStyleResponse response;
+  Product response;
   String type;
   int selectedIndexes;
   bool isSelected;
@@ -161,7 +164,7 @@ class MainCategoryLoadedState extends HomeState {
 }
 
 class CategoryLoadedState extends HomeState {
-  final List<Category> categories;
+  final List<cat.Category> categories;
 
   CategoryLoadedState({required this.categories});
 }
@@ -176,4 +179,19 @@ class HomeErrorState extends HomeState {
   final String message;
 
   HomeErrorState({required this.message});
+}
+
+class DynamicCategoryLoadedState extends HomeState {
+  final dm.DynamicCategories categories;
+
+  DynamicCategoryLoadedState({required this.categories});
+
+  @override
+  List<Object> get props => [categories];
+}
+
+class DynamicProductStyleResponseState extends HomeState{
+  final DynamicProductStyleResponse products;
+
+  DynamicProductStyleResponseState({required this.products});
 }

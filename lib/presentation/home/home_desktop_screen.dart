@@ -5,9 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
+import 'package:selorgweb_main/model/category/category_model.dart' as cat;
+import 'package:selorgweb_main/model/category/dynamic_category_model.dart'
+    as dm;
 import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/home/banner_model.dart';
+import 'package:selorgweb_main/model/home/dynamic_product_style_response_model.dart';
 import 'package:selorgweb_main/model/home/grab_essentials_model.dart';
 import 'package:selorgweb_main/presentation/category/categories_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
@@ -15,6 +19,7 @@ import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart';
 import 'package:selorgweb_main/presentation/home/home_mobile_screen.dart';
 import 'package:selorgweb_main/presentation/home/home_state.dart';
+import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_main_screen.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/utils/widgets/bottom_app_bar_widget.dart';
@@ -31,7 +36,7 @@ class HomeDesktopScreen extends StatelessWidget {
 
   static TextEditingController searchController = TextEditingController();
 
-  static List<Category> categories = [];
+  static List<cat.Category> categories = [];
   static List<BannerList> festivalbanners = [];
   static List<BannerList> dailybanners = [];
   static List<BannerList> offerbanners = [];
@@ -40,7 +45,8 @@ class HomeDesktopScreen extends StatelessWidget {
       ProductStyleResponse();
   static ProductStyleResponse nutsDriedFruitsResponse = ProductStyleResponse();
   static ProductStyleResponse riceCerealsResponse = ProductStyleResponse();
-
+  static DynamicProductStyleResponse dynamicProducts =
+      DynamicProductStyleResponse();
   static PageController pageController = PageController(initialPage: 0);
   static int currentPage = 0;
   // static Timer? timer;
@@ -49,6 +55,7 @@ class HomeDesktopScreen extends StatelessWidget {
   static int selectedIndexes = 0;
   static int selectedProductIndexes = 0;
   static int productVarientIndex = 0;
+  static dm.DynamicCategories dynamicCategories = dm.DynamicCategories();
 
   static List<SearchedLocationResponse> searchedLocations = [];
 
@@ -525,97 +532,53 @@ class HomeDesktopScreen extends StatelessWidget {
             addButtonClicked = state.isSelected;
             selectedIndexes = state.selectedIndexes;
             if (state.type == "screen") {
-              state
-                  .response
-                  .data![state.selectedIndexes]
-                  .variants![0]
-                  .cartQuantity = (state
-                          .response
-                          .data![state.selectedIndexes]
-                          .variants![0]
-                          .cartQuantity ??
-                      0) +
-                  1;
+              state.response.variants![0].userCartQuantity =
+                  (state.response.variants![0].userCartQuantity ?? 0) + 1;
               context.read<HomeBloc>().add(
                 AddItemInCartApiEvent(
-                  skuName:
-                      state.response.data![state.selectedIndexes].skuName ??
-                      'Product',
+                  skuName: state.response.skuName ?? 'Product',
                   userId: userId,
-                  productId:
-                      state.response.data![state.selectedIndexes].productId ??
-                      "",
+                  productId: state.response.id ?? "",
                   quantity: 1,
                   variantLabel:
                       selectedProductIndexes == state.selectedIndexes
-                          ? state
-                              .response
-                              .data![state.selectedIndexes]
-                              .variants![productVarientIndex]
-                              .label
+                          ? state.response.variants![productVarientIndex].label
                               .toString()
-                          : state
-                              .response
-                              .data![state.selectedIndexes]
-                              .variants![0]
-                              .label
-                              .toString(),
+                          : state.response.variants![0].label.toString(),
                   imageUrl:
                       selectedProductIndexes == state.selectedIndexes
                           ? state
                               .response
-                              .data![state.selectedIndexes]
                               .variants![productVarientIndex]
                               .imageUrl
                               .toString()
-                          : state
-                              .response
-                              .data![state.selectedIndexes]
-                              .variants![0]
-                              .imageUrl
-                              .toString(),
+                          : state.response.variants![0].imageUrl.toString(),
                   price:
                       selectedProductIndexes == state.selectedIndexes
                           ? state
                                   .response
-                                  .data![state.selectedIndexes]
                                   .variants![productVarientIndex]
                                   .price ??
                               0
-                          : state
-                                  .response
-                                  .data![state.selectedIndexes]
-                                  .variants![0]
-                                  .price ??
-                              0,
+                          : state.response.variants![0].price ?? 0,
                   discountPrice:
                       selectedProductIndexes == state.selectedIndexes
                           ? state
                                   .response
-                                  .data![state.selectedIndexes]
                                   .variants![productVarientIndex]
                                   .discountPrice ??
                               0
-                          : state
-                                  .response
-                                  .data![state.selectedIndexes]
-                                  .variants![0]
-                                  .discountPrice ??
-                              0,
+                          : state.response.variants![0].discountPrice ?? 0,
                   deliveryInstructions: "",
                   addNotes: "",
                 ),
               );
             } else if (state.type == "dialog") {
-              state
-                  .response
-                  .data![0]
-                  .variants![state.selectedIndexes]
-                  .cartQuantity = (state
+              state.response.variants![state.selectedIndexes].userCartQuantity =
+                  (state
                           .response
-                          .data![0]
                           .variants![state.selectedIndexes]
-                          .cartQuantity ??
+                          .userCartQuantity ??
                       0) +
                   1;
             }
@@ -633,59 +596,30 @@ class HomeDesktopScreen extends StatelessWidget {
           } else if (state is RemoveButtonClickedState) {
             // noOfIteminCart = noOfIteminCart - 1;
             if (state.type == "screen") {
-              state
-                          .response
-                          .data![state.selectedIndexes]
-                          .variants![0]
-                          .cartQuantity ==
-                      0
+              state.response.variants![0].userCartQuantity == 0
                   ? null
-                  : state
-                      .response
-                      .data![state.selectedIndexes]
-                      .variants![0]
-                      .cartQuantity = (state
-                              .response
-                              .data![state.selectedIndexes]
-                              .variants![0]
-                              .cartQuantity ??
-                          0) -
-                      1;
+                  : state.response.variants![0].userCartQuantity =
+                      (state.response.variants![0].userCartQuantity ?? 0) - 1;
               context.read<HomeBloc>().add(
                 RemoveItemInCartApiEvent(
                   userId: userId,
-                  productId:
-                      state.response.data![state.selectedIndexes].productId ??
-                      "",
+                  productId: state.response.id ?? "",
                   variantLabel:
                       selectedProductIndexes == state.selectedIndexes
-                          ? state
-                              .response
-                              .data![state.selectedIndexes]
-                              .variants![productVarientIndex]
-                              .label
+                          ? state.response.variants![productVarientIndex].label
                               .toString()
-                          : state
-                              .response
-                              .data![state.selectedIndexes]
-                              .variants![0]
-                              .label
-                              .toString(),
+                          : state.response.variants![0].label.toString(),
                   quantity: 1,
                   deliveryTip: 0,
                   handlingCharges: 0,
                 ),
               );
             } else if (state.type == "dialog") {
-              state
-                  .response
-                  .data![0]
-                  .variants![state.selectedIndexes]
-                  .cartQuantity = (state
+              state.response.variants![state.selectedIndexes].userCartQuantity =
+                  (state
                           .response
-                          .data![0]
                           .variants![state.selectedIndexes]
-                          .cartQuantity ??
+                          .userCartQuantity ??
                       0) -
                   1;
             }
@@ -714,6 +648,12 @@ class HomeDesktopScreen extends StatelessWidget {
             //             screenType == "address" ? "listview" : "search");
             //   },
             // ));
+          } else if (state is DynamicCategoryLoadedState) {
+            dynamicCategories = state.categories;
+            debugPrint('home dynamic');
+            debugPrint(dynamicCategories.toJson().toString());
+          } else if (state is DynamicProductStyleResponseState) {
+            dynamicProducts = state.products;
           }
         },
         builder: (context, state) {
@@ -733,6 +673,9 @@ class HomeDesktopScreen extends StatelessWidget {
             context.read<HomeBloc>().add(GetBannerEvent());
             context.read<HomeBloc>().add(GetMainCategoryDataEvent());
             context.read<HomeBloc>().add(GetCategoryDataEvent());
+            context.read<HomeBloc>().add(GetDynamicHomeProductEvent());
+            context.read<HomeBloc>().add(GetDynamicCategoryDataEvent());
+
             context.read<HomeBloc>().add(
               GetOrganicFruitsEvent(
                 mainCatId: "676431a2edae32578ae6d220",
@@ -876,26 +819,22 @@ class HomeDesktopScreen extends StatelessWidget {
                                                                 'id':
                                                                     grabandEssential
                                                                         .data![i]
-                                                                        .id ??
+                                                                        .categoryId ??
                                                                     '',
                                                                 'isMainCategory':
-                                                                    (i == 2
-                                                                            ? false
-                                                                            : true)
-                                                                        .toString(),
+                                                                    'true',
                                                                 'mainCatId':
-                                                                    i == 0
-                                                                        ? "676431a2edae32578ae6d220"
-                                                                        : i == 1
-                                                                        ? "676431ddedae32578ae6d222"
-                                                                        : '',
+                                                                    grabandEssential
+                                                                        .data![i]
+                                                                        .categoryId ??
+                                                                    '',
                                                                 'isCategory':
-                                                                    (i == 2
-                                                                            ? true
-                                                                            : false)
-                                                                        .toString(),
+                                                                    'true',
                                                                 'catId':
-                                                                    "6759448c66818180ad94a960",
+                                                                    grabandEssential
+                                                                        .data![i]
+                                                                        .categoryId ??
+                                                                    '',
                                                               },
                                                             ).toString(),
                                                           );
@@ -1418,1413 +1357,244 @@ class HomeDesktopScreen extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                      isTablet
-                                          ? Wrap(
-                                            crossAxisAlignment:
-                                                WrapCrossAlignment.start,
-                                            spacing: 20,
-                                            runSpacing: 20,
+                                      if (dynamicCategories.data != null)
+                                        for (
+                                          int categoryIndex = 0;
+                                          categoryIndex <
+                                              dynamicCategories.data!.length;
+                                          categoryIndex++
+                                        )
+                                          Column(
                                             children: [
-                                              SizedBox(
-                                                // height: 150,
-                                                // width: 130,
-                                                //  color: redColor,
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  spacing: 16,
+                                              if (dynamicCategories
+                                                      .data!
+                                                      .length >
+                                                  1)
+                                                Row(
                                                   children: [
-                                                    if (mainCategory.data !=
-                                                        null)
-                                                      for (
-                                                        int i = 0;
-                                                        i <
-                                                            mainCategory
-                                                                .data!
-                                                                .length;
-                                                        i++
-                                                      )
-                                                        Expanded(
-                                                          child: InkWell(
-                                                            hoverColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            onTap: () {
-                                                              title =
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .name ??
-                                                                  "";
-                                                              id =
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .id ??
-                                                                  "";
-                                                              isMainCategory =
-                                                                  true;
-                                                              mainCatId =
-                                                                  mainCategory
-                                                                      .data![i]
-                                                                      .id ??
-                                                                  "";
-                                                              isCategory =
-                                                                  false;
-                                                              catId = "";
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (
-                                                                        context,
-                                                                      ) => ProductListMainScreen(
-                                                                        title:
-                                                                            mainCategory.data![i].name ??
-                                                                            "",
-                                                                        id:
-                                                                            mainCategory.data![i].id ??
-                                                                            "",
-                                                                        isMainCategory:
-                                                                            true,
-                                                                        mainCatId:
-                                                                            mainCategory.data![i].id ??
-                                                                            "",
-                                                                        isCategory:
-                                                                            false,
-                                                                        catId:
-                                                                            "",
-                                                                      ),
-                                                                ),
-                                                              ).then((value) {
-                                                                if (!context
-                                                                    .mounted) {
-                                                                  return;
-                                                                }
-                                                                context
-                                                                    .read<
-                                                                      HomeBloc
-                                                                    >()
-                                                                    .add(
-                                                                      GetCartCountEvent(
-                                                                        userId:
-                                                                            userId,
-                                                                      ),
-                                                                    );
-                                                                // context
-                                                                //     .read<CounterCubit>()
-                                                                //     .decrement(cartCount);
-                                                                context
-                                                                    .read<
-                                                                      CounterCubit
-                                                                    >()
-                                                                    .increment(
-                                                                      cartCount,
-                                                                    );
-                                                                noOfIteminCart =
-                                                                    cartCount;
-                                                              });
-                                                            },
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .stretch,
-                                                              children: [
-                                                                Container(
-                                                                  height: 130,
-                                                                  width: null,
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                      0xFFE5EEC3,
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          5,
-                                                                        ),
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color:
-                                                                            greyColor,
-                                                                        blurRadius:
-                                                                            3,
-                                                                        offset:
-                                                                            const Offset(
-                                                                              0,
-                                                                              1,
-                                                                            ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      ImageNetworkWidget(
-                                                                        url:
-                                                                            mainCategory.data![i].imageUrl ??
-                                                                            "",
-                                                                        height:
-                                                                            100,
-                                                                        width:
-                                                                            double.infinity,
-                                                                        fit:
-                                                                            BoxFit.contain,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                Text(
-                                                                  mainCategory
-                                                                          .data![i]
-                                                                          .name ??
-                                                                      "",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                      0xFF222222,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
+                                                    Text(
+                                                      dynamicCategories
+                                                          .data![categoryIndex]
+                                                          .categoryTitleName!,
+                                                      style:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .titleMedium,
+                                                    ),
                                                   ],
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                // height: 150,
-                                                // width: 130,
-                                                // color: redColor,
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  spacing: 20,
-                                                  children: [
-                                                    if (categories.isNotEmpty)
-                                                      for (
-                                                        int i = 0;
-                                                        i <
-                                                            (categories.length >
-                                                                    3
-                                                                ? 3
-                                                                : categories
-                                                                    .length);
-                                                        i++
-                                                      )
-                                                        Expanded(
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              debugPrint(
-                                                                categories[i]
-                                                                        .name ??
-                                                                    "",
-                                                              );
-                                                              title =
-                                                                  categories[i]
-                                                                      .name ??
-                                                                  "";
-                                                              id =
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "";
-                                                              isMainCategory =
-                                                                  false;
-                                                              mainCatId = "";
-                                                              isCategory = true;
-                                                              catId =
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "";
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (
-                                                                        context,
-                                                                      ) => ProductListMainScreen(
-                                                                        title:
-                                                                            categories[i].name ??
-                                                                            "",
-                                                                        id:
-                                                                            categories[i].id ??
-                                                                            "",
-                                                                        isMainCategory:
-                                                                            false,
-                                                                        mainCatId:
-                                                                            "",
-                                                                        isCategory:
-                                                                            true,
-                                                                        catId:
-                                                                            categories[i].id ??
-                                                                            "",
-                                                                      ),
-                                                                ),
-                                                              ).then((value) {
-                                                                if (!context
-                                                                    .mounted) {
-                                                                  return;
-                                                                }
-                                                                context
-                                                                    .read<
-                                                                      HomeBloc
-                                                                    >()
-                                                                    .add(
-                                                                      GetCartCountEvent(
-                                                                        userId:
-                                                                            userId,
-                                                                      ),
-                                                                    );
-                                                                // context
-                                                                //     .read<CounterCubit>()
-                                                                //     .decrement(cartCount);
-                                                                context
-                                                                    .read<
-                                                                      CounterCubit
-                                                                    >()
-                                                                    .increment(
-                                                                      cartCount,
-                                                                    );
-                                                                noOfIteminCart =
-                                                                    cartCount;
-                                                              });
-                                                            },
-                                                            child: Column(
-                                                              children: [
-                                                                Container(
-                                                                  height: 130,
-                                                                  width: null,
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                      0xFFE5EEC3,
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          5,
-                                                                        ),
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color:
-                                                                            greyColor,
-                                                                        blurRadius:
-                                                                            3,
-                                                                        offset:
-                                                                            const Offset(
-                                                                              0,
-                                                                              1,
-                                                                            ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      ImageNetworkWidget(
-                                                                        url:
-                                                                            categories[i].imageUrl ??
-                                                                            "",
-                                                                        height:
-                                                                            100,
-                                                                        width:
-                                                                            double.infinity,
-                                                                        fit:
-                                                                            BoxFit.contain,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                Text(
-                                                                  categories[i]
-                                                                          .name ??
-                                                                      "",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: const TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                      0xFF222222,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                          : Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            spacing: 20,
-                                            children: [
-                                              Expanded(
-                                                child: SizedBox(
-                                                  // height: 150,
-                                                  // width: 130,
-                                                  //  color: redColor,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                              if (dynamicCategories
+                                                      .data!
+                                                      .length >
+                                                  1)
+                                                SizedBox(height: 20),
+                                              LayoutBuilder(
+                                                builder: (
+                                                  context,
+                                                  constraints,
+                                                ) {
+                                                  double maxWidth =
+                                                      constraints.maxWidth;
+                                                  int itemsPerRow = 6;
+
+                                                  if (maxWidth < 991) {
+                                                    itemsPerRow = 3;
+                                                  }
+
+                                                  // base width per item
+                                                  double baseWidth =
+                                                      maxWidth / itemsPerRow;
+
+                                                  List<dm.Category>?
+                                                  categorydata = [
+                                                    ...dynamicCategories
+                                                        .data![categoryIndex]
+                                                        .categories!,
+                                                  ]..sort(
+                                                    (a, b) => a.index!
+                                                        .compareTo(b.index!),
+                                                  );
+                                                  return Wrap(
                                                     spacing: 16,
+                                                    runSpacing: 25,
+                                                    alignment:
+                                                        WrapAlignment.start,
                                                     children: [
-                                                      if (mainCategory.data !=
-                                                          null)
-                                                        for (
-                                                          int i = 0;
-                                                          i <
-                                                              mainCategory
-                                                                  .data!
-                                                                  .length;
-                                                          i++
-                                                        )
-                                                          Expanded(
-                                                            child: InkWell(
-                                                              hoverColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              onTap: () {
-                                                                debugPrint(
-                                                                  "0000000000",
-                                                                );
-                                                                title =
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .name ??
-                                                                    "";
-                                                                id =
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .id ??
-                                                                    "";
-                                                                isMainCategory =
-                                                                    true;
-                                                                mainCatId =
-                                                                    mainCategory
-                                                                        .data![i]
-                                                                        .id ??
-                                                                    "";
-                                                                isCategory =
-                                                                    false;
-                                                                catId = "";
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (
-                                                                          context,
-                                                                        ) => ProductListMainScreen(
-                                                                          title:
-                                                                              mainCategory.data![i].name ??
-                                                                              "",
-                                                                          id:
-                                                                              mainCategory.data![i].id ??
-                                                                              "",
-                                                                          isMainCategory:
-                                                                              true,
-                                                                          mainCatId:
-                                                                              mainCategory.data![i].id ??
-                                                                              "",
-                                                                          isCategory:
-                                                                              false,
-                                                                          catId:
-                                                                              "",
-                                                                        ),
-                                                                  ),
-                                                                ).then((value) {
-                                                                  if (!context
-                                                                      .mounted) {
-                                                                    return;
-                                                                  }
-                                                                  context
-                                                                      .read<
-                                                                        HomeBloc
-                                                                      >()
-                                                                      .add(
-                                                                        GetCartCountEvent(
-                                                                          userId:
-                                                                              userId,
-                                                                        ),
-                                                                      );
-                                                                  // context
-                                                                  //     .read<CounterCubit>()
-                                                                  //     .decrement(cartCount);
-                                                                  context
-                                                                      .read<
-                                                                        CounterCubit
-                                                                      >()
-                                                                      .increment(
-                                                                        cartCount,
-                                                                      );
-                                                                  noOfIteminCart =
-                                                                      cartCount;
-                                                                });
-                                                              },
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .stretch,
-                                                                children: [
-                                                                  Container(
-                                                                    height: 130,
-                                                                    width: null,
-                                                                    decoration: BoxDecoration(
-                                                                      color: const Color(
-                                                                        0xFFE5EEC3,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            5,
-                                                                          ),
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color:
-                                                                              greyColor,
-                                                                          blurRadius:
-                                                                              3,
-                                                                          offset: const Offset(
-                                                                            0,
-                                                                            1,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    child: Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        ImageNetworkWidget(
-                                                                          url:
-                                                                              mainCategory.data![i].imageUrl ??
-                                                                              "",
-                                                                          height:
-                                                                              100,
-                                                                          width:
-                                                                              double.infinity,
-                                                                          fit:
-                                                                              BoxFit.contain,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                  Text(
-                                                                    mainCategory
-                                                                            .data![i]
-                                                                            .name ??
-                                                                        "",
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Color(
-                                                                        0xFF222222,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: SizedBox(
-                                                  // height: 150,
-                                                  // width: 130,
-                                                  // color: redColor,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    spacing: 20,
-                                                    children: [
-                                                      if (categories.isNotEmpty)
-                                                        for (
-                                                          int i = 0;
-                                                          i < 3;
-                                                          i++
-                                                        )
-                                                          Expanded(
-                                                            child: InkWell(
-                                                              hoverColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              onTap: () {
-                                                                debugPrint(
-                                                                  categories[i]
-                                                                          .name ??
-                                                                      "",
-                                                                );
-                                                                title =
-                                                                    categories[i]
-                                                                        .name ??
-                                                                    "";
-                                                                id =
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "";
-                                                                isMainCategory =
-                                                                    false;
-                                                                mainCatId = "";
-                                                                isCategory =
-                                                                    true;
-                                                                catId =
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "";
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (
-                                                                          context,
-                                                                        ) => ProductListMainScreen(
-                                                                          title:
-                                                                              categories[i].name ??
-                                                                              "",
-                                                                          id:
-                                                                              categories[i].id ??
-                                                                              "",
-                                                                          isMainCategory:
-                                                                              false,
-                                                                          mainCatId:
-                                                                              "",
-                                                                          isCategory:
-                                                                              true,
-                                                                          catId:
-                                                                              categories[i].id ??
-                                                                              "",
-                                                                        ),
-                                                                  ),
-                                                                ).then((value) {
-                                                                  if (!context
-                                                                      .mounted) {
-                                                                    return;
-                                                                  }
-                                                                  context
-                                                                      .read<
-                                                                        HomeBloc
-                                                                      >()
-                                                                      .add(
-                                                                        GetCartCountEvent(
-                                                                          userId:
-                                                                              userId,
-                                                                        ),
-                                                                      );
-                                                                  // context
-                                                                  //     .read<CounterCubit>()
-                                                                  //     .decrement(cartCount);
-                                                                  context
-                                                                      .read<
-                                                                        CounterCubit
-                                                                      >()
-                                                                      .increment(
-                                                                        cartCount,
-                                                                      );
-                                                                  noOfIteminCart =
-                                                                      cartCount;
-                                                                });
-                                                              },
-                                                              child: Column(
-                                                                children: [
-                                                                  Container(
-                                                                    height: 130,
-                                                                    width: null,
-                                                                    decoration: BoxDecoration(
-                                                                      color: const Color(
-                                                                        0xFFE5EEC3,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            5,
-                                                                          ),
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color:
-                                                                              greyColor,
-                                                                          blurRadius:
-                                                                              3,
-                                                                          offset: const Offset(
-                                                                            0,
-                                                                            1,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    child: Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        ImageNetworkWidget(
-                                                                          url:
-                                                                              categories[i].imageUrl ??
-                                                                              "",
-                                                                          height:
-                                                                              100,
-                                                                          width:
-                                                                              double.infinity,
-                                                                          fit:
-                                                                              BoxFit.contain,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                  Text(
-                                                                    categories[i]
-                                                                            .name ??
-                                                                        "",
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Color(
-                                                                        0xFF222222,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                      isTablet
-                                          ? Wrap(
-                                            crossAxisAlignment:
-                                                WrapCrossAlignment.start,
-                                            spacing: 20,
-                                            runSpacing: 20,
-                                            children: [
-                                              SizedBox(
-                                                // height: 150,
-                                                // width: 130,
-                                                //   color: redColor,
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  spacing: 20,
-                                                  children: [
-                                                    if (categories.isNotEmpty)
                                                       for (
-                                                        int i = 3;
-                                                        i < 6;
+                                                        int i = 0;
+                                                        i < categorydata.length;
                                                         i++
                                                       )
-                                                        Expanded(
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              debugPrint(
-                                                                categories[i]
-                                                                        .name ??
-                                                                    "",
-                                                              );
-                                                              title =
-                                                                  categories[i]
+                                                        InkWell(
+                                                          hoverColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          onTap: () {
+                                                            debugPrint(
+                                                              categorydata[i]
                                                                       .name ??
-                                                                  "";
-                                                              id =
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "";
-                                                              isMainCategory =
-                                                                  false;
-                                                              mainCatId = "";
-                                                              isCategory = true;
-                                                              catId =
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "";
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (
-                                                                        context,
-                                                                      ) => ProductListMainScreen(
-                                                                        title:
-                                                                            categories[i].name ??
-                                                                            "",
-                                                                        id:
-                                                                            categories[i].id ??
-                                                                            "",
-                                                                        isMainCategory:
-                                                                            false,
-                                                                        mainCatId:
-                                                                            "",
-                                                                        isCategory:
-                                                                            true,
-                                                                        catId:
-                                                                            categories[i].id ??
-                                                                            "",
-                                                                      ),
-                                                                ),
-                                                              ).then((value) {
-                                                                if (!context
-                                                                    .mounted) {
-                                                                  return;
-                                                                }
-                                                                context
-                                                                    .read<
-                                                                      HomeBloc
-                                                                    >()
-                                                                    .add(
-                                                                      GetCartCountEvent(
-                                                                        userId:
-                                                                            userId,
-                                                                      ),
-                                                                    );
-                                                                // context
-                                                                //     .read<CounterCubit>()
-                                                                //     .decrement(cartCount);
-                                                                context
-                                                                    .read<
-                                                                      CounterCubit
-                                                                    >()
-                                                                    .increment(
-                                                                      cartCount,
-                                                                    );
-                                                                noOfIteminCart =
-                                                                    cartCount;
-                                                              });
-                                                            },
-                                                            hoverColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            child: Column(
-                                                              children: [
-                                                                Container(
-                                                                  height: 130,
-                                                                  // width: 130,
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                      0xFFE5EEC3,
+                                                                  "",
+                                                            );
+                                                            title =
+                                                                categorydata[i]
+                                                                    .name ??
+                                                                "";
+                                                            id =
+                                                                categorydata[i]
+                                                                    .id ??
+                                                                "";
+                                                            isMainCategory =
+                                                                true;
+                                                            mainCatId = "";
+                                                            isCategory = true;
+                                                            catId =
+                                                                categorydata[i]
+                                                                    .id ??
+                                                                "";
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => ProductListMainScreen(
+                                                                      title:
+                                                                          categorydata[i]
+                                                                              .name ??
+                                                                          "",
+                                                                      id:
+                                                                          categorydata[i]
+                                                                              .id ??
+                                                                          "",
+                                                                      isMainCategory:
+                                                                          true,
+                                                                      mainCatId:
+                                                                          "",
+                                                                      isCategory:
+                                                                          true,
+                                                                      catId:
+                                                                          categorydata[i]
+                                                                              .id ??
+                                                                          "",
                                                                     ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          5,
-                                                                        ),
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color:
-                                                                            greyColor,
-                                                                        blurRadius:
-                                                                            3,
-                                                                        offset:
-                                                                            const Offset(
-                                                                              0,
-                                                                              1,
-                                                                            ),
-                                                                      ),
-                                                                    ],
+                                                              ),
+                                                            ).then((value) {
+                                                              // if (!context
+                                                              //     .mounted) {
+                                                              //   return;
+                                                              // }
+                                                              // context
+                                                              //     .read<
+                                                              //       HomeBloc
+                                                              //     >()
+                                                              //     .add(
+                                                              //       GetCartCountEvent(
+                                                              //         userId:
+                                                              //             userId,
+                                                              //       ),
+                                                              //     );
+                                                              // // context
+                                                              // //     .read<CounterCubit>()
+                                                              // //     .decrement(cartCount);
+                                                              // context
+                                                              //     .read<
+                                                              //       CounterCubit
+                                                              //     >()
+                                                              //     .increment(
+                                                              //       cartCount,
+                                                              //     );
+                                                              // noOfIteminCart =
+                                                              //     cartCount;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                height: 130,
+                                                                width:
+                                                                    categorydata[i]
+                                                                            .isHighlight!
+                                                                        ? baseWidth *
+                                                                                1.5 -
+                                                                            16
+                                                                        : baseWidth -
+                                                                            16,
+                                                                decoration: BoxDecoration(
+                                                                  color: const Color(
+                                                                    0xFFE5EEC3,
                                                                   ),
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      ImageNetworkWidget(
-                                                                        url:
-                                                                            categories[i].imageUrl ??
-                                                                            "",
-                                                                        height:
-                                                                            100,
-                                                                        width:
-                                                                            double.infinity,
-                                                                        fit:
-                                                                            BoxFit.contain,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        5,
                                                                       ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                Text(
-                                                                  categories[i]
-                                                                          .name ??
-                                                                      "",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: const TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                      0xFF222222,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                // height: 150,
-                                                // width: 130,
-                                                //   color: redColor,
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  spacing: 20,
-                                                  children: [
-                                                    if (categories.isNotEmpty)
-                                                      for (
-                                                        int i = 6;
-                                                        i < categories.length;
-                                                        i++
-                                                      )
-                                                        Expanded(
-                                                          child: InkWell(
-                                                            hoverColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            onTap: () {
-                                                              debugPrint(
-                                                                categories[i]
-                                                                        .name ??
-                                                                    "",
-                                                              );
-                                                              title =
-                                                                  categories[i]
-                                                                      .name ??
-                                                                  "";
-                                                              id =
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "";
-                                                              isMainCategory =
-                                                                  false;
-                                                              mainCatId = "";
-                                                              isCategory = true;
-                                                              catId =
-                                                                  categories[i]
-                                                                      .id ??
-                                                                  "";
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (
-                                                                        context,
-                                                                      ) => ProductListMainScreen(
-                                                                        title:
-                                                                            categories[i].name ??
-                                                                            "",
-                                                                        id:
-                                                                            categories[i].id ??
-                                                                            "",
-                                                                        isMainCategory:
-                                                                            false,
-                                                                        mainCatId:
-                                                                            "",
-                                                                        isCategory:
-                                                                            true,
-                                                                        catId:
-                                                                            categories[i].id ??
-                                                                            "",
-                                                                      ),
-                                                                ),
-                                                              ).then((value) {
-                                                                if (!context
-                                                                    .mounted) {
-                                                                  return;
-                                                                }
-                                                                context
-                                                                    .read<
-                                                                      HomeBloc
-                                                                    >()
-                                                                    .add(
-                                                                      GetCartCountEvent(
-                                                                        userId:
-                                                                            userId,
-                                                                      ),
-                                                                    );
-                                                                // context
-                                                                //     .read<CounterCubit>()
-                                                                //     .decrement(cartCount);
-                                                                context
-                                                                    .read<
-                                                                      CounterCubit
-                                                                    >()
-                                                                    .increment(
-                                                                      cartCount,
-                                                                    );
-                                                                noOfIteminCart =
-                                                                    cartCount;
-                                                              });
-                                                            },
-                                                            child: Column(
-                                                              children: [
-                                                                Container(
-                                                                  height: 130,
-                                                                  // width: 130,
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                      0xFFE5EEC3,
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          5,
-                                                                        ),
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color:
-                                                                            greyColor,
-                                                                        blurRadius:
-                                                                            3,
-                                                                        offset:
-                                                                            const Offset(
-                                                                              0,
-                                                                              1,
-                                                                            ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      ImageNetworkWidget(
-                                                                        url:
-                                                                            categories[i].imageUrl ??
-                                                                            "",
-                                                                        height:
-                                                                            100,
-                                                                        width:
-                                                                            double.infinity,
-                                                                        fit:
-                                                                            BoxFit.contain,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                Text(
-                                                                  categories[i]
-                                                                          .name ??
-                                                                      "",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: const TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                      0xFF222222,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                          : Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            spacing: 20,
-                                            children: [
-                                              Expanded(
-                                                child: SizedBox(
-                                                  // height: 150,
-                                                  width: 130,
-                                                  //   color: redColor,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    spacing: 20,
-                                                    children: [
-                                                      if (categories.isNotEmpty)
-                                                        for (
-                                                          int i = 3;
-                                                          i < 6;
-                                                          i++
-                                                        )
-                                                          Expanded(
-                                                            child: InkWell(
-                                                              hoverColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              onTap: () {
-                                                                debugPrint(
-                                                                  categories[i]
-                                                                          .name ??
-                                                                      "",
-                                                                );
-                                                                title =
-                                                                    categories[i]
-                                                                        .name ??
-                                                                    "";
-                                                                id =
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "";
-                                                                isMainCategory =
-                                                                    false;
-                                                                mainCatId = "";
-                                                                isCategory =
-                                                                    true;
-                                                                catId =
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "";
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (
-                                                                          context,
-                                                                        ) => ProductListMainScreen(
-                                                                          title:
-                                                                              categories[i].name ??
-                                                                              "",
-                                                                          id:
-                                                                              categories[i].id ??
-                                                                              "",
-                                                                          isMainCategory:
-                                                                              false,
-                                                                          mainCatId:
-                                                                              "",
-                                                                          isCategory:
-                                                                              true,
-                                                                          catId:
-                                                                              categories[i].id ??
-                                                                              "",
-                                                                        ),
-                                                                  ),
-                                                                ).then((value) {
-                                                                  if (!context
-                                                                      .mounted) {
-                                                                    return;
-                                                                  }
-                                                                  context
-                                                                      .read<
-                                                                        HomeBloc
-                                                                      >()
-                                                                      .add(
-                                                                        GetCartCountEvent(
-                                                                          userId:
-                                                                              userId,
-                                                                        ),
-                                                                      );
-                                                                  // context
-                                                                  //     .read<CounterCubit>()
-                                                                  //     .decrement(cartCount);
-                                                                  context
-                                                                      .read<
-                                                                        CounterCubit
-                                                                      >()
-                                                                      .increment(
-                                                                        cartCount,
-                                                                      );
-                                                                  noOfIteminCart =
-                                                                      cartCount;
-                                                                });
-                                                              },
-                                                              child: Column(
-                                                                children: [
-                                                                  Container(
-                                                                    height: 130,
-                                                                    // width: 130,
-                                                                    decoration: BoxDecoration(
-                                                                      color: const Color(
-                                                                        0xFFE5EEC3,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            5,
-                                                                          ),
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color:
-                                                                              greyColor,
-                                                                          blurRadius:
-                                                                              3,
-                                                                          offset: const Offset(
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color:
+                                                                          greyColor,
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
                                                                             0,
                                                                             1,
                                                                           ),
-                                                                        ),
-                                                                      ],
                                                                     ),
-                                                                    child: Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        ImageNetworkWidget(
-                                                                          url:
-                                                                              categories[i].imageUrl ??
-                                                                              "",
-                                                                          height:
-                                                                              100,
-                                                                          width:
-                                                                              double.infinity,
-                                                                          fit:
-                                                                              BoxFit.contain,
-                                                                        ),
-                                                                      ],
+                                                                  ],
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ImageNetworkWidget(
+                                                                      url:
+                                                                          categorydata[i]
+                                                                              .imageUrl ??
+                                                                          "",
+                                                                      height:
+                                                                          100,
+                                                                      width:
+                                                                          double
+                                                                              .infinity,
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .contain,
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                  Text(
-                                                                    categories[i]
-                                                                            .name ??
-                                                                        "",
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Color(
-                                                                        0xFF222222,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: SizedBox(
-                                                  // height: 150,
-                                                  width: 130,
-                                                  //   color: redColor,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    spacing: 20,
-                                                    children: [
-                                                      if (categories.isNotEmpty)
-                                                        for (
-                                                          int i = 6;
-                                                          i < categories.length;
-                                                          i++
-                                                        )
-                                                          Expanded(
-                                                            child: InkWell(
-                                                              hoverColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              onTap: () {
-                                                                title =
-                                                                    categories[i]
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                categorydata[i]
                                                                         .name ??
-                                                                    "";
-                                                                id =
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "";
-                                                                isMainCategory =
-                                                                    false;
-                                                                mainCatId = "";
-                                                                isCategory =
-                                                                    true;
-                                                                catId =
-                                                                    categories[i]
-                                                                        .id ??
-                                                                    "";
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (
-                                                                          context,
-                                                                        ) => ProductListMainScreen(
-                                                                          title:
-                                                                              categories[i].name ??
-                                                                              "",
-                                                                          id:
-                                                                              categories[i].id ??
-                                                                              "",
-                                                                          isMainCategory:
-                                                                              false,
-                                                                          mainCatId:
-                                                                              "",
-                                                                          isCategory:
-                                                                              true,
-                                                                          catId:
-                                                                              categories[i].id ??
-                                                                              "",
-                                                                        ),
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Color(
+                                                                    0xFF222222,
                                                                   ),
-                                                                ).then((value) {
-                                                                  if (!context
-                                                                      .mounted) {
-                                                                    return;
-                                                                  }
-                                                                  context
-                                                                      .read<
-                                                                        HomeBloc
-                                                                      >()
-                                                                      .add(
-                                                                        GetCartCountEvent(
-                                                                          userId:
-                                                                              userId,
-                                                                        ),
-                                                                      );
-                                                                  // context
-                                                                  //     .read<CounterCubit>()
-                                                                  //     .decrement(cartCount);
-                                                                  context
-                                                                      .read<
-                                                                        CounterCubit
-                                                                      >()
-                                                                      .increment(
-                                                                        cartCount,
-                                                                      );
-                                                                  noOfIteminCart =
-                                                                      cartCount;
-                                                                });
-                                                              },
-                                                              child: Column(
-                                                                children: [
-                                                                  Container(
-                                                                    height: 130,
-                                                                    // width: 130,
-                                                                    decoration: BoxDecoration(
-                                                                      color: const Color(
-                                                                        0xFFE5EEC3,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            5,
-                                                                          ),
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color:
-                                                                              greyColor,
-                                                                          blurRadius:
-                                                                              3,
-                                                                          offset: const Offset(
-                                                                            0,
-                                                                            1,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    child: Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        ImageNetworkWidget(
-                                                                          url:
-                                                                              categories[i].imageUrl ??
-                                                                              "",
-                                                                          height:
-                                                                              100,
-                                                                          width:
-                                                                              double.infinity,
-                                                                          fit:
-                                                                              BoxFit.contain,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                  Text(
-                                                                    categories[i]
-                                                                            .name ??
-                                                                        "",
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Color(
-                                                                        0xFF222222,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
                                                               ),
-                                                            ),
+                                                            ],
                                                           ),
+                                                        ),
                                                     ],
-                                                  ),
-                                                ),
+                                                  );
+                                                },
                                               ),
+                                              if (dynamicCategories
+                                                      .data!
+                                                      .length >
+                                                  1)
+                                                SizedBox(height: 20),
                                             ],
                                           ),
                                     ],
@@ -2911,1914 +1681,499 @@ class HomeDesktopScreen extends StatelessWidget {
                                     ),
                                   ),
                                 SizedBox(height: 20),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: isMobile ? 20 : 60,
-                                  ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Column(
-                                      spacing: 20,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'Organic & Fresh Fruits',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: blackColor,
-                                          ),
-                                        ),
-                                        if (freshFruitsresponse.data != null)
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              spacing: 16,
-                                              children: [
-                                                for (
-                                                  int i = 0;
-                                                  i <
-                                                      freshFruitsresponse
-                                                          .data!
-                                                          .length;
-                                                  i++
-                                                )
-                                                  InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      context.push(
-                                                        Uri(
-                                                          path:
-                                                              '/productdetail',
-                                                          queryParameters: {
-                                                            'productId':
-                                                                freshFruitsresponse
-                                                                    .data![i]
-                                                                    .productId ??
-                                                                "",
-                                                            'screenType':
-                                                                'back',
-                                                          },
-                                                        ).toString(),
-                                                      );
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //     builder: (context) {
-                                                      //       return ProductDetailsScreen(
-                                                      //         productId:
-                                                      //             freshFruitsresponse
-                                                      //                 .data![i]
-                                                      //                 .productId ??
-                                                      //             "",
-                                                      //         screenType:
-                                                      //             "back",
-                                                      //       );
-                                                      //     },
-                                                      //   ),
-                                                      // ).then((value) {
-                                                      //   if (!context.mounted) {
-                                                      //     return;
-                                                      //   }
-                                                      //   context.read<HomeBloc>().add(
-                                                      //     GetOrganicFruitsEvent(
-                                                      //       mainCatId:
-                                                      //           "676431a2edae32578ae6d220",
-                                                      //       subCatId:
-                                                      //           "676ad87c756fa03a5d0d0616",
-                                                      //       mobileNo:
-                                                      //           phoneNumber,
-                                                      //     ),
-                                                      //   );
-
-                                                      //   context
-                                                      //       .read<HomeBloc>()
-                                                      //       .add(
-                                                      //         GetCartCountEvent(
-                                                      //           userId: userId,
-                                                      //         ),
-                                                      //       );
-                                                      //   // context
-                                                      //   //     .read<CounterCubit>()
-                                                      //   //     .decrement(cartCount);
-                                                      //   context
-                                                      //       .read<
-                                                      //         CounterCubit
-                                                      //       >()
-                                                      //       .increment(
-                                                      //         cartCount,
-                                                      //       );
-                                                      //   noOfIteminCart =
-                                                      //       cartCount;
-                                                      // });
-                                                    },
-                                                    child: Container(
-                                                      height: 250,
-                                                      width: 200,
-                                                      decoration: BoxDecoration(
-                                                        color: whiteColor,
-
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            alignment:
-                                                                Alignment
-                                                                    .center,
-                                                            children: [
-                                                              Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.only(
-                                                                        top:
-                                                                            12.0,
-                                                                      ),
-                                                                  child: ImageNetworkWidget(
-                                                                    url:
-                                                                        freshFruitsresponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                top: 0,
-                                                                left: 0,
-                                                                child: Container(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        appColor,
-                                                                    borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                      bottomRight:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                    ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    freshFruitsresponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .offer ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    10,
-                                                                  ),
-                                                              child: Column(
-                                                                //spacing: 2,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  Text(
-                                                                    freshFruitsresponse
-                                                                            .data![i]
-                                                                            .skuName ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    freshFruitsresponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .label ??
-                                                                        "",
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black54,
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    spacing: 10,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          RichText(
-                                                                            text: TextSpan(
-                                                                              text:
-                                                                                  '₹ ',
-                                                                              style: GoogleFonts.inter(
-                                                                                fontSize:
-                                                                                    16,
-                                                                                fontWeight:
-                                                                                    FontWeight.bold,
-                                                                                color:
-                                                                                    Colors.black,
-                                                                              ),
-                                                                              children: <
-                                                                                TextSpan
-                                                                              >[
-                                                                                TextSpan(
-                                                                                  text:
-                                                                                      freshFruitsresponse.data![i].variants![0].discountPrice.toString(),
-                                                                                  style: const TextStyle(
-                                                                                    fontSize:
-                                                                                        16,
-                                                                                    fontWeight:
-                                                                                        FontWeight.bold,
-                                                                                    color:
-                                                                                        Colors.black,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                6,
-                                                                          ),
-                                                                          Text(
-                                                                            freshFruitsresponse.data![i].variants![0].price.toString(),
-                                                                            style: const TextStyle(
-                                                                              decoration:
-                                                                                  TextDecoration.lineThrough,
-                                                                              fontSize:
-                                                                                  12,
-                                                                              fontWeight:
-                                                                                  FontWeight.w600,
-                                                                              color: Color(
-                                                                                0xFF777777,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      freshFruitsresponse.data![i].variants![0].cartQuantity ==
-                                                                              0
-                                                                          ? Expanded(
-                                                                            child: InkWell(
-                                                                              hoverColor:
-                                                                                  Colors.transparent,
-                                                                              onTap: () {
-                                                                                context
-                                                                                    .read<
-                                                                                      HomeBloc
-                                                                                    >()
-                                                                                    .add(
-                                                                                      AddButtonClikedEvent(
-                                                                                        response:
-                                                                                            freshFruitsresponse,
-                                                                                        type:
-                                                                                            "screen",
-                                                                                        index:
-                                                                                            i,
-                                                                                        isButtonPressed:
-                                                                                            true,
-                                                                                      ),
-                                                                                    );
-                                                                              },
-                                                                              child: Container(
-                                                                                height:
-                                                                                    30,
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(
-                                                                                    color:
-                                                                                        appColor,
-                                                                                  ),
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    20,
-                                                                                  ),
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    'Add',
-                                                                                    style: TextStyle(
-                                                                                      color:
-                                                                                          appColor,
-                                                                                      fontSize:
-                                                                                          12,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                          : Expanded(
-                                                                            child: Container(
-                                                                              height:
-                                                                                  30,
-                                                                              decoration: BoxDecoration(
-                                                                                color:
-                                                                                    appColor,
-                                                                                border: Border.all(
-                                                                                  color:
-                                                                                      appColor,
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(
-                                                                                  20,
-                                                                                ),
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment.spaceAround,
-                                                                                children: [
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            RemoveItemButtonClikedEvent(
-                                                                                              response:
-                                                                                                  freshFruitsresponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.remove,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                    ),
-                                                                                    child: Center(
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.only(
-                                                                                          left:
-                                                                                              8,
-                                                                                          right:
-                                                                                              8,
-                                                                                        ),
-                                                                                        child: Text(
-                                                                                          freshFruitsresponse.data![i].variants![0].cartQuantity.toString(),
-                                                                                          textAlign:
-                                                                                              TextAlign.center,
-                                                                                          style: GoogleFonts.poppins(
-                                                                                            color:
-                                                                                                appColor,
-                                                                                            fontSize:
-                                                                                                14,
-                                                                                            fontWeight:
-                                                                                                FontWeight.w500,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            AddButtonClikedEvent(
-                                                                                              response:
-                                                                                                  freshFruitsresponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.add,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                                 SizedBox(height: 20),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: isMobile ? 20 : 60,
-                                  ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Column(
-                                      spacing: 20,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'Grocery Essentials',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: blackColor,
-                                          ),
-                                        ),
-                                        if (groceryEssentialsResponse.data !=
-                                            null)
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              spacing: 16,
-                                              children: [
-                                                for (
-                                                  int i = 0;
-                                                  i <
-                                                      groceryEssentialsResponse
-                                                          .data!
-                                                          .length;
-                                                  i++
-                                                )
-                                                  InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      context.push(
-                                                        Uri(
-                                                          path:
-                                                              '/productdetail',
-                                                          queryParameters: {
-                                                            'productId':
-                                                                groceryEssentialsResponse
-                                                                    .data![i]
-                                                                    .productId ??
-                                                                "",
-                                                            'screenType':
-                                                                'back',
-                                                          },
-                                                        ).toString(),
-                                                      );
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //     builder: (context) {
-                                                      //       return ProductDetailsScreen(
-                                                      //         productId:
-                                                      //             groceryEssentialsResponse
-                                                      //                 .data![i]
-                                                      //                 .productId ??
-                                                      //             "",
-                                                      //         screenType:
-                                                      //             "back",
-                                                      //       );
-                                                      //     },
-                                                      //   ),
-                                                      // ).then((value) {
-                                                      //   if (!context.mounted) {
-                                                      //     return;
-                                                      //   }
-                                                      //   context.read<HomeBloc>().add(
-                                                      //     GetGroceryEssentialsEvent(
-                                                      //       subCatId:
-                                                      //           "676b624a84dd76eac5d33a3e",
-                                                      //       mobileNo:
-                                                      //           phoneNumber,
-                                                      //     ),
-                                                      //   );
-
-                                                      //   context
-                                                      //       .read<HomeBloc>()
-                                                      //       .add(
-                                                      //         GetCartCountEvent(
-                                                      //           userId: userId,
-                                                      //         ),
-                                                      //       );
-                                                      //   // context
-                                                      //   //     .read<CounterCubit>()
-                                                      //   //     .decrement(cartCount);
-                                                      //   context
-                                                      //       .read<
-                                                      //         CounterCubit
-                                                      //       >()
-                                                      //       .increment(
-                                                      //         cartCount,
-                                                      //       );
-                                                      //   noOfIteminCart =
-                                                      //       cartCount;
-                                                      // });
-                                                    },
-                                                    child: Container(
-                                                      height: 250,
-                                                      width: 200,
-                                                      decoration: BoxDecoration(
-                                                        color: whiteColor,
-
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.only(
-                                                                        top:
-                                                                            12.0,
-                                                                      ),
-                                                                  child: ImageNetworkWidget(
-                                                                    url:
-                                                                        groceryEssentialsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                top: 0,
-                                                                left: 0,
-                                                                child: Container(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        appColor,
-                                                                    borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                      bottomRight:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                    ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    groceryEssentialsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .offer ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
+                                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                if (dynamicProducts.data != null)
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 20 : 60,
+                                    ),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width <=
+                                                    1280
+                                                ? MediaQuery.of(
+                                                  context,
+                                                ).size.width
+                                                : 1280,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children:
+                                            dynamicProducts.data!.map((
+                                              productdata,
+                                            ) {
+                                              List<Product> product =
+                                                  productdata.products!;
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 15,
+                                                  bottom: 15,
+                                                ),
+                                                child: Column(
+                                                  spacing: 16,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          productdata
+                                                              .displayName!,
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: blackColor,
                                                           ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    10,
-                                                                  ),
-                                                              child: Column(
-                                                                //spacing: 2,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  Text(
-                                                                    groceryEssentialsResponse
-                                                                            .data![i]
-                                                                            .skuName ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        SingleChildScrollView(
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          child: Row(
+                                                            spacing: 10,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              for (
+                                                                int i = 0;
+                                                                i <
+                                                                    product
+                                                                        .length;
+                                                                i++
+                                                              )
+                                                                InkWell(
+                                                                  hoverColor:
+                                                                      Colors
+                                                                          .transparent,
+
+                                                                  onTap: () {
+                                                                    context.push(
+                                                                      Uri(
+                                                                        path:
+                                                                            '/productdetail',
+                                                                        queryParameters: {
+                                                                          'productId':
+                                                                              product[i].id ??
+                                                                              "",
+                                                                          'screenType':
+                                                                              'back',
+                                                                        },
+                                                                      ).toString(),
+                                                                    );
+                                                                    // Navigator.push(
+                                                                    //   context,
+                                                                    //   MaterialPageRoute(
+                                                                    //     builder: (context) {
+                                                                    //       return ProductDetailsScreen(
+                                                                    //         productId:
+                                                                    //             riceCerealsResponse
+                                                                    //                 .data![i]
+                                                                    //                 .productId ??
+                                                                    //             "",
+                                                                    //         screenType:
+                                                                    //             "back",
+                                                                    //       );
+                                                                    //     },
+                                                                    //   ),
+                                                                    // ).then((value) {
+                                                                    //   if (!context.mounted) {
+                                                                    //     return;
+                                                                    //   }
+                                                                    //   context.read<HomeBloc>().add(
+                                                                    //     GetRiceCerealsEvent(
+                                                                    //       mainCatId:
+                                                                    //           "676431ddedae32578ae6d222",
+                                                                    //       subCatId:
+                                                                    //           "676b60bd84dd76eac5d33a2a",
+                                                                    //       mobileNo:
+                                                                    //           phoneNumber,
+                                                                    //     ),
+                                                                    //   );
+
+                                                                    //   context
+                                                                    //       .read<HomeBloc>()
+                                                                    //       .add(
+                                                                    //         GetCartCountEvent(
+                                                                    //           userId: userId,
+                                                                    //         ),
+                                                                    //       );
+                                                                    //   // context
+                                                                    //   //     .read<CounterCubit>()
+                                                                    //   //     .decrement(cartCount);
+                                                                    //   context
+                                                                    //       .read<
+                                                                    //         CounterCubit
+                                                                    //       >()
+                                                                    //       .increment(
+                                                                    //         cartCount,
+                                                                    //       );
+                                                                    //   noOfIteminCart =
+                                                                    //       cartCount;
+                                                                    // });
+                                                                  },
+                                                                  child: Container(
+                                                                    height: 250,
+                                                                    width: 200,
+                                                                    decoration: BoxDecoration(
                                                                       color:
-                                                                          Colors
-                                                                              .black,
+                                                                          whiteColor,
+
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            20,
+                                                                          ),
                                                                     ),
-                                                                  ),
-                                                                  Text(
-                                                                    groceryEssentialsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .label ??
-                                                                        "",
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black54,
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    spacing: 10,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          RichText(
-                                                                            text: TextSpan(
-                                                                              text:
-                                                                                  '₹ ',
-                                                                              style: GoogleFonts.inter(
-                                                                                fontSize:
-                                                                                    16,
-                                                                                fontWeight:
-                                                                                    FontWeight.bold,
-                                                                                color:
-                                                                                    Colors.black,
+                                                                    child: Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Stack(
+                                                                          children: [
+                                                                            Center(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(
+                                                                                  top:
+                                                                                      12.0,
+                                                                                ),
+                                                                                child: ImageNetworkWidget(
+                                                                                  url:
+                                                                                      product[i].variants![0].imageUrl ??
+                                                                                      "",
+                                                                                  height:
+                                                                                      100,
+                                                                                  width:
+                                                                                      double.infinity,
+                                                                                  fit:
+                                                                                      BoxFit.contain,
+                                                                                ),
                                                                               ),
-                                                                              children: <
-                                                                                TextSpan
-                                                                              >[
-                                                                                TextSpan(
-                                                                                  text:
-                                                                                      groceryEssentialsResponse.data![i].variants![0].discountPrice.toString(),
+                                                                            ),
+                                                                            Positioned(
+                                                                              top:
+                                                                                  0,
+                                                                              left:
+                                                                                  0,
+                                                                              child: Container(
+                                                                                padding: const EdgeInsets.symmetric(
+                                                                                  horizontal:
+                                                                                      8,
+                                                                                  vertical:
+                                                                                      4,
+                                                                                ),
+                                                                                decoration: BoxDecoration(
+                                                                                  color:
+                                                                                      appColor,
+                                                                                  borderRadius: BorderRadius.only(
+                                                                                    topLeft: Radius.circular(
+                                                                                      20,
+                                                                                    ),
+                                                                                    bottomRight: Radius.circular(
+                                                                                      20,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                child: Text(
+                                                                                  product[i].variants![0].offer ??
+                                                                                      "",
+                                                                                  style: const TextStyle(
+                                                                                    color:
+                                                                                        Colors.white,
+                                                                                    fontSize:
+                                                                                        14,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.all(
+                                                                              10,
+                                                                            ),
+                                                                            child: Column(
+                                                                              //spacing: 2,
+                                                                              crossAxisAlignment:
+                                                                                  CrossAxisAlignment.start,
+                                                                              mainAxisAlignment:
+                                                                                  MainAxisAlignment.spaceEvenly,
+                                                                              children: [
+                                                                                Text(
+                                                                                  product[i].skuName ??
+                                                                                      "",
                                                                                   style: const TextStyle(
                                                                                     fontSize:
-                                                                                        16,
+                                                                                        14,
                                                                                     fontWeight:
-                                                                                        FontWeight.bold,
+                                                                                        FontWeight.w500,
                                                                                     color:
                                                                                         Colors.black,
                                                                                   ),
                                                                                 ),
+                                                                                Text(
+                                                                                  product[i].variants![0].label ??
+                                                                                      "",
+                                                                                  style: TextStyle(
+                                                                                    fontSize:
+                                                                                        12,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                    color:
+                                                                                        Colors.black54,
+                                                                                  ),
+                                                                                ),
+                                                                                Row(
+                                                                                  spacing:
+                                                                                      10,
+                                                                                  children: [
+                                                                                    Row(
+                                                                                      children: [
+                                                                                        RichText(
+                                                                                          text: TextSpan(
+                                                                                            text:
+                                                                                                '₹ ',
+                                                                                            style: GoogleFonts.inter(
+                                                                                              fontSize:
+                                                                                                  16,
+                                                                                              fontWeight:
+                                                                                                  FontWeight.bold,
+                                                                                              color:
+                                                                                                  Colors.black,
+                                                                                            ),
+                                                                                            children: <
+                                                                                              TextSpan
+                                                                                            >[
+                                                                                              TextSpan(
+                                                                                                text:
+                                                                                                    product[i].variants![0].discountPrice.toString(),
+                                                                                                style: const TextStyle(
+                                                                                                  fontSize:
+                                                                                                      16,
+                                                                                                  fontWeight:
+                                                                                                      FontWeight.bold,
+                                                                                                  color:
+                                                                                                      Colors.black,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width:
+                                                                                              6,
+                                                                                        ),
+                                                                                        Text(
+                                                                                          product[i].variants![0].price.toString(),
+                                                                                          style: const TextStyle(
+                                                                                            decoration:
+                                                                                                TextDecoration.lineThrough,
+                                                                                            fontSize:
+                                                                                                12,
+                                                                                            fontWeight:
+                                                                                                FontWeight.w600,
+                                                                                            color: Color(
+                                                                                              0xFF777777,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    product[i].variants![0].userCartQuantity ==
+                                                                                            0
+                                                                                        ? Expanded(
+                                                                                          child: InkWell(
+                                                                                            hoverColor:
+                                                                                                Colors.transparent,
+
+                                                                                            onTap: () {
+                                                                                              context
+                                                                                                  .read<
+                                                                                                    HomeBloc
+                                                                                                  >()
+                                                                                                  .add(
+                                                                                                    AddButtonClikedEvent(
+                                                                                                      response:
+                                                                                                          product[i],
+                                                                                                      type:
+                                                                                                          "screen",
+                                                                                                      index:
+                                                                                                          i,
+                                                                                                      isButtonPressed:
+                                                                                                          true,
+                                                                                                    ),
+                                                                                                  );
+                                                                                            },
+                                                                                            child: Container(
+                                                                                              height:
+                                                                                                  30,
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border.all(
+                                                                                                  color:
+                                                                                                      appColor,
+                                                                                                ),
+                                                                                                borderRadius: BorderRadius.circular(
+                                                                                                  20,
+                                                                                                ),
+                                                                                              ),
+                                                                                              child: Center(
+                                                                                                child: Text(
+                                                                                                  'Add',
+                                                                                                  style: TextStyle(
+                                                                                                    color:
+                                                                                                        appColor,
+                                                                                                    fontSize:
+                                                                                                        12,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        )
+                                                                                        : Expanded(
+                                                                                          child: Container(
+                                                                                            height:
+                                                                                                30,
+                                                                                            decoration: BoxDecoration(
+                                                                                              color:
+                                                                                                  appColor,
+                                                                                              border: Border.all(
+                                                                                                color:
+                                                                                                    appColor,
+                                                                                              ),
+                                                                                              borderRadius: BorderRadius.circular(
+                                                                                                20,
+                                                                                              ),
+                                                                                            ),
+                                                                                            child: Row(
+                                                                                              mainAxisAlignment:
+                                                                                                  MainAxisAlignment.spaceAround,
+                                                                                              children: [
+                                                                                                InkWell(
+                                                                                                  hoverColor:
+                                                                                                      Colors.transparent,
+
+                                                                                                  onTap: () {
+                                                                                                    context
+                                                                                                        .read<
+                                                                                                          HomeBloc
+                                                                                                        >()
+                                                                                                        .add(
+                                                                                                          RemoveItemButtonClikedEvent(
+                                                                                                            response:
+                                                                                                                product[i],
+                                                                                                            type:
+                                                                                                                "screen",
+                                                                                                            index:
+                                                                                                                i,
+                                                                                                            isButtonPressed:
+                                                                                                                true,
+                                                                                                          ),
+                                                                                                        );
+                                                                                                  },
+                                                                                                  child: const Icon(
+                                                                                                    Icons.remove,
+                                                                                                    color:
+                                                                                                        Colors.white,
+                                                                                                    size:
+                                                                                                        16,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Container(
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    color:
+                                                                                                        Colors.white,
+                                                                                                  ),
+                                                                                                  child: Center(
+                                                                                                    child: Padding(
+                                                                                                      padding: const EdgeInsets.only(
+                                                                                                        left:
+                                                                                                            8,
+                                                                                                        right:
+                                                                                                            8,
+                                                                                                      ),
+                                                                                                      child: Text(
+                                                                                                        product[i].variants![0].userCartQuantity.toString(),
+                                                                                                        textAlign:
+                                                                                                            TextAlign.center,
+                                                                                                        style: GoogleFonts.poppins(
+                                                                                                          color:
+                                                                                                              appColor,
+                                                                                                          fontSize:
+                                                                                                              14,
+                                                                                                          fontWeight:
+                                                                                                              FontWeight.w500,
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                InkWell(
+                                                                                                  hoverColor:
+                                                                                                      Colors.transparent,
+
+                                                                                                  onTap: () {
+                                                                                                    context
+                                                                                                        .read<
+                                                                                                          HomeBloc
+                                                                                                        >()
+                                                                                                        .add(
+                                                                                                          AddButtonClikedEvent(
+                                                                                                            response:
+                                                                                                                product[i],
+                                                                                                            type:
+                                                                                                                "screen",
+                                                                                                            index:
+                                                                                                                i,
+                                                                                                            isButtonPressed:
+                                                                                                                true,
+                                                                                                          ),
+                                                                                                        );
+                                                                                                  },
+                                                                                                  child: const Icon(
+                                                                                                    Icons.add,
+                                                                                                    color:
+                                                                                                        Colors.white,
+                                                                                                    size:
+                                                                                                        16,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                  ],
+                                                                                ),
                                                                               ],
                                                                             ),
                                                                           ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                6,
-                                                                          ),
-                                                                          Text(
-                                                                            groceryEssentialsResponse.data![i].variants![0].price.toString(),
-                                                                            style: const TextStyle(
-                                                                              decoration:
-                                                                                  TextDecoration.lineThrough,
-                                                                              fontSize:
-                                                                                  12,
-                                                                              fontWeight:
-                                                                                  FontWeight.w600,
-                                                                              color: Color(
-                                                                                0xFF777777,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      groceryEssentialsResponse.data![i].variants![0].cartQuantity ==
-                                                                              0
-                                                                          ? Expanded(
-                                                                            child: InkWell(
-                                                                              hoverColor:
-                                                                                  Colors.transparent,
-                                                                              onTap: () {
-                                                                                context
-                                                                                    .read<
-                                                                                      HomeBloc
-                                                                                    >()
-                                                                                    .add(
-                                                                                      AddButtonClikedEvent(
-                                                                                        response:
-                                                                                            groceryEssentialsResponse,
-                                                                                        type:
-                                                                                            "screen",
-                                                                                        index:
-                                                                                            i,
-                                                                                        isButtonPressed:
-                                                                                            true,
-                                                                                      ),
-                                                                                    );
-                                                                              },
-                                                                              child: Container(
-                                                                                height:
-                                                                                    30,
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(
-                                                                                    color:
-                                                                                        appColor,
-                                                                                  ),
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    20,
-                                                                                  ),
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    'Add',
-                                                                                    style: TextStyle(
-                                                                                      color:
-                                                                                          appColor,
-                                                                                      fontSize:
-                                                                                          12,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                          : Expanded(
-                                                                            child: Container(
-                                                                              height:
-                                                                                  30,
-                                                                              decoration: BoxDecoration(
-                                                                                color:
-                                                                                    appColor,
-                                                                                border: Border.all(
-                                                                                  color:
-                                                                                      appColor,
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(
-                                                                                  20,
-                                                                                ),
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment.spaceAround,
-                                                                                children: [
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            RemoveItemButtonClikedEvent(
-                                                                                              response:
-                                                                                                  groceryEssentialsResponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.remove,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                    ),
-                                                                                    child: Center(
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.only(
-                                                                                          left:
-                                                                                              8,
-                                                                                          right:
-                                                                                              8,
-                                                                                        ),
-                                                                                        child: Text(
-                                                                                          groceryEssentialsResponse.data![i].variants![0].cartQuantity.toString(),
-                                                                                          textAlign:
-                                                                                              TextAlign.center,
-                                                                                          style: GoogleFonts.poppins(
-                                                                                            color:
-                                                                                                appColor,
-                                                                                            fontSize:
-                                                                                                14,
-                                                                                            fontWeight:
-                                                                                                FontWeight.w500,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            AddButtonClikedEvent(
-                                                                                              response:
-                                                                                                  groceryEssentialsResponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.add,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: isMobile ? 20 : 60,
-                                  ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Column(
-                                      spacing: 20,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'Nuts & Dried Fruits',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: blackColor,
-                                          ),
-                                        ),
-                                        if (nutsDriedFruitsResponse.data !=
-                                            null)
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              spacing: 16,
-                                              children: [
-                                                for (
-                                                  int i = 0;
-                                                  i <
-                                                      nutsDriedFruitsResponse
-                                                          .data!
-                                                          .length;
-                                                  i++
-                                                )
-                                                  InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
-
-                                                    onTap: () {
-                                                      context.push(
-                                                        Uri(
-                                                          path:
-                                                              '/productdetail',
-                                                          queryParameters: {
-                                                            'productId':
-                                                                nutsDriedFruitsResponse
-                                                                    .data![i]
-                                                                    .productId ??
-                                                                "",
-                                                            'screenType':
-                                                                'back',
-                                                          },
-                                                        ).toString(),
-                                                      );
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //     builder: (context) {
-                                                      //       return ProductDetailsScreen(
-                                                      //         productId:
-                                                      //             nutsDriedFruitsResponse
-                                                      //                 .data![i]
-                                                      //                 .productId ??
-                                                      //             "",
-                                                      //         screenType:
-                                                      //             "back",
-                                                      //       );
-                                                      //     },
-                                                      //   ),
-                                                      // ).then((value) {
-                                                      //   if (!context.mounted) {
-                                                      //     return;
-                                                      //   }
-                                                      //   context.read<HomeBloc>().add(
-                                                      //     GetNutsDriedFruitsEvent(
-                                                      //       subCatId:
-                                                      //           "676b62c484dd76eac5d33a46",
-                                                      //       mobileNo:
-                                                      //           phoneNumber,
-                                                      //     ),
-                                                      //   );
-
-                                                      //   context
-                                                      //       .read<HomeBloc>()
-                                                      //       .add(
-                                                      //         GetCartCountEvent(
-                                                      //           userId: userId,
-                                                      //         ),
-                                                      //       );
-                                                      //   // context
-                                                      //   //     .read<CounterCubit>()
-                                                      //   //     .decrement(cartCount);
-                                                      //   context
-                                                      //       .read<
-                                                      //         CounterCubit
-                                                      //       >()
-                                                      //       .increment(
-                                                      //         cartCount,
-                                                      //       );
-                                                      //   noOfIteminCart =
-                                                      //       cartCount;
-                                                      // });
-                                                    },
-                                                    child: Container(
-                                                      height: 250,
-                                                      width: 200,
-                                                      decoration: BoxDecoration(
-                                                        color: whiteColor,
-
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.only(
-                                                                        top:
-                                                                            12.0,
-                                                                      ),
-                                                                  child: ImageNetworkWidget(
-                                                                    url:
-                                                                        nutsDriedFruitsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                top: 0,
-                                                                left: 0,
-                                                                child: Container(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        appColor,
-                                                                    borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                      bottomRight:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                    ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    nutsDriedFruitsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .offer ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
                                                             ],
                                                           ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    10,
-                                                                  ),
-                                                              child: Column(
-                                                                //spacing: 2,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  Text(
-                                                                    nutsDriedFruitsResponse
-                                                                            .data![i]
-                                                                            .skuName ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    nutsDriedFruitsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .label ??
-                                                                        "",
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black54,
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    spacing: 10,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          RichText(
-                                                                            text: TextSpan(
-                                                                              text:
-                                                                                  '₹ ',
-                                                                              style: GoogleFonts.inter(
-                                                                                fontSize:
-                                                                                    16,
-                                                                                fontWeight:
-                                                                                    FontWeight.bold,
-                                                                                color:
-                                                                                    Colors.black,
-                                                                              ),
-                                                                              children: <
-                                                                                TextSpan
-                                                                              >[
-                                                                                TextSpan(
-                                                                                  text:
-                                                                                      nutsDriedFruitsResponse.data![i].variants![0].discountPrice.toString(),
-                                                                                  style: const TextStyle(
-                                                                                    fontSize:
-                                                                                        16,
-                                                                                    fontWeight:
-                                                                                        FontWeight.bold,
-                                                                                    color:
-                                                                                        Colors.black,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                6,
-                                                                          ),
-                                                                          Text(
-                                                                            nutsDriedFruitsResponse.data![i].variants![0].price.toString(),
-                                                                            style: const TextStyle(
-                                                                              decoration:
-                                                                                  TextDecoration.lineThrough,
-                                                                              fontSize:
-                                                                                  12,
-                                                                              fontWeight:
-                                                                                  FontWeight.w600,
-                                                                              color: Color(
-                                                                                0xFF777777,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      nutsDriedFruitsResponse.data![i].variants![0].cartQuantity ==
-                                                                              0
-                                                                          ? Expanded(
-                                                                            child: InkWell(
-                                                                              hoverColor:
-                                                                                  Colors.transparent,
-
-                                                                              onTap: () {
-                                                                                context
-                                                                                    .read<
-                                                                                      HomeBloc
-                                                                                    >()
-                                                                                    .add(
-                                                                                      AddButtonClikedEvent(
-                                                                                        response:
-                                                                                            nutsDriedFruitsResponse,
-                                                                                        type:
-                                                                                            "screen",
-                                                                                        index:
-                                                                                            i,
-                                                                                        isButtonPressed:
-                                                                                            true,
-                                                                                      ),
-                                                                                    );
-                                                                              },
-                                                                              child: Container(
-                                                                                height:
-                                                                                    30,
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(
-                                                                                    color:
-                                                                                        appColor,
-                                                                                  ),
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    20,
-                                                                                  ),
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    'Add',
-                                                                                    style: TextStyle(
-                                                                                      color:
-                                                                                          appColor,
-                                                                                      fontSize:
-                                                                                          12,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                          : Expanded(
-                                                                            child: Container(
-                                                                              height:
-                                                                                  30,
-                                                                              decoration: BoxDecoration(
-                                                                                color:
-                                                                                    appColor,
-                                                                                border: Border.all(
-                                                                                  color:
-                                                                                      appColor,
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(
-                                                                                  20,
-                                                                                ),
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment.spaceAround,
-                                                                                children: [
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            RemoveItemButtonClikedEvent(
-                                                                                              response:
-                                                                                                  nutsDriedFruitsResponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.remove,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                    ),
-                                                                                    child: Center(
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.only(
-                                                                                          left:
-                                                                                              8,
-                                                                                          right:
-                                                                                              8,
-                                                                                        ),
-                                                                                        child: Text(
-                                                                                          nutsDriedFruitsResponse.data![i].variants![0].cartQuantity.toString(),
-                                                                                          textAlign:
-                                                                                              TextAlign.center,
-                                                                                          style: GoogleFonts.poppins(
-                                                                                            color:
-                                                                                                appColor,
-                                                                                            fontSize:
-                                                                                                14,
-                                                                                            fontWeight:
-                                                                                                FontWeight.w500,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            AddButtonClikedEvent(
-                                                                                              response:
-                                                                                                  nutsDriedFruitsResponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.add,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList(),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 20),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: isMobile ? 20 : 60,
-                                  ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Column(
-                                      spacing: 20,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'Rice & Cereals',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: blackColor,
-                                          ),
-                                        ),
-                                        if (riceCerealsResponse.data != null)
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              spacing: 16,
-                                              children: [
-                                                for (
-                                                  int i = 0;
-                                                  i <
-                                                      riceCerealsResponse
-                                                          .data!
-                                                          .length;
-                                                  i++
-                                                )
-                                                  InkWell(
-                                                    hoverColor:
-                                                        Colors.transparent,
 
-                                                    onTap: () {
-                                                      context.push(
-                                                        Uri(
-                                                          path:
-                                                              '/productdetail',
-                                                          queryParameters: {
-                                                            'productId':
-                                                                riceCerealsResponse
-                                                                    .data![i]
-                                                                    .productId ??
-                                                                "",
-                                                            'screenType':
-                                                                'back',
-                                                          },
-                                                        ).toString(),
-                                                      );
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //     builder: (context) {
-                                                      //       return ProductDetailsScreen(
-                                                      //         productId:
-                                                      //             riceCerealsResponse
-                                                      //                 .data![i]
-                                                      //                 .productId ??
-                                                      //             "",
-                                                      //         screenType:
-                                                      //             "back",
-                                                      //       );
-                                                      //     },
-                                                      //   ),
-                                                      // ).then((value) {
-                                                      //   if (!context.mounted) {
-                                                      //     return;
-                                                      //   }
-                                                      //   context.read<HomeBloc>().add(
-                                                      //     GetRiceCerealsEvent(
-                                                      //       mainCatId:
-                                                      //           "676431ddedae32578ae6d222",
-                                                      //       subCatId:
-                                                      //           "676b60bd84dd76eac5d33a2a",
-                                                      //       mobileNo:
-                                                      //           phoneNumber,
-                                                      //     ),
-                                                      //   );
-
-                                                      //   context
-                                                      //       .read<HomeBloc>()
-                                                      //       .add(
-                                                      //         GetCartCountEvent(
-                                                      //           userId: userId,
-                                                      //         ),
-                                                      //       );
-                                                      //   // context
-                                                      //   //     .read<CounterCubit>()
-                                                      //   //     .decrement(cartCount);
-                                                      //   context
-                                                      //       .read<
-                                                      //         CounterCubit
-                                                      //       >()
-                                                      //       .increment(
-                                                      //         cartCount,
-                                                      //       );
-                                                      //   noOfIteminCart =
-                                                      //       cartCount;
-                                                      // });
-                                                    },
-                                                    child: Container(
-                                                      height: 250,
-                                                      width: 200,
-                                                      decoration: BoxDecoration(
-                                                        color: whiteColor,
-
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.only(
-                                                                        top:
-                                                                            12.0,
-                                                                      ),
-                                                                  child: ImageNetworkWidget(
-                                                                    url:
-                                                                        riceCerealsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .imageUrl ??
-                                                                        "",
-                                                                    height: 100,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .contain,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                top: 0,
-                                                                left: 0,
-                                                                child: Container(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        appColor,
-                                                                    borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                      bottomRight:
-                                                                          Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                    ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    riceCerealsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .offer ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    10,
-                                                                  ),
-                                                              child: Column(
-                                                                //spacing: 2,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  Text(
-                                                                    riceCerealsResponse
-                                                                            .data![i]
-                                                                            .skuName ??
-                                                                        "",
-                                                                    style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    riceCerealsResponse
-                                                                            .data![i]
-                                                                            .variants![0]
-                                                                            .label ??
-                                                                        "",
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color:
-                                                                          Colors
-                                                                              .black54,
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    spacing: 10,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          RichText(
-                                                                            text: TextSpan(
-                                                                              text:
-                                                                                  '₹ ',
-                                                                              style: GoogleFonts.inter(
-                                                                                fontSize:
-                                                                                    16,
-                                                                                fontWeight:
-                                                                                    FontWeight.bold,
-                                                                                color:
-                                                                                    Colors.black,
-                                                                              ),
-                                                                              children: <
-                                                                                TextSpan
-                                                                              >[
-                                                                                TextSpan(
-                                                                                  text:
-                                                                                      riceCerealsResponse.data![i].variants![0].discountPrice.toString(),
-                                                                                  style: const TextStyle(
-                                                                                    fontSize:
-                                                                                        16,
-                                                                                    fontWeight:
-                                                                                        FontWeight.bold,
-                                                                                    color:
-                                                                                        Colors.black,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                6,
-                                                                          ),
-                                                                          Text(
-                                                                            riceCerealsResponse.data![i].variants![0].price.toString(),
-                                                                            style: const TextStyle(
-                                                                              decoration:
-                                                                                  TextDecoration.lineThrough,
-                                                                              fontSize:
-                                                                                  12,
-                                                                              fontWeight:
-                                                                                  FontWeight.w600,
-                                                                              color: Color(
-                                                                                0xFF777777,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      riceCerealsResponse.data![i].variants![0].cartQuantity ==
-                                                                              0
-                                                                          ? Expanded(
-                                                                            child: InkWell(
-                                                                              hoverColor:
-                                                                                  Colors.transparent,
-
-                                                                              onTap: () {
-                                                                                context
-                                                                                    .read<
-                                                                                      HomeBloc
-                                                                                    >()
-                                                                                    .add(
-                                                                                      AddButtonClikedEvent(
-                                                                                        response:
-                                                                                            riceCerealsResponse,
-                                                                                        type:
-                                                                                            "screen",
-                                                                                        index:
-                                                                                            i,
-                                                                                        isButtonPressed:
-                                                                                            true,
-                                                                                      ),
-                                                                                    );
-                                                                              },
-                                                                              child: Container(
-                                                                                height:
-                                                                                    30,
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(
-                                                                                    color:
-                                                                                        appColor,
-                                                                                  ),
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    20,
-                                                                                  ),
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    'Add',
-                                                                                    style: TextStyle(
-                                                                                      color:
-                                                                                          appColor,
-                                                                                      fontSize:
-                                                                                          12,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                          : Expanded(
-                                                                            child: Container(
-                                                                              height:
-                                                                                  30,
-                                                                              decoration: BoxDecoration(
-                                                                                color:
-                                                                                    appColor,
-                                                                                border: Border.all(
-                                                                                  color:
-                                                                                      appColor,
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(
-                                                                                  20,
-                                                                                ),
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment.spaceAround,
-                                                                                children: [
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            RemoveItemButtonClikedEvent(
-                                                                                              response:
-                                                                                                  riceCerealsResponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.remove,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                    ),
-                                                                                    child: Center(
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.only(
-                                                                                          left:
-                                                                                              8,
-                                                                                          right:
-                                                                                              8,
-                                                                                        ),
-                                                                                        child: Text(
-                                                                                          riceCerealsResponse.data![i].variants![0].cartQuantity.toString(),
-                                                                                          textAlign:
-                                                                                              TextAlign.center,
-                                                                                          style: GoogleFonts.poppins(
-                                                                                            color:
-                                                                                                appColor,
-                                                                                            fontSize:
-                                                                                                14,
-                                                                                            fontWeight:
-                                                                                                FontWeight.w500,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  InkWell(
-                                                                                    hoverColor:
-                                                                                        Colors.transparent,
-
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            HomeBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            AddButtonClikedEvent(
-                                                                                              response:
-                                                                                                  riceCerealsResponse,
-                                                                                              type:
-                                                                                                  "screen",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: const Icon(
-                                                                                      Icons.add,
-                                                                                      color:
-                                                                                          Colors.white,
-                                                                                      size:
-                                                                                          16,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                               ],
                             ),
                           ),

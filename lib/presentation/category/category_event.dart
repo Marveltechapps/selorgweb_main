@@ -10,3 +10,5 @@ abstract class CategoryEvent extends Equatable {
 class GetMainCategoryDataEvent extends CategoryEvent {}
 
 class GetCategoryDataEvent extends CategoryEvent {}
+
+class GetDynamicCategoryDataEvent extends CategoryEvent {}

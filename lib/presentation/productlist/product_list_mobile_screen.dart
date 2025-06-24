@@ -6,7 +6,7 @@ import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
-import 'package:selorgweb_main/model/category/sub_category_model.dart';
+import 'package:selorgweb_main/model/category/sub_category_model.dart' as sub;
 import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
 import 'package:selorgweb_main/presentation/productdetails/product_details_screen.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_bloc.dart';
@@ -39,7 +39,7 @@ class ProductListMobileScreen extends StatelessWidget {
   int selectedIndexes = 0;
   static List<int> itemCount = [];
   static bool addButtonClicked = false;
-  List<SubCat> subCatList = [];
+  List<sub.Datum> subCatList = [];
   static String errorMsg = "";
   static int variantindex = 0;
   static ProductList product = ProductList();

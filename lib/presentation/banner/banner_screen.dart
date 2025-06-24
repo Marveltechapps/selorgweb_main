@@ -128,7 +128,9 @@ class BannerScreen extends StatelessWidget {
                                                           3,
                                                         ),
                                                     border: Border.all(
-                                                      color: appColor,
+                                                      color: appColor.withAlpha(
+                                                        (255 * 0.8).toInt(),
+                                                      ),
                                                       width: 0.5,
                                                     ),
                                                   ),
@@ -1156,7 +1158,11 @@ class BannerScreen extends StatelessWidget {
                                                                 ),
                                                             decoration: BoxDecoration(
                                                               border: Border.all(
-                                                                color: appColor,
+                                                                color: appColor
+                                                                    .withAlpha(
+                                                                      (255 * 0.4)
+                                                                          .toInt(),
+                                                                    ),
                                                               ),
                                                               borderRadius:
                                                                   BorderRadius.circular(

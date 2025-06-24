@@ -465,7 +465,7 @@ class AddAddress extends StatelessWidget {
                                 }
                               },
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.red),
+                                side: BorderSide(color: appColor),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
                                 ),

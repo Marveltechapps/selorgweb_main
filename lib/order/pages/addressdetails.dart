@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorg/utils/constant.dart';
+import 'package:selorgweb_main/utils/constant.dart' show appColor;
 
 class Addressdetails extends StatefulWidget {
   const Addressdetails({super.key});

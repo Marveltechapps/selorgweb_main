@@ -1,4 +1,5 @@
-import 'package:selorgweb_main/model/category/product_style_model.dart';
+
+import 'package:selorgweb_main/model/home/dynamic_product_style_response_model.dart';
 
 abstract class HomeEvent {}
 
@@ -43,7 +44,7 @@ class GetLocationUsingLatLongFromApiEvent extends HomeEvent {
 }
 
 class AddButtonClikedEvent extends HomeEvent {
-  final ProductStyleResponse response;
+  final Product response;
   final String type;
   final bool isButtonPressed;
   final int index;
@@ -83,7 +84,7 @@ class AddItemInCartApiEvent extends HomeEvent {
 }
 
 class RemoveItemButtonClikedEvent extends HomeEvent {
-  final ProductStyleResponse response;
+  final Product response;
   final String type;
   final bool isButtonPressed;
   final int index;
@@ -174,3 +175,7 @@ class ShowBottomSheetEvent extends HomeEvent {}
 class GrabAndGoEvent extends HomeEvent {}
 
 class GetBannerEvent extends HomeEvent {}
+
+class GetDynamicCategoryDataEvent extends HomeEvent {}
+
+class GetDynamicHomeProductEvent extends HomeEvent {}

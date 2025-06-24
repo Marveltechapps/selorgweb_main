@@ -1,17 +1,12 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/cart/widgets/cart_item_widget.dart';
-import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
-import 'package:selorgweb_main/model/cart/update_cart_response_model.dart';
 import 'package:selorgweb_main/presentation/cart/cart_bloc.dart';
 import 'package:selorgweb_main/presentation/cart/cart_event.dart';
 import 'package:selorgweb_main/presentation/cart/cart_state.dart';
-import 'package:selorgweb_main/presentation/category/categories_screen.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 
@@ -19,7 +14,6 @@ import 'package:selorgweb_main/presentation/home/home_event.dart' as he;
 import 'package:selorgweb_main/presentation/home/home_state.dart' as hs;
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/utils/widgets/network_image.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CartToolTip extends StatefulWidget {
   const CartToolTip({super.key, required this.overlay});
@@ -30,25 +24,11 @@ class CartToolTip extends StatefulWidget {
 }
 
 class _CartToolTipState extends State<CartToolTip> {
-  static final List<int> tipOptions = [10, 20, 30];
   static CartResponse cartResponse = CartResponse();
-  static String tipAmount = "0";
-  static bool expantion = false;
-  static bool isOneSelected = false;
-  static bool isTwoSelected = false;
-  static String address = "";
-  static String locationType = "";
-  static String deliveryIns = "";
-  static TextEditingController additionalNote = TextEditingController();
-  static UpdateCartResponse updateCartResponse = UpdateCartResponse();
-  static List<SearchedLocationResponse> searchedLocations = [];
-
-  static TextEditingController searchLocationController =
-      TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final isDesktop = MediaQuery.of(context).size.width >= 1090;
-    final isMobile = MediaQuery.of(context).size.width < 700;
+    // final isDesktop = MediaQuery.of(context).size.width >= 1090;
+    // final isMobile = MediaQuery.of(context).size.width < 700;
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => CartBloc()),
@@ -57,7 +37,6 @@ class _CartToolTipState extends State<CartToolTip> {
       child: BlocConsumer<HomeBloc, hs.HomeState>(
         listener: (context, state) {
           if (state is hs.SearchedLocationSuccessState) {
-            searchedLocations = state.searchedLocationResponse;
           } else if (state is hs.LocationContinueSuccessState) {
             context.read<HomeBloc>().add(
               he.GetLocationUsingLatLongFromApiEvent(
@@ -80,7 +59,6 @@ class _CartToolTipState extends State<CartToolTip> {
                 cartResponse = state.cartResponse;
                 debugPrint(cartResponse.items!.length.toString());
                 if (cartResponse.items!.isEmpty) {
-                  tipAmount = "0";
                   cartCount = 0;
                 }
                 cartCount = state.countvalue;

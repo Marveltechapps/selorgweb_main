@@ -244,7 +244,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       String url =
           event.isMainCategory
-              ? '$subCategoryUrl?main_category_id=${event.mainCatId}&mobileNumber=${event.mobileNo}&userId=${event.userId}'
+              ? '$subCategoryUrl?category_id=${event.mainCatId}&mobileNumber=${event.mobileNo}&userId=${event.userId}'
               : '$subCategoryUrl?category_id=${event.catId}';
       debugPrint(url);
       final response = await http.get(Uri.parse(url));
@@ -283,9 +283,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // {{local_URL}}v1/productStyle/list?main_category_id=676431a2edae32578ae6d220&subCategoryId=676ad87c756fa03a5d0d0616
         String url =
             event.isMainCategory && event.isSubCategory
-                ? '$productUrl?main_category_id=${event.mainCatId}&subCategoryId=${event.subCatId}&page=${event.page}&limit=50&mobileNumber=${event.mobilNo}&userId=${event.userId}'
+                ? '$productUrl?category_id=${event.mainCatId}&subCategoryId=${event.subCatId}&page=${event.page}&limit=50&mobileNumber=${event.mobilNo}&userId=${event.userId}'
                 : event.isMainCategory
-                ? '$productUrl?main_category_id=${event.mainCatId}'
+                ? '$productUrl?category_id=${event.mainCatId}'
                 : event.isSubCategory
                 ? '$productUrl?subCategoryId=${event.subCatId}&mobileNumber=${event.mobilNo}&userId=${event.userId}'
                 : productUrl;

@@ -10,7 +10,7 @@ import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart'
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
 import 'package:selorgweb_main/model/category/remove_cart_response_model.dart';
-import 'package:selorgweb_main/model/category/sub_category_model.dart';
+import 'package:selorgweb_main/model/category/sub_category_model.dart' as sub;
 
 abstract class ProductState {}
 
@@ -39,7 +39,7 @@ class ProductSelectedState extends ProductState {
 }
 
 class SubCategoryLoadedState extends ProductState {
-  final SubCategory subCategory;
+  final sub.SubCategory subCategory;
 
   SubCategoryLoadedState({required this.subCategory});
 }

@@ -364,12 +364,7 @@ class YourLocationScreen extends StatelessWidget {
                                                 ),
                                                 height: 40,
                                                 decoration: BoxDecoration(
-                                                  color: const Color.fromRGBO(
-                                                    3,
-                                                    71,
-                                                    3,
-                                                    1,
-                                                  ),
+                                                  color: appColor,
                                                   borderRadius:
                                                       BorderRadius.circular(30),
                                                 ),

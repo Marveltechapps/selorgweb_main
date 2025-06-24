@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final subCategory = subCategoryFromJson(jsonString);
+
 import 'dart:convert';
 
 SubCategory subCategoryFromJson(String str) => SubCategory.fromJson(json.decode(str));
@@ -5,89 +9,53 @@ SubCategory subCategoryFromJson(String str) => SubCategory.fromJson(json.decode(
 String subCategoryToJson(SubCategory data) => json.encode(data.toJson());
 
 class SubCategory {
-    int? status;
     String? message;
-    int? count;
-    List<SubCat>? data;
+    List<Datum>? data;
 
     SubCategory({
-        this.status,
         this.message,
-        this.count,
         this.data,
     });
 
     factory SubCategory.fromJson(Map<String, dynamic> json) => SubCategory(
-        status: json["status"],
         message: json["message"],
-        count: json["count"],
-        data: json["data"] == null ? [] : List<SubCat>.from(json["data"]!.map((x) => SubCat.fromJson(x))),
+        data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "status": status,
         "message": message,
-        "count": count,
         "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
     };
 }
 
-class SubCat {
+class Datum {
     String? id;
     String? name;
     String? imageUrl;
-    String? createdAt;
-    String? updatedAt;
-    int? v;
-    CategoryId? categoryId;
+    String? categoryId;
+    String? categoryName;
 
-    SubCat({
+    Datum({
         this.id,
         this.name,
         this.imageUrl,
-        this.createdAt,
-        this.updatedAt,
-        this.v,
         this.categoryId,
+        this.categoryName,
     });
 
-    factory SubCat.fromJson(Map<String, dynamic> json) => SubCat(
+    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["_id"],
         name: json["name"],
         imageUrl: json["imageUrl"],
-        createdAt: json["createdAt"],
-        updatedAt: json["updatedAt"],
-        v: json["__v"],
-        categoryId: json["category_id"] == null ? null : CategoryId.fromJson(json["category_id"]),
+        categoryId: json["category_id"],
+        categoryName: json["category_name"],
     );
 
     Map<String, dynamic> toJson() => {
         "_id": id,
         "name": name,
         "imageUrl": imageUrl,
-        "createdAt": createdAt,
-        "updatedAt": updatedAt,
-        "__v": v,
-        "category_id": categoryId?.toJson(),
-    };
-}
-
-class CategoryId {
-    String? id;
-    String? name;
-
-    CategoryId({
-        this.id,
-        this.name,
-    });
-
-    factory CategoryId.fromJson(Map<String, dynamic> json) => CategoryId(
-        id: json["_id"],
-        name: json["name"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "_id": id,
-        "name": name,
+        "category_id": categoryId,
+        "category_name": categoryName,
     };
 }

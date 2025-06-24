@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
-import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_event.dart';
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
 import 'package:selorg/model/otp/verify_otp_response_model.dart';
@@ -138,9 +137,10 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
           addItemToCartRequestToJson(addItemToCartRequest),
         );
         if (response.statusCode == 200) {
-          var addItemToCartResponse = addItemToCartResponseFromJson(
-            response.resBody,
-          );
+          // var addItemToCartResponse = addItemToCartResponseFromJson(
+          //   response.resBody,
+          // );
+
           return;
         } else {
           emit(OtpErrorState(errorMessage: response.resBody));

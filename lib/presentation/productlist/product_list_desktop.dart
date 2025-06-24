@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
+import 'package:selorgweb_main/model/banner/banner_product_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
-import 'package:selorgweb_main/model/category/sub_category_model.dart';
+import 'package:selorgweb_main/model/category/sub_category_model.dart' as sub;
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/home/home_bloc.dart';
 import 'package:selorgweb_main/presentation/home/home_event.dart' as he;
@@ -48,7 +49,7 @@ class ProductListDesktopScreen extends StatelessWidget {
   int selectedIndexes = 0;
   static List<int> itemCount = [];
   static bool addButtonClicked = false;
-  List<SubCat> subCatList = [];
+  List<sub.Datum> subCatList = [];
   static String errorMsg = "";
   static int variantindex = 0;
   static ProductList product = ProductList();
@@ -263,10 +264,10 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                           ],
                                                         ),
                                                       ),
-                                                      productStyleResponse
+                                                      (productStyleResponse
                                                                   .data![productIndex]
                                                                   .variants![i]
-                                                                  .cartQuantity ==
+                                                                  .userCartQuantity ?? 0) ==
                                                               0
                                                           ? GestureDetector(
                                                             onTap: () {
@@ -299,7 +300,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                   ),
                                                               decoration: BoxDecoration(
                                                                 color:
-                                                                    productStyleResponse.data![productIndex].variants![i].cartQuantity ==
+                                                                    productStyleResponse.data![productIndex].variants![i].userCartQuantity ==
                                                                             0
                                                                         ? whiteColor
                                                                         : appColor,
@@ -343,7 +344,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                   productStyleResponse
                                                                               .data![productIndex]
                                                                               .variants![i]
-                                                                              .cartQuantity ==
+                                                                              .userCartQuantity ==
                                                                           0
                                                                       ? whiteColor
                                                                       : appColor,
@@ -427,12 +428,12 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                         ? productStyleResponse
                                                                             .data![productIndex]
                                                                             .variants![i]
-                                                                            .cartQuantity
+                                                                            .userCartQuantity
                                                                             .toString()
                                                                         : productStyleResponse
                                                                             .data![productIndex]
                                                                             .variants![i]
-                                                                            .cartQuantity
+                                                                            .userCartQuantity
                                                                             .toString(),
                                                                     textAlign:
                                                                         TextAlign
@@ -892,10 +893,10 @@ class ProductListDesktopScreen extends StatelessWidget {
                   productStyleResponse
                       .data![state.selectedIndexes]
                       .variants![0]
-                      .cartQuantity = (productStyleResponse
+                      .userCartQuantity = (productStyleResponse
                               .data![state.selectedIndexes]
                               .variants![0]
-                              .cartQuantity ??
+                              .userCartQuantity ??
                           0) +
                       1;
                   context.read<ProductBloc>().add(
@@ -968,10 +969,10 @@ class ProductListDesktopScreen extends StatelessWidget {
                   productStyleResponse
                       .data![state.selectedIndexes]
                       .variants![productVarientIndex]
-                      .cartQuantity = (productStyleResponse
+                      .userCartQuantity = (productStyleResponse
                               .data![state.selectedIndexes]
                               .variants![productVarientIndex]
-                              .cartQuantity ??
+                              .userCartQuantity ??
                           0) +
                       1;
                   debugPrint(
@@ -1074,16 +1075,16 @@ class ProductListDesktopScreen extends StatelessWidget {
                   productStyleResponse
                               .data![state.selectedIndexes]
                               .variants![0]
-                              .cartQuantity ==
+                              .userCartQuantity ==
                           0
                       ? null
                       : productStyleResponse
                           .data![state.selectedIndexes]
                           .variants![0]
-                          .cartQuantity = (productStyleResponse
+                          .userCartQuantity = (productStyleResponse
                                   .data![state.selectedIndexes]
                                   .variants![0]
-                                  .cartQuantity ??
+                                  .userCartQuantity ??
                               0) -
                           1;
                   context.read<ProductBloc>().add(
@@ -1115,10 +1116,10 @@ class ProductListDesktopScreen extends StatelessWidget {
                   productStyleResponse
                       .data![state.selectedIndexes]
                       .variants![productVarientIndex]
-                      .cartQuantity = (productStyleResponse
+                      .userCartQuantity = (productStyleResponse
                               .data![state.selectedIndexes]
                               .variants![productVarientIndex]
-                              .cartQuantity ??
+                              .userCartQuantity ??
                           0) -
                       1;
                   // debugPrint(productStyleResponse.data![state.selectedIndexes]
@@ -1168,7 +1169,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                 );
               } else if (state is ProductDetailSuccessState) {
                 productDetailResponse = state.productDetailResponse;
-                debugPrint(productDetailResponse.data!.product!.skuName);
+                // debugPrint(productDetailResponse.data!.product!.skuName);
               } else if (state is SubCategoryLoadedState) {
                 //  debugPrint(state.subCategory.data![0].name);
                 subCatList = state.subCategory.data ?? [];
@@ -1205,7 +1206,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                 selectedProductIndexes = state.productIndex;
 
                 debugPrint(
-                  '${productStyleResponse.data![productIndex].variants![productVarientIndex].cartQuantity} - ${productStyleResponse.data![productIndex].variants![productVarientIndex].label}',
+                  '${productStyleResponse.data![productIndex].variants![productVarientIndex].userCartQuantity} - ${productStyleResponse.data![productIndex].variants![productVarientIndex].label}',
                 );
               } else if (state is ProductErrorState) {
                 isLoading = false;
@@ -1822,7 +1823,7 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                           index
                                                                                       ? variantindex
                                                                                       : 0]
-                                                                                  .cartQuantity ==
+                                                                                  .userCartQuantity ==
                                                                               0
                                                                           ? InkWell(
                                                                             onTap: () {
@@ -1944,7 +1945,12 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                     //  borderRadius: BorderRadius.circular(4),
                                                                                   ),
                                                                                   child: Text(
-                                                                                    productStyleResponse.data![index].variants![0].cartQuantity.toString(),
+                                                                                    selectedProductIndexes ==
+                                                                                    index
+                                                                                ? productStyleResponse.data![index].variants![productVarientIndex].userCartQuantity?.toString() ??
+                                                                                    "0"
+                                                                                : productStyleResponse.data![index].variants![0].userCartQuantity?.toString() ??
+                                                                                    "0",
                                                                                     textAlign:
                                                                                         TextAlign.center,
                                                                                     style: GoogleFonts.poppins(
@@ -2539,13 +2545,13 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                             height:
                                                                                 6,
                                                                           ),
-                                                                          productStyleResponse
+                                                                          (productStyleResponse
                                                                                       .data![index]
                                                                                       .variants![selectedIndexes ==
                                                                                               index
                                                                                           ? variantindex
                                                                                           : 0]
-                                                                                      .cartQuantity ==
+                                                                                      .userCartQuantity ?? 0 ) ==
                                                                                   0
                                                                               ? InkWell(
                                                                                 onTap: () {
@@ -2667,7 +2673,12 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                         //  borderRadius: BorderRadius.circular(4),
                                                                                       ),
                                                                                       child: Text(
-                                                                                        productStyleResponse.data![index].variants![0].cartQuantity.toString(),
+                                                                                         selectedProductIndexes ==
+                                                                                    index
+                                                                                ? productStyleResponse.data![index].variants![productVarientIndex].userCartQuantity?.toString() ??
+                                                                                    "0"
+                                                                                : productStyleResponse.data![index].variants![0].userCartQuantity?.toString() ??
+                                                                                    "0",
                                                                                         textAlign:
                                                                                             TextAlign.center,
                                                                                         style: GoogleFonts.poppins(

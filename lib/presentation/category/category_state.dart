@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:selorgweb_main/model/category/dynamic_category_model.dart' as dm;
 import 'package:selorgweb_main/model/category/category_model.dart';
 import 'package:selorgweb_main/model/category/main_category_model.dart';
 
@@ -38,4 +39,13 @@ class CategoryErrorState extends CategoryState {
 
   @override
   List<Object> get props => [message];
+}
+
+class DynamicCategoryLoadedState extends CategoryState {
+  final dm.DynamicCategories categories;
+
+  const DynamicCategoryLoadedState({required this.categories});
+
+  @override
+  List<Object> get props => [categories];
 }

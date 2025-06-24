@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/utils/widgets/cart_tool_tip.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HeaderWidget extends StatefulWidget {
   final bool isHomeScreen;
@@ -499,7 +498,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                         style: GoogleFonts.poppins(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: primarytextColor,
+                                          color: appColor,
                                         ),
                                       ),
                                       if (count != 0)

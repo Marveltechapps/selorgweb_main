@@ -13,6 +13,9 @@ import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
 import 'package:selorgweb_main/model/category/category_model.dart';
+import 'package:selorgweb_main/model/category/category_model.dart' as cat;
+import 'package:selorgweb_main/model/category/dynamic_category_model.dart'
+    as dm;
 import 'package:selorgweb_main/model/category/main_category_model.dart';
 // import 'package:selorgweb_main/model/category/main_category_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
@@ -20,6 +23,7 @@ import 'package:selorgweb_main/model/category/remove_cart_response_model.dart';
 import 'package:selorgweb_main/model/category/remove_item_cart_model.dart';
 import 'package:selorgweb_main/model/home/banner_model.dart';
 import 'package:selorgweb_main/model/home/grab_essentials_model.dart';
+import 'package:selorgweb_main/model/home/dynamic_product_style_response_model.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,6 +53,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<SearchLocationEvent>(seachLocation);
     on<GetLatLonOnListEvent>(getlatlon);
     on<PlaceLocaitonEvent>(placelocatiovalue);
+    on<GetDynamicCategoryDataEvent>(getDynamicCategoryData);
+    on<GetDynamicHomeProductEvent>(getDynamicHomeProductData);
     on<ShowBottomSheetEvent>((event, emit) => emit(BottomSheetVisible()));
   }
 
@@ -144,7 +150,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         debugPrint('add cart rough $cartdata');
         await prefs.setString('cartdata', jsonEncode(cartdata));
         emit(CartDataSuccess(noOfItems: cartdata.length));
-        
       }
     } catch (e) {
       emit(HomeErrorState(message: e.toString()));
@@ -229,7 +234,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoadingState());
     try {
       String url =
-          "$productUrl?main_category_id=${event.mainCatId}&subCategoryId=${event.subCatId}&mobileNumber=${event.mobileNo}";
+          "$productUrl?category_id=${event.mainCatId}&subCategoryId=${event.subCatId}&mobileNumber=${event.mobileNo}";
       debugPrint(url);
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -306,7 +311,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoadingState());
     try {
       String url =
-          "$productUrl?main_category_id=${event.mainCatId}&subCategoryId=${event.subCatId}&mobileNumber=${event.mobileNo}";
+          "$productUrl?category_id=${event.mainCatId}&subCategoryId=${event.subCatId}&mobileNumber=${event.mobileNo}";
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var riceCerealsResponse = productStyleResponseFromJson(response.body);
@@ -568,8 +573,58 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final response = await http.get(Uri.parse(categoryUrl));
       if (response.statusCode == 200) {
-        final List<Category> categories = categoryFromJson(response.body);
+        final List<cat.Category> categories = categoryFromJson(response.body);
         emit(CategoryLoadedState(categories: categories));
+      } else {
+        emit(HomeErrorState(message: 'Failed to fetch data'));
+      }
+    } catch (e) {
+      emit(HomeErrorState(message: e.toString()));
+    }
+  }
+
+  getDynamicCategoryData(
+    GetDynamicCategoryDataEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(HomeLoadingState());
+    try {
+      final response = await http.get(Uri.parse(categoryUrl));
+      if (response.statusCode == 200) {
+        final dm.DynamicCategories categories = dm.dynamicCategoriesFromJson(
+          response.body,
+        );
+        emit(DynamicCategoryLoadedState(categories: categories));
+      } else {
+        emit(HomeErrorState(message: 'Failed to fetch data'));
+      }
+    } catch (e) {
+      emit(HomeErrorState(message: e.toString()));
+    }
+  }
+
+  getDynamicHomeProductData(
+    GetDynamicHomeProductEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(HomeLoadingState());
+    try {
+      debugPrint('function statt');
+      final prefs = await SharedPreferences.getInstance();
+      phoneNumber = prefs.getString('phone') ?? '';
+      isLoggedInvalue = prefs.getBool('isLoggedIn') ?? false;
+      String url =
+          isLoggedInvalue
+              ? "$baseUrl/homeProduct/list?mobileNumber=${prefs.getString('phone')}"
+              : "$baseUrl/homeProduct/list";
+      debugPrint(url);
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        debugPrint(response.body);
+        DynamicProductStyleResponse riceCerealsResponse =
+            dynamicProductStyleResponseFromJson(response.body);
+        debugPrint(riceCerealsResponse.toJson().toString());
+        emit(DynamicProductStyleResponseState(products: riceCerealsResponse));
       } else {
         emit(HomeErrorState(message: 'Failed to fetch data'));
       }

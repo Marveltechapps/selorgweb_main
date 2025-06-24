@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final productDetailResponse = productDetailResponseFromJson(jsonString);
+
 import 'dart:convert';
 
 ProductDetailResponse productDetailResponseFromJson(String str) => ProductDetailResponse.fromJson(json.decode(str));
@@ -86,65 +90,65 @@ class ProductDetail {
 
 class Data {
     Product? product;
-    MainCategory? mainCategory;
-    MainCategory? subCategory;
+    Category? category;
+    SubCategory? subCategory;
 
     Data({
         this.product,
-        this.mainCategory,
+        this.category,
         this.subCategory,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
         product: json["product"] == null ? null : Product.fromJson(json["product"]),
-        mainCategory: json["main_category"] == null ? null : MainCategory.fromJson(json["main_category"]),
-        subCategory: json["subCategory"] == null ? null : MainCategory.fromJson(json["subCategory"]),
+        category: json["category"] == null ? null : Category.fromJson(json["category"]),
+        subCategory: json["subCategory"] == null ? null : SubCategory.fromJson(json["subCategory"]),
     );
 
     Map<String, dynamic> toJson() => {
         "product": product?.toJson(),
-        "main_category": mainCategory?.toJson(),
+        "category": category?.toJson(),
         "subCategory": subCategory?.toJson(),
     };
 }
 
-class MainCategory {
-    String? id;
+class Category {
     String? name;
     String? imageUrl;
+    bool? isHighlight;
+    int? index;
+    String? id;
     String? createdAt;
     String? updatedAt;
-    int? v;
-    String? mainCategoryId;
 
-    MainCategory({
-        this.id,
+    Category({
         this.name,
         this.imageUrl,
+        this.isHighlight,
+        this.index,
+        this.id,
         this.createdAt,
         this.updatedAt,
-        this.v,
-        this.mainCategoryId,
     });
 
-    factory MainCategory.fromJson(Map<String, dynamic> json) => MainCategory(
-        id: json["_id"],
+    factory Category.fromJson(Map<String, dynamic> json) => Category(
         name: json["name"],
         imageUrl: json["imageUrl"],
+        isHighlight: json["isHighlight"],
+        index: json["index"],
+        id: json["_id"],
         createdAt: json["createdAt"],
         updatedAt: json["updatedAt"],
-        v: json["__v"],
-        mainCategoryId: json["main_category_id"],
     );
 
     Map<String, dynamic> toJson() => {
-        "_id": id,
         "name": name,
         "imageUrl": imageUrl,
+        "isHighlight": isHighlight,
+        "index": index,
+        "_id": id,
         "createdAt": createdAt,
         "updatedAt": updatedAt,
-        "__v": v,
-        "main_category_id": mainCategoryId,
     };
 }
 
@@ -156,14 +160,14 @@ class Product {
     List<Variant>? variants;
     String? skuClassification;
     String? skuClassification1;
-    MainCategory? subCategoryId;
+    dynamic categoryId;
+    SubCategory? subCategoryId;
     int? price;
     int? discountPrice;
     String? offer;
     String? createdAt;
     String? updatedAt;
     int? v;
-    MainCategory? mainCategoryId;
 
     Product({
         this.description,
@@ -173,6 +177,7 @@ class Product {
         this.variants,
         this.skuClassification,
         this.skuClassification1,
+        this.categoryId,
         this.subCategoryId,
         this.price,
         this.discountPrice,
@@ -180,7 +185,6 @@ class Product {
         this.createdAt,
         this.updatedAt,
         this.v,
-        this.mainCategoryId,
     });
 
     factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -191,14 +195,14 @@ class Product {
         variants: json["variants"] == null ? [] : List<Variant>.from(json["variants"]!.map((x) => Variant.fromJson(x))),
         skuClassification: json["SKUClassification"],
         skuClassification1: json["SKUClassification1"],
-        subCategoryId: json["subCategory_id"] == null ? null : MainCategory.fromJson(json["subCategory_id"]),
+        categoryId: json["category_id"],
+        subCategoryId: json["subCategory_id"] == null ? null : SubCategory.fromJson(json["subCategory_id"]),
         price: json["price"],
         discountPrice: json["discountPrice"],
         offer: json["offer"],
         createdAt: json["createdAt"],
         updatedAt: json["updatedAt"],
         v: json["__v"],
-        mainCategoryId: json["main_category_id"] == null ? null : MainCategory.fromJson(json["main_category_id"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -209,6 +213,7 @@ class Product {
         "variants": variants == null ? [] : List<dynamic>.from(variants!.map((x) => x.toJson())),
         "SKUClassification": skuClassification,
         "SKUClassification1": skuClassification1,
+        "category_id": categoryId,
         "subCategory_id": subCategoryId?.toJson(),
         "price": price,
         "discountPrice": discountPrice,
@@ -216,7 +221,6 @@ class Product {
         "createdAt": createdAt,
         "updatedAt": updatedAt,
         "__v": v,
-        "main_category_id": mainCategoryId?.toJson(),
     };
 }
 
@@ -248,90 +252,126 @@ class Description {
     };
 }
 
+class SubCategory {
+    String? id;
+    String? name;
+    String? imageUrl;
+    String? categoryId;
+    String? createdAt;
+    String? updatedAt;
+    int? v;
+
+    SubCategory({
+        this.id,
+        this.name,
+        this.imageUrl,
+        this.categoryId,
+        this.createdAt,
+        this.updatedAt,
+        this.v,
+    });
+
+    factory SubCategory.fromJson(Map<String, dynamic> json) => SubCategory(
+        id: json["_id"],
+        name: json["name"],
+        imageUrl: json["imageUrl"],
+        categoryId: json["category_id"],
+        createdAt: json["createdAt"],
+        updatedAt: json["updatedAt"],
+        v: json["__v"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "imageUrl": imageUrl,
+        "category_id": categoryId,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
+        "__v": v,
+    };
+}
+
 class Variant {
+    ComboDetails? comboDetails;
     String? label;
     int? price;
     int? discountPrice;
     String? offer;
     bool? isComboPack;
     bool? isMultiPack;
-    ComboDetails? comboDetails;
     int? stockQuantity;
     String? imageUrl;
     int? cartQuantity;
     String? id;
+    int? userCartQuantity;
     bool? isOutOfStock;
 
     Variant({
+        this.comboDetails,
         this.label,
         this.price,
         this.discountPrice,
         this.offer,
         this.isComboPack,
         this.isMultiPack,
-        this.comboDetails,
         this.stockQuantity,
         this.imageUrl,
         this.cartQuantity,
         this.id,
+        this.userCartQuantity,
         this.isOutOfStock,
     });
 
     factory Variant.fromJson(Map<String, dynamic> json) => Variant(
+        comboDetails: json["comboDetails"] == null ? null : ComboDetails.fromJson(json["comboDetails"]),
         label: json["label"],
         price: json["price"],
         discountPrice: json["discountPrice"],
         offer: json["offer"],
         isComboPack: json["isComboPack"],
         isMultiPack: json["isMultiPack"],
-        comboDetails: json["comboDetails"] == null ? null : ComboDetails.fromJson(json["comboDetails"]),
         stockQuantity: json["stockQuantity"],
         imageUrl: json["imageURL"],
         cartQuantity: json["cartQuantity"],
         id: json["_id"],
+        userCartQuantity: json["userCartQuantity"],
         isOutOfStock: json["isOutOfStock"],
     );
 
     Map<String, dynamic> toJson() => {
+        "comboDetails": comboDetails?.toJson(),
         "label": label,
         "price": price,
         "discountPrice": discountPrice,
         "offer": offer,
         "isComboPack": isComboPack,
         "isMultiPack": isMultiPack,
-        "comboDetails": comboDetails?.toJson(),
         "stockQuantity": stockQuantity,
         "imageURL": imageUrl,
         "cartQuantity": cartQuantity,
         "_id": id,
+        "userCartQuantity": userCartQuantity,
         "isOutOfStock": isOutOfStock,
     };
 }
 
 class ComboDetails {
-    List<String>? productNames;
-    List<String>? childSkuCodes;
-    String? comboName;
-    String? comboImageUrl;
+    List<dynamic>? productNames;
+    List<dynamic>? childSkuCodes;
 
     ComboDetails({
         this.productNames,
         this.childSkuCodes,
-        this.comboName,
-        this.comboImageUrl,
     });
 
     factory ComboDetails.fromJson(Map<String, dynamic> json) => ComboDetails(
-        productNames: json["productNames"] == null ? [] : List<String>.from(json["productNames"]!.map((x) => x)),
-        childSkuCodes: json["childSkuCodes"] == null ? [] : List<String>.from(json["childSkuCodes"]!.map((x) => x)),
-        comboName: json["comboName"],
-        comboImageUrl: json["comboImageURL"],
+        productNames: json["productNames"] == null ? [] : List<dynamic>.from(json["productNames"]!.map((x) => x)),
+        childSkuCodes: json["childSkuCodes"] == null ? [] : List<dynamic>.from(json["childSkuCodes"]!.map((x) => x)),
     );
 
     Map<String, dynamic> toJson() => {
         "productNames": productNames == null ? [] : List<dynamic>.from(productNames!.map((x) => x)),
         "childSkuCodes": childSkuCodes == null ? [] : List<dynamic>.from(childSkuCodes!.map((x) => x)),
-        "comboName": comboName,
-        "comboImageURL": comboImageUrl,
     };
 }

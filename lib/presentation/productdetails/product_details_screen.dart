@@ -361,7 +361,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     .data!
                                                     .product!
                                                     .variants![i]
-                                                    .cartQuantity ==
+                                                    .userCartQuantity ==
                                                 0
                                             ? SizedBox(
                                               width: 100,
@@ -460,7 +460,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                             .data!
                                                             .product!
                                                             .variants![i]
-                                                            .cartQuantity
+                                                            .userCartQuantity
                                                             .toString(),
                                                         textAlign:
                                                             TextAlign.center,
@@ -1016,7 +1016,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                   .data!
                                                                   .product!
                                                                   .variants![i]
-                                                                  .cartQuantity ==
+                                                                  .userCartQuantity ==
                                                               0
                                                           ? SizedBox(
                                                             width: 100,
@@ -1137,7 +1137,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                           .data!
                                                                           .product!
                                                                           .variants![i]
-                                                                          .cartQuantity
+                                                                          .userCartQuantity
                                                                           .toString(),
                                                                       textAlign:
                                                                           TextAlign
@@ -1544,7 +1544,7 @@ class ProductDetailsScreen extends StatelessWidget {
             listener: (context, state) {
               if (state is ProductDetailSuccessState) {
                 productDetailResponse = state.productDetailResponse;
-                debugPrint(productDetailResponse.data!.product!.skuName);
+                // debugPrint(productDetailResponse.data!.product!.skuName);
                 similarProductResponse = SimilarProductResponse();
                 context.read<ProductDetailBloc>().add(
                   GetSimilarProductEvent(
@@ -1553,7 +1553,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 );
                 selectedVariant = productDetailResponse.data!.product!.variants!
                     .firstWhere(
-                      (variant) => (variant.cartQuantity ?? 0) > 0,
+                      (variant) => (variant.userCartQuantity ?? 0) > 0,
                       orElse:
                           () =>
                               productDetailResponse.data!.product!.variants![0],
@@ -1564,7 +1564,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 similarProductResponse = state.similarProductResponse;
                 // similarProductResponse.data![similarIndex].variants!
                 //         .firstWhere(
-                //           (variant) => (variant.cartQuantity ?? 0) > 0,
+                //           (variant) => (variant.userCartQuantity ?? 0) > 0,
                 //           orElse: () => similarProductResponse
                 //               .data![similarIndex].variants![0],
                 //         )
@@ -1617,11 +1617,11 @@ class ProductDetailsScreen extends StatelessWidget {
                       .data!
                       .product!
                       .variants![varientIndex]
-                      .cartQuantity = (productDetailResponse
+                      .userCartQuantity = (productDetailResponse
                               .data!
                               .product!
                               .variants![varientIndex]
-                              .cartQuantity ??
+                              .userCartQuantity ??
                           0) +
                       1;
                   selectedVariant =
@@ -1674,11 +1674,11 @@ class ProductDetailsScreen extends StatelessWidget {
                       .data!
                       .product!
                       .variants![varientIndex]
-                      .cartQuantity = (productDetailResponse
+                      .userCartQuantity = (productDetailResponse
                               .data!
                               .product!
                               .variants![varientIndex]
-                              .cartQuantity ??
+                              .userCartQuantity ??
                           0) +
                       1;
                   debugPrint(
@@ -1858,18 +1858,18 @@ class ProductDetailsScreen extends StatelessWidget {
                               .data!
                               .product!
                               .variants![varientIndex]
-                              .cartQuantity ==
+                              .userCartQuantity ==
                           0
                       ? null
                       : productDetailResponse
                           .data!
                           .product!
                           .variants![varientIndex]
-                          .cartQuantity = (productDetailResponse
+                          .userCartQuantity = (productDetailResponse
                                   .data!
                                   .product!
                                   .variants![varientIndex]
-                                  .cartQuantity ??
+                                  .userCartQuantity ??
                               0) -
                           1;
                   selectedVariant =
@@ -1898,11 +1898,11 @@ class ProductDetailsScreen extends StatelessWidget {
                       .data!
                       .product!
                       .variants![varientIndex]
-                      .cartQuantity = (productDetailResponse
+                      .userCartQuantity = (productDetailResponse
                               .data!
                               .product!
                               .variants![varientIndex]
-                              .cartQuantity ??
+                              .userCartQuantity ??
                           0) -
                       1;
                   debugPrint(
@@ -2283,7 +2283,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                           ],
                                                                         ),
                                                                       ),
-                                                                      productDetailResponse.data!.product!.variants![i].cartQuantity ==
+                                                                      productDetailResponse.data!.product!.variants![i].userCartQuantity ==
                                                                               0
                                                                           ? SizedBox(
                                                                             width:
@@ -2401,7 +2401,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                   ),
                                                                                   child: Center(
                                                                                     child: Text(
-                                                                                      productDetailResponse.data!.product!.variants![i].cartQuantity.toString(),
+                                                                                      productDetailResponse.data!.product!.variants![i].userCartQuantity.toString(),
                                                                                       textAlign:
                                                                                           TextAlign.center,
                                                                                       style: GoogleFonts.poppins(
@@ -2664,7 +2664,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                    productDetailResponse.data!.product!.variants![i].cartQuantity ==
+                                                                    productDetailResponse.data!.product!.variants![i].userCartQuantity ==
                                                                             0
                                                                         ? SizedBox(
                                                                           width:
@@ -2782,7 +2782,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                 ),
                                                                                 child: Center(
                                                                                   child: Text(
-                                                                                    productDetailResponse.data!.product!.variants![i].cartQuantity.toString(),
+                                                                                    productDetailResponse.data!.product!.variants![i].userCartQuantity.toString(),
                                                                                     textAlign:
                                                                                         TextAlign.center,
                                                                                     style: GoogleFonts.poppins(
@@ -3266,7 +3266,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                             //             i]
                                                                             //         .variants!
                                                                             //         .firstWhere(
-                                                                            //           (variant) => (variant.cartQuantity ?? 0) > 0,
+                                                                            //           (variant) => (variant.userCartQuantity ?? 0) > 0,
                                                                             //           orElse: () => similarProductResponse.data![i].variants![0],
                                                                             //         )
                                                                             //         .label ??

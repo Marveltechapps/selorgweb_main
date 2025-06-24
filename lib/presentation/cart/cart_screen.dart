@@ -1010,9 +1010,7 @@ class CartScreen extends StatelessWidget {
                                                 //     .add(SelectTipEvent(amount: "0"));
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color(
-                                                  0xFF034703,
-                                                ),
+                                                backgroundColor: appColor,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(32),
@@ -1196,9 +1194,8 @@ class CartScreen extends StatelessWidget {
                                                                     ).size.width /
                                                                     8,
                                                                 decoration: BoxDecoration(
-                                                                  color: const Color(
-                                                                    0xFF326A32,
-                                                                  ),
+                                                                  color:
+                                                                      appColor,
                                                                   borderRadius:
                                                                       BorderRadius.circular(
                                                                         20,
@@ -1254,9 +1251,8 @@ class CartScreen extends StatelessWidget {
                                                                           textAlign:
                                                                               TextAlign.center,
                                                                           style: GoogleFonts.poppins(
-                                                                            color: const Color(
-                                                                              0xFF326A32,
-                                                                            ),
+                                                                            color:
+                                                                                appColor,
                                                                             fontSize:
                                                                                 14,
                                                                             fontWeight:
@@ -1356,16 +1352,14 @@ class CartScreen extends StatelessWidget {
                                                       children: [
                                                         InkWell(
                                                           onTap: () {
-                                                            context
-                                                                .read<
-                                                                  CartBloc
-                                                                >()
-                                                                .add(
-                                                                  DeliveryInstructionSelectEvent(
-                                                                    one: true,
-                                                                    two: false,
-                                                                  ),
-                                                                );
+                                                            context.read<CartBloc>().add(
+                                                              DeliveryInstructionSelectEvent(
+                                                                one:
+                                                                    !isOneSelected,
+                                                                two:
+                                                                    isTwoSelected,
+                                                              ),
+                                                            );
                                                             deliveryIns =
                                                                 "No Contact Delivery";
                                                           },
@@ -1382,16 +1376,14 @@ class CartScreen extends StatelessWidget {
                                                         SizedBox(width: 20),
                                                         InkWell(
                                                           onTap: () {
-                                                            context
-                                                                .read<
-                                                                  CartBloc
-                                                                >()
-                                                                .add(
-                                                                  DeliveryInstructionSelectEvent(
-                                                                    one: false,
-                                                                    two: true,
-                                                                  ),
-                                                                );
+                                                            context.read<CartBloc>().add(
+                                                              DeliveryInstructionSelectEvent(
+                                                                one:
+                                                                    isOneSelected,
+                                                                two:
+                                                                    !isTwoSelected,
+                                                              ),
+                                                            );
                                                             deliveryIns =
                                                                 "Do Not Ring The Bell";
                                                           },
@@ -1649,8 +1641,7 @@ class CartScreen extends StatelessWidget {
                                                                   ),
                                                               decoration: BoxDecoration(
                                                                 color:
-                                                                    DeliveryTipStyles
-                                                                        .lightGreen,
+                                                                    backgroundTileColor,
                                                                 borderRadius:
                                                                     BorderRadius.circular(
                                                                       6,
@@ -1766,7 +1757,7 @@ class CartScreen extends StatelessWidget {
                                                                     color:
                                                                         tipAmount ==
                                                                                 value.toString()
-                                                                            ? DeliveryTipStyles.lightGreen
+                                                                            ? backgroundTileColor
                                                                             : Colors.white,
                                                                     borderRadius:
                                                                         BorderRadius.circular(
@@ -1910,9 +1901,7 @@ class CartScreen extends StatelessWidget {
                                                               vertical: 8,
                                                             ),
                                                         decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFF034703,
-                                                          ),
+                                                          color: appColor,
                                                           borderRadius:
                                                               BorderRadius.circular(
                                                                 12,
@@ -2083,9 +2072,8 @@ class CartScreen extends StatelessWidget {
                                                                   Text(
                                                                     'Change',
                                                                     style: GoogleFonts.poppins(
-                                                                      color: const Color(
-                                                                        0xFF034703,
-                                                                      ),
+                                                                      color:
+                                                                          appColor,
                                                                       fontSize:
                                                                           isMobile
                                                                               ? 12
@@ -2178,9 +2166,7 @@ class CartScreen extends StatelessWidget {
                                                                         ),
                                                                   ),
                                                                   backgroundColor:
-                                                                      const Color(
-                                                                        0xFF034703,
-                                                                      ),
+                                                                      appColor,
                                                                 ),
                                                                 child: Container(
                                                                   padding: EdgeInsets.symmetric(
@@ -2247,9 +2233,8 @@ class CartScreen extends StatelessWidget {
                                                               Text(
                                                                 'Enter your Delivery Address',
                                                                 style: GoogleFonts.poppins(
-                                                                  color: const Color(
-                                                                    0xFF034703,
-                                                                  ),
+                                                                  color:
+                                                                      appColor,
                                                                   fontSize:
                                                                       isMobile
                                                                           ? 14
@@ -2282,9 +2267,7 @@ class CartScreen extends StatelessWidget {
                                                                     ),
                                                               ),
                                                               backgroundColor:
-                                                                  const Color(
-                                                                    0xFF034703,
-                                                                  ),
+                                                                  appColor,
                                                             ),
                                                             child: Container(
                                                               width:
@@ -2554,16 +2537,15 @@ class CartScreen extends StatelessWidget {
                                                                     context,
                                                                   ).size.width /
                                                                   4,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFF326A32,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      20,
-                                                                    ),
-                                                              ),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                    color:
+                                                                        appColor,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          20,
+                                                                        ),
+                                                                  ),
                                                               child: Row(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
@@ -2614,9 +2596,8 @@ class CartScreen extends StatelessWidget {
                                                                         textAlign:
                                                                             TextAlign.center,
                                                                         style: GoogleFonts.poppins(
-                                                                          color: const Color(
-                                                                            0xFF326A32,
-                                                                          ),
+                                                                          color:
+                                                                              appColor,
                                                                           fontSize:
                                                                               14,
                                                                           fontWeight:
@@ -2740,8 +2721,7 @@ class CartScreen extends StatelessWidget {
                                                                 ),
                                                             decoration: BoxDecoration(
                                                               color:
-                                                                  DeliveryTipStyles
-                                                                      .lightGreen,
+                                                                  backgroundTileColor,
                                                               borderRadius:
                                                                   BorderRadius.circular(
                                                                     6,
@@ -2859,8 +2839,7 @@ class CartScreen extends StatelessWidget {
                                                                   color:
                                                                       tipAmount ==
                                                                               value.toString()
-                                                                          ? DeliveryTipStyles
-                                                                              .lightGreen
+                                                                          ? backgroundTileColor
                                                                           : Colors.white,
                                                                   borderRadius:
                                                                       BorderRadius.circular(
@@ -3000,9 +2979,7 @@ class CartScreen extends StatelessWidget {
                                                             vertical: 8,
                                                           ),
                                                       decoration: BoxDecoration(
-                                                        color: const Color(
-                                                          0xFF034703,
-                                                        ),
+                                                        color: appColor,
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               12,
@@ -3142,14 +3119,14 @@ class CartScreen extends StatelessWidget {
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          context
-                                                              .read<CartBloc>()
-                                                              .add(
-                                                                DeliveryInstructionSelectEvent(
-                                                                  one: true,
-                                                                  two: false,
-                                                                ),
-                                                              );
+                                                          context.read<CartBloc>().add(
+                                                            DeliveryInstructionSelectEvent(
+                                                              one:
+                                                                  !isOneSelected,
+                                                              two:
+                                                                  isTwoSelected,
+                                                            ),
+                                                          );
                                                           deliveryIns =
                                                               "No Contact Delivery";
                                                         },
@@ -3166,14 +3143,14 @@ class CartScreen extends StatelessWidget {
                                                       SizedBox(width: 20),
                                                       InkWell(
                                                         onTap: () {
-                                                          context
-                                                              .read<CartBloc>()
-                                                              .add(
-                                                                DeliveryInstructionSelectEvent(
-                                                                  one: false,
-                                                                  two: true,
-                                                                ),
-                                                              );
+                                                          context.read<CartBloc>().add(
+                                                            DeliveryInstructionSelectEvent(
+                                                              one:
+                                                                  isOneSelected,
+                                                              two:
+                                                                  !isTwoSelected,
+                                                            ),
+                                                          );
                                                           deliveryIns =
                                                               "Do Not Ring The Bell";
                                                         },
@@ -3358,9 +3335,8 @@ class CartScreen extends StatelessWidget {
                                                                 Text(
                                                                   'Change',
                                                                   style: GoogleFonts.poppins(
-                                                                    color: const Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                    color:
+                                                                        appColor,
                                                                     fontSize:
                                                                         isMobile
                                                                             ? 12
@@ -3456,9 +3432,7 @@ class CartScreen extends StatelessWidget {
                                                                       ),
                                                                 ),
                                                                 backgroundColor:
-                                                                    const Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                    appColor,
                                                               ),
                                                               child: Container(
                                                                 padding: EdgeInsets.symmetric(
@@ -3527,10 +3501,7 @@ class CartScreen extends StatelessWidget {
                                                             Text(
                                                               'Enter your Delivery Address',
                                                               style: GoogleFonts.poppins(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFF034703,
-                                                                    ),
+                                                                color: appColor,
                                                                 fontSize:
                                                                     isMobile
                                                                         ? 14
@@ -3563,9 +3534,7 @@ class CartScreen extends StatelessWidget {
                                                                   ),
                                                             ),
                                                             backgroundColor:
-                                                                const Color(
-                                                                  0xFF034703,
-                                                                ),
+                                                                appColor,
                                                           ),
                                                           child: Container(
                                                             width:

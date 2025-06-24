@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selorgweb_main/utils/widgets/delivery_tip_styles.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 
 class DeliveryInstructionBox extends StatelessWidget {
@@ -24,9 +23,9 @@ class DeliveryInstructionBox extends StatelessWidget {
       width: 250, // Adjust width
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: isSelected ? DeliveryTipStyles.lightGreen : null,
+        color: isSelected ? backgroundTileColor : null,
         border: Border.all(
-          color: isSelected ? greenColor : const Color(0xFFAAAAAA),
+          color: isSelected ? appColor : const Color(0xFFAAAAAA),
         ),
         borderRadius: BorderRadius.circular(12),
       ),
