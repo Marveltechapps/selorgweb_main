@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_bloc.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_event.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_state.dart';
@@ -50,36 +51,40 @@ class OtpScreen extends StatelessWidget {
 
               // widget.onOtpComplete(otp); // Call the function when all fields are filled
             }
-          } else if (state is SPsaveSucess) {
-            final prefs = await SharedPreferences.getInstance();
-            List<dynamic> cartdata = jsonDecode(
-              prefs.getString('cartdata') ?? '[]',
-            );
-            debugPrint('cartdata $cartdata');
-            for (var e in cartdata) {
-              context.read<OtpBloc>().add(
-                AddItemInCartApiEvent(
-                  userId: userId,
-                  productId: e['productId'],
-                  quantity: e['quantity'],
-                  variantLabel: e['variantLabel'],
-                  imageUrl: e['imageURL'],
-                  discountPrice: e['discountPrice'],
-                  price: e['price'],
-                  deliveryInstructions: '',
-                  addNotes: '',
-                  skuName: e['skuName'],
-                ),
-              );
-            }
-            await prefs.setString('cartdata', '[]');
+          } else if (state is CartDataSuccess){
             context.push('/cart');
+          } else if (state is SPsaveSucess) {
+            context.read<OtpBloc>().add(
+                AddMultipleItemtoCartEvent(userId: userId)
+              );
+            // final prefs = await SharedPreferences.getInstance();
+            // List<dynamic> cartdata = jsonDecode(
+            //   prefs.getString('cartdata') ?? '[]',
+            // );
+            // debugPrint('cartdata $cartdata');
+            // for (var e in cartdata) {
+            //   context.read<OtpBloc>().add(
+            //     AddItemInCartApiEvent(
+            //       userId: userId,
+            //       productId: e['productId'],
+            //       quantity: e['quantity'],
+            //       variantLabel: e['variantLabel'],
+            //       imageUrl: e['imageURL'],
+            //       discountPrice: e['discountPrice'],
+            //       price: e['price'],
+            //       deliveryInstructions: '',
+            //       addNotes: '',
+            //       skuName: e['skuName'],
+            //     ),
+            //   );
+            // }
+            // await prefs.setString('cartdata', '[]');
           } else if (state is TimerRunning) {
             formatDuration(state.duration);
             // debugPrint(remainingTime);
           } else if (state is OtpSuccessState) {
             userId = state.verifyOtpResponse.userId ?? "";
-
+            await TokenService.saveToken(state.verifyOtpResponse.token ?? "");
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.verifyOtpResponse.message ?? "")),
             );

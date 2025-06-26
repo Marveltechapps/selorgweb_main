@@ -21,10 +21,10 @@ class GeneralInfoBloc extends Bloc<GeneralInfoEvent, GeneralInfoState> {
       debugPrint(url);
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        var gerTermsAndConditionResponse =
+        var getTermsAndConditionResponse =
             termsAndConditionResponseFromJson(response.body);
         emit(TermsAndConditionSuccessState(
-            termsAndConditionResponse: gerTermsAndConditionResponse));
+            termsAndConditionResponse: getTermsAndConditionResponse));
       } else {
         emit(GeneralInfoErrorState(errorMsg: 'Failed to fetch data'));
       }

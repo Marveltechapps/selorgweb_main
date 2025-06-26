@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 
 class ApiService {
   static const String baseUrl = 'http://43.204.144.74:3000/v1';
@@ -15,7 +16,9 @@ class ApiService {
         url = Uri.parse('$baseUrl/$endpoint').replace(queryParameters: params);
       }
 
-      var response = await http.get(url);
+      var response = await http.get(url , headers: {
+        "Authorization":"Bearer ${await TokenService.getToken()}"
+      });
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body); // Parse JSON response

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/model/addaddress/delete_address_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_model.dart';
@@ -30,7 +31,9 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       String url = "$getAddressUrl${event.userId}";
       debugPrint(url);
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url) , headers: {
+        "Authorization":"Bearer ${await TokenService.getToken()}"
+      });
       if (response.statusCode == 200) {
         var getSavedAddressResponse = getSavedAddressResponseFromJson(
           response.body,

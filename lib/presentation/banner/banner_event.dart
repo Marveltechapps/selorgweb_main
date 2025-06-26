@@ -15,6 +15,14 @@ class AddButtonPressedEvent extends BannerEvent {
       {required this.type, required this.index, required this.varientindex});
 }
 
+class ChangeVarientItemEvent extends BannerEvent {
+  final int productIndex;
+  final int varientIndex;
+
+  ChangeVarientItemEvent(
+      {required this.productIndex, required this.varientIndex});
+}
+
 class AddItemApiEvent extends BannerEvent {
   final String userId;
   final String productId;

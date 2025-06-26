@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/model/settings/get_saved_profile_response_model.dart';
 import 'package:selorgweb_main/model/settings/profile_error_model.dart';
 import 'package:selorgweb_main/model/settings/profile_save_request_model.dart';
@@ -19,12 +20,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   getSavedProfile(
-      GetSavedProfileDataEvent event, Emitter<ProfileState> emit) async {
+    GetSavedProfileDataEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     emit(ProfileLoadingState());
     try {
       String url = "$getSavedProfileUrl${event.userId}";
       debugPrint(url);
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url) , headers: {
+          "Authorization":"Bearer ${await TokenService.getToken()}"
+        });
       if (response.statusCode == 200) {
         var res = getSavedProfileModelFromJson(response.body);
         emit(GetSavedProfileState(getSavedProfileModel: res));
@@ -45,8 +50,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       String url = profileSaveUrl;
-      api.Response response = await api.ApiService()
-          .postRequest(url, saveProfileModelToJson(saveProfileModel));
+      api.Response response = await api.ApiService().postRequestSecure(
+        url,
+        saveProfileModelToJson(saveProfileModel),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         // var saveProfileResponse =
         //     addItemToCartResponseFromJson(response.resBody);
@@ -71,7 +78,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   onUpdateProfie(
-      UpdateProfileApiEvent event, Emitter<ProfileState> emit) async {
+    UpdateProfileApiEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     emit(ProfileLoadingState());
     SaveProfileModel saveProfileModel = SaveProfileModel();
     saveProfileModel.name = event.name;
@@ -80,8 +89,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       String url = updateProfileUrl;
-      api.Response response = await api.ApiService()
-          .postRequest(url, saveProfileModelToJson(saveProfileModel));
+      api.Response response = await api.ApiService().postRequestSecure(
+        url,
+        saveProfileModelToJson(saveProfileModel),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         // var saveProfileResponse =
         //     addItemToCartResponseFromJson(response.resBody);

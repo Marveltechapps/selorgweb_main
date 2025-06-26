@@ -6,6 +6,12 @@ class StartTimer extends OtpEvent {}
 
 class ResetTimer extends OtpEvent {}
 
+class AddMultipleItemtoCartEvent extends OtpEvent {
+  final String userId;
+
+  AddMultipleItemtoCartEvent({required this.userId});
+}
+
 class OtpEnteredEvent extends OtpEvent {
   final bool isEntered;
   final int index;
@@ -61,6 +67,7 @@ class AddItemInCartApiEvent extends OtpEvent {
     required this.skuName
   });
 }
+
 class ResendOtpEvent extends OtpEvent {
   final String mobileNumber;
 

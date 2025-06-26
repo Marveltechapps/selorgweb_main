@@ -4,9 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
+import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
 import 'package:selorgweb_main/presentation/entry/otp/otp_event.dart';
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
-import 'package:selorg/model/otp/verify_otp_response_model.dart';
+import 'package:selorgweb_main/model/otp/verify_otp_response_model.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'otp_state.dart';
@@ -21,6 +22,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     on<ResendOtpEvent>(resendOtp);
     on<SaveDataEvent>(saveData);
     on<AddItemInCartApiEvent>(addItemToCart);
+    on<AddMultipleItemtoCartEvent>(addMultipleItemToCart);
   }
   static const int initialDuration = 20 * 1; // 20 minutes in seconds
   late StreamSubscription<int> tickerSubscription;
@@ -114,7 +116,55 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
       emit(OtpErrorState(errorMessage: e.toString()));
     }
   }
+  addMultipleItemToCart(AddMultipleItemtoCartEvent event , Emitter<OtpState> emit)async{
+    emit(OtpLoadingState());
+         final prefs = await SharedPreferences.getInstance();
+            List<dynamic> cartdata = jsonDecode(
+              prefs.getString('cartdata') ?? '[]',
+            );
+            debugPrint('cartdata $cartdata');
+    List<dynamic> updatedCartItems = cartdata.map((item) {
+  return {
+    ...item,
+    "userId": userId,
+  };
+}).toList();
 
+        for(var e in cartdata){
+           AddItemToCartRequest addItemToCartRequest = AddItemToCartRequest();
+    addItemToCartRequest.userId = userId;
+    addItemToCartRequest.productId = e['productId'];
+    addItemToCartRequest.skuName = e['skuName'];
+    addItemToCartRequest.quantity = e['quantity'];
+    addItemToCartRequest.variantLabel = e['variantLabel'];
+    addItemToCartRequest.imageUrl = e['imageUrl'];
+    addItemToCartRequest.price = e['price'];
+    addItemToCartRequest.discountPrice = e['discountPrice'];
+    addItemToCartRequest.deliveryInstructions = e['deliveryInstructions'];
+    addItemToCartRequest.addNotes = e['addNotes'];
+      debugPrint(addItemToCartRequest.toJson().toString());
+String url = addCartUrl;
+        debugPrint(url);
+        api.Response response = await api.ApiService().postRequest(
+          addCartUrl,
+          addItemToCartRequestToJson(addItemToCartRequest),
+        );
+        if (response.statusCode == 200) {
+          if(updatedCartItems.indexOf(e) == updatedCartItems.length -1){
+            emit(CartDataSuccess());
+            break;
+          }
+
+          continue;
+        } else {
+          emit(OtpErrorState(errorMessage: response.resBody));
+          break;
+        }
+        }
+        if(cartdata.isEmpty){
+          emit(CartDataSuccess());
+        }
+  }
   addItemToCart(AddItemInCartApiEvent event, Emitter<OtpState> emit) async {
     emit(OtpLoadingState());
     AddItemToCartRequest addItemToCartRequest = AddItemToCartRequest();
@@ -137,9 +187,9 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
           addItemToCartRequestToJson(addItemToCartRequest),
         );
         if (response.statusCode == 200) {
-          // var addItemToCartResponse = addItemToCartResponseFromJson(
-          //   response.resBody,
-          // );
+          var addItemToCartResponse = addItemToCartResponseFromJson(
+            response.resBody,
+          );
 
           return;
         } else {

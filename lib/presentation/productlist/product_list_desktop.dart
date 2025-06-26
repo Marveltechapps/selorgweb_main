@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
-import 'package:selorgweb_main/model/banner/banner_product_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/product_detail_model.dart';
 import 'package:selorgweb_main/model/category/product_style_model.dart';
@@ -2545,16 +2544,25 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                             height:
                                                                                 6,
                                                                           ),
-                                                                          (productStyleResponse
-                                                                                      .data![index]
-                                                                                      .variants![selectedIndexes ==
-                                                                                              index
-                                                                                          ? variantindex
-                                                                                          : 0]
-                                                                                      .userCartQuantity ?? 0 ) ==
+                                                                          (selectedProductIndexes ==
+                                                                                    index
+                                                                                ? productStyleResponse.data![index].variants![productVarientIndex].userCartQuantity ??
+                                                                                    0
+                                                                                : productStyleResponse.data![index].variants![0].userCartQuantity ??
+                                                                                    0) ==
                                                                                   0
                                                                               ? InkWell(
                                                                                 onTap: () {
+                                                                                  context
+                                                                  .read<
+                                                                      ProductBloc>()
+                                                                  .add(ChangeVarientItemEvent(
+                                                                      productIndex:
+                                                                          index,
+                                                                      varientIndex: selectedProductIndexes ==
+                                                                              index
+                                                                          ? productVarientIndex
+                                                                          : 0));
                                                                                   context
                                                                                       .read<
                                                                                         ProductBloc
@@ -2635,6 +2643,16 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                       child: InkWell(
                                                                                         onTap: () {
                                                                                           context
+                                                                  .read<
+                                                                      ProductBloc>()
+                                                                  .add(ChangeVarientItemEvent(
+                                                                      productIndex:
+                                                                          index,
+                                                                      varientIndex: selectedProductIndexes ==
+                                                                              index
+                                                                          ? productVarientIndex
+                                                                          : 0));
+                                                                                          context
                                                                                               .read<
                                                                                                 ProductBloc
                                                                                               >()
@@ -2694,6 +2712,16 @@ class ProductListDesktopScreen extends StatelessWidget {
                                                                                     Expanded(
                                                                                       child: InkWell(
                                                                                         onTap: () {
+                                                                                          context
+                                                                  .read<
+                                                                      ProductBloc>()
+                                                                  .add(ChangeVarientItemEvent(
+                                                                      productIndex:
+                                                                          index,
+                                                                      varientIndex: selectedProductIndexes ==
+                                                                              index
+                                                                          ? productVarientIndex
+                                                                          : 0));
                                                                                           context
                                                                                               .read<
                                                                                                 ProductBloc

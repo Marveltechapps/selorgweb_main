@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/model/addaddress/get_saved_address_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart' as s1;
@@ -94,7 +95,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       String url = "$cartUrl${event.userId}";
       debugPrint(url);
       if (isLoggedInvalue == true) {
-        final response = await http.get(Uri.parse(url));
+        final response = await http.get(Uri.parse(url) , headers: {
+          "Authorization":"Bearer ${await TokenService.getToken()}"
+        });
 
         if (response.statusCode == 200) {
           var cartResponse = cartResponseFromJson(response.body);
@@ -152,7 +155,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = updateDeliveryTipUrl;
       debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
+      api.Response response = await api.ApiService().postRequestSecure(
         url,
         updateDeliveryTipRequestModelToJson(updateDeliveryTipRequestModel),
       );
@@ -186,7 +189,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = updateCartUrl;
       debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
+      api.Response response = await api.ApiService().postRequestSecure(
         url,
         updateCartRequestToJson(updateCartRequest),
       );
@@ -219,7 +222,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = addCartUrl;
       // debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
+      api.Response response = await api.ApiService().postRequestSecure(
         url,
         addItemToCartRequestToJson(addItemToCartRequest),
       );
@@ -254,7 +257,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = removeCartUrl;
       //  debugPrint(url);
-      api.Response response = await api.ApiService().postRequest(
+      api.Response response = await api.ApiService().postRequestSecure(
         url,
         removeItemToCartRequestToJson(removeItemToCartRequest),
       );
@@ -277,7 +280,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       String url = "$getAddressUrl${event.userId}";
       debugPrint(url);
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url) , headers: {
+        "Authorization":"Bearer ${await TokenService.getToken()}"
+      });
       if (response.statusCode == 200) {
         var getSavedAddressResponse = getSavedAddressResponseFromJson(
           response.body,

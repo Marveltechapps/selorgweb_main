@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/model/addaddress/lat_long_get_address_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/lat_long_response_model.dart';
 import 'package:selorgweb_main/model/addaddress/search_location_response_model.dart';
@@ -69,7 +70,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       String url = "$cartUrl${event.userId}";
       debugPrint(url);
       if (isLoggedInvalue) {
-        final response = await http.get(Uri.parse(url));
+        final response = await http.get(Uri.parse(url) , headers: {
+          "Authorization":"Bearer ${await TokenService.getToken()}"
+        });
         if (response.statusCode == 200) {
           var cartResponse = cartResponseFromJson(response.body);
           cartResponse.items!.length;
@@ -126,7 +129,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (isLoggedInvalue == true) {
         String url = addCartUrl;
         debugPrint(url);
-        api.Response response = await api.ApiService().postRequest(
+        api.Response response = await api.ApiService().postRequestSecure(
           addCartUrl,
           addItemToCartRequestToJson(addItemToCartRequest),
         );
@@ -172,7 +175,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       String url = removeCartUrl;
       debugPrint(url);
       if (isLoggedInvalue) {
-        api.Response response = await api.ApiService().postRequest(
+        api.Response response = await api.ApiService().postRequestSecure(
           url,
           removeItemToCartRequestToJson(removeItemToCartRequest),
         );

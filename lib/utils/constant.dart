@@ -150,7 +150,7 @@ var getLatLonUrl =
 bool isLive = true;
 
 var devUrl = "http://43.204.144.74:3000/v1/";
-var liveUrl = "http://www.selorg.com/api/v1/";
+var liveUrl = "https://www.selorg.com/api/v1/";
 
 var baseUrl = isLive ? liveUrl : devUrl;
 

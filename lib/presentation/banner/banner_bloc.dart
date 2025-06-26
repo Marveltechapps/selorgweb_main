@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/model/banner/banner_error_response.dart';
 import 'package:selorgweb_main/model/banner/banner_product_response_model.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
@@ -24,6 +25,19 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     on<AddItemApiEvent>(addItemToApi);
     on<RemoveItemApiEvent>(removeItemFromCartApifunction);
     on<GetCartCountLengthOnBannerEvent>(getCartCountOnBannerfunction);
+    on<ChangeVarientItemEvent>(changeVarientFunction);
+  }
+  changeVarientFunction(
+    ChangeVarientItemEvent event,
+    Emitter<BannerState> emit,
+  ) {
+    emit(BannerLoadingState());
+    emit(
+      VarientChangedState(
+        productIndex: event.productIndex,
+        varientIndex: event.varientIndex,
+      ),
+    );
   }
 
   onAddPressed(AddButtonPressedEvent event, Emitter<BannerState> emit) {
@@ -145,7 +159,9 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     try {
       String url = "$cartUrl${event.userId}";
       debugPrint(url);
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url) , headers: {
+          "Authorization":"Bearer ${await TokenService.getToken()}"
+        });
       if (response.statusCode == 200) {
         var cartResponse = cartResponseFromJson(response.body);
         cartResponse.items!.length;

@@ -1,4 +1,4 @@
-import 'package:selorg/model/otp/verify_otp_response_model.dart';
+import 'package:selorgweb_main/model/otp/verify_otp_response_model.dart';
 
 abstract class OtpState {}
 
@@ -6,6 +6,7 @@ class OtpLoadingState extends OtpState {}
 
 class OtpInitialState extends OtpState {}
 class SPsaveSucess extends OtpState {}
+class CartDataSuccess extends OtpState {}
 
 class TimerInitial extends OtpState {
   final int duration;

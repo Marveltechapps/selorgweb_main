@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import 'package:selorgweb_main/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,6 +76,7 @@ class AccountSidebarWidget extends StatelessWidget {
           Center(
             child: InkWell(
               onTap: () async {
+                await TokenService.deleteToken();
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setString('phone', '');
                 await prefs.setString('userid', '');

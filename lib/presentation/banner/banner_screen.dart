@@ -7,6 +7,8 @@ import 'package:selorgweb_main/model/banner/banner_product_response_model.dart';
 import 'package:selorgweb_main/presentation/banner/banner_bloc.dart';
 import 'package:selorgweb_main/presentation/banner/banner_event.dart';
 import 'package:selorgweb_main/presentation/banner/banner_state.dart';
+import 'package:selorgweb_main/presentation/banner/banner_state.dart'
+    as bannerst;
 import 'package:selorgweb_main/presentation/home/cart_increment_cubit.dart';
 import 'package:selorgweb_main/presentation/productlist/product_list_state.dart';
 // import 'package:selorgweb_main/presentation/search/search_screen.dart';
@@ -31,6 +33,7 @@ class BannerScreen extends StatelessWidget {
   static int varientIndex = 0;
   static int cartCount = 0;
   static int totalAmount = 0;
+  static int selectedProductIndex = 0;
 
   static cart.CartResponse cartResponse = cart.CartResponse();
 
@@ -106,6 +109,15 @@ class BannerScreen extends StatelessWidget {
                                             itemBuilder: (context, i) {
                                               return InkWell(
                                                 onTap: () {
+                                                  context
+                                                      .read<BannerBloc>()
+                                                      .add(
+                                                        ChangeVarientItemEvent(
+                                                          productIndex:
+                                                              productIndex,
+                                                          varientIndex: i,
+                                                        ),
+                                                      );
                                                   // Navigator.pop(context);
                                                   // context.read<BannerBloc>().add(
                                                   //     LabelVarientItemEvent(
@@ -754,6 +766,9 @@ class BannerScreen extends StatelessWidget {
             listener: (context, state) {
               if (state is PraductSuccessState) {
                 bannerProductResponse = state.bannerProductResponse;
+              } else if (state is bannerst.VarientChangedState) {
+                varientIndex = state.varientIndex;
+                selectedProductIndex = state.productIndex;
               } else if (state is CartUpdateLocal) {
                 context.read<CounterCubit>().increment(state.noOfItems);
               } else if (state is AddButtonPressedState) {
@@ -1050,11 +1065,12 @@ class BannerScreen extends StatelessWidget {
                                                                   ),
                                                               child: ImageNetworkWidget(
                                                                 url:
-                                                                    bannerProductResponse
-                                                                        .data![index]
-                                                                        .variants![0]
-                                                                        .imageUrl ??
-                                                                    "",
+                                                                    selectedProductIndex ==
+                                                                            index
+                                                                        ? bannerProductResponse.data![index].variants![varientIndex].imageUrl ??
+                                                                            ""
+                                                                        : bannerProductResponse.data![index].variants![0].imageUrl ??
+                                                                            "",
                                                                 fit:
                                                                     BoxFit
                                                                         .contain,
@@ -1087,11 +1103,18 @@ class BannerScreen extends StatelessWidget {
                                                                 ),
                                                               ),
                                                               child: Text(
-                                                                bannerProductResponse
-                                                                        .data![index]
-                                                                        .variants![0]
-                                                                        .offer ??
-                                                                    "",
+                                                                selectedProductIndex ==
+                                                                        index
+                                                                    ? bannerProductResponse
+                                                                            .data![index]
+                                                                            .variants![varientIndex]
+                                                                            .offer ??
+                                                                        ""
+                                                                    : bannerProductResponse
+                                                                            .data![index]
+                                                                            .variants![0]
+                                                                            .offer ??
+                                                                        "",
                                                                 style: const TextStyle(
                                                                   color:
                                                                       Colors
@@ -1176,11 +1199,12 @@ class BannerScreen extends StatelessWidget {
                                                               children: [
                                                                 Expanded(
                                                                   child: Text(
-                                                                    bannerProductResponse
-                                                                            .data![index]
-                                                                            .variants![0]
-                                                                            .label ??
-                                                                        "",
+                                                                    selectedProductIndex ==
+                                                                            index
+                                                                        ? bannerProductResponse.data![index].variants![varientIndex].label ??
+                                                                            ""
+                                                                        : bannerProductResponse.data![index].variants![0].label ??
+                                                                            "",
                                                                     maxLines: 1,
                                                                     overflow:
                                                                         TextOverflow
@@ -1223,7 +1247,7 @@ class BannerScreen extends StatelessWidget {
                                                                 >[
                                                                   TextSpan(
                                                                     text:
-                                                                        '${bannerProductResponse.data![index].variants![0].discountPrice ?? ""}',
+                                                                        '${selectedProductIndex == index ? bannerProductResponse.data![index].variants![varientIndex].discountPrice ?? "" : bannerProductResponse.data![index].variants![0].discountPrice ?? ""}',
                                                                     style: const TextStyle(
                                                                       fontSize:
                                                                           14,
@@ -1240,11 +1264,18 @@ class BannerScreen extends StatelessWidget {
                                                             ),
                                                             SizedBox(width: 6),
                                                             Text(
-                                                              bannerProductResponse
-                                                                  .data![index]
-                                                                  .variants![0]
-                                                                  .price
-                                                                  .toString(),
+                                                              selectedProductIndex ==
+                                                                      index
+                                                                  ? bannerProductResponse
+                                                                      .data![index]
+                                                                      .variants![varientIndex]
+                                                                      .price
+                                                                      .toString()
+                                                                  : bannerProductResponse
+                                                                      .data![index]
+                                                                      .variants![0]
+                                                                      .price
+                                                                      .toString(),
                                                               style: const TextStyle(
                                                                 decoration:
                                                                     TextDecoration
@@ -1267,10 +1298,30 @@ class BannerScreen extends StatelessWidget {
                                                                           10.0,
                                                                     ),
                                                                 child:
-                                                                    bannerProductResponse.data![index].variants![0].cartQuantity ==
+                                                                    (selectedProductIndex ==
+                                                                                    index
+                                                                                ? bannerProductResponse.data![index].variants![varientIndex].cartQuantity ??
+                                                                                    0
+                                                                                : bannerProductResponse.data![index].variants![0].cartQuantity ??
+                                                                                    0) ==
                                                                             0
                                                                         ? InkWell(
                                                                           onTap: () {
+                                                                            context
+                                                                                .read<
+                                                                                  BannerBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  ChangeVarientItemEvent(
+                                                                                    productIndex:
+                                                                                        index,
+                                                                                    varientIndex:
+                                                                                        selectedProductIndex ==
+                                                                                                index
+                                                                                            ? varientIndex
+                                                                                            : 0,
+                                                                                  ),
+                                                                                );
                                                                             context
                                                                                 .read<
                                                                                   BannerBloc
@@ -1282,7 +1333,7 @@ class BannerScreen extends StatelessWidget {
                                                                                     index:
                                                                                         index,
                                                                                     varientindex:
-                                                                                        0,
+                                                                                        varientIndex,
                                                                                   ),
                                                                                 );
                                                                           },
@@ -1355,11 +1406,26 @@ class BannerScreen extends StatelessWidget {
                                                                                           BannerBloc
                                                                                         >()
                                                                                         .add(
+                                                                                          ChangeVarientItemEvent(
+                                                                                            productIndex:
+                                                                                                index,
+                                                                                            varientIndex:
+                                                                                                selectedProductIndex ==
+                                                                                                        index
+                                                                                                    ? varientIndex
+                                                                                                    : 0,
+                                                                                          ),
+                                                                                        );
+                                                                                    context
+                                                                                        .read<
+                                                                                          BannerBloc
+                                                                                        >()
+                                                                                        .add(
                                                                                           RemoveButtonPressedEvent(
                                                                                             type:
                                                                                                 "screen",
                                                                                             varientindex:
-                                                                                                0,
+                                                                                                varientIndex,
                                                                                             index:
                                                                                                 index,
                                                                                           ),
@@ -1389,7 +1455,10 @@ class BannerScreen extends StatelessWidget {
                                                                                   //  borderRadius: BorderRadius.circular(4),
                                                                                 ),
                                                                                 child: Text(
-                                                                                  bannerProductResponse.data![index].variants![0].cartQuantity.toString(),
+                                                                                  selectedProductIndex ==
+                                                                                          index
+                                                                                      ? bannerProductResponse.data![index].variants![varientIndex].cartQuantity.toString()
+                                                                                      : bannerProductResponse.data![index].variants![0].cartQuantity.toString(),
                                                                                   textAlign:
                                                                                       TextAlign.center,
                                                                                   style: GoogleFonts.poppins(
@@ -1410,13 +1479,28 @@ class BannerScreen extends StatelessWidget {
                                                                                           BannerBloc
                                                                                         >()
                                                                                         .add(
+                                                                                          ChangeVarientItemEvent(
+                                                                                            productIndex:
+                                                                                                index,
+                                                                                            varientIndex:
+                                                                                                selectedProductIndex ==
+                                                                                                        index
+                                                                                                    ? varientIndex
+                                                                                                    : 0,
+                                                                                          ),
+                                                                                        );
+                                                                                    context
+                                                                                        .read<
+                                                                                          BannerBloc
+                                                                                        >()
+                                                                                        .add(
                                                                                           AddButtonPressedEvent(
                                                                                             type:
                                                                                                 "screen",
                                                                                             index:
                                                                                                 index,
                                                                                             varientindex:
-                                                                                                0,
+                                                                                                varientIndex,
                                                                                           ),
                                                                                         );
                                                                                   },

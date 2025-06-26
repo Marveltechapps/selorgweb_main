@@ -19,7 +19,12 @@ class CartUpdateLocal extends BannerState {
 
   CartUpdateLocal({required this.noOfItems});
 }
+class VarientChangedState extends BannerState {
+  final int productIndex;
+  final int varientIndex;
 
+  VarientChangedState({required this.productIndex, required this.varientIndex});
+}
 class AddButtonPressedState extends BannerState {
   final int index;
   final int varientindex;

@@ -43,7 +43,7 @@ class AddAddressBloc extends Bloc<AddAddressEvent, AddAddressState> {
     emit(AddAddressLoadingState());
     try {
       String url = saveAddressUrl;
-      api.Response res = await api.ApiService().postRequest(
+      api.Response res = await api.ApiService().postRequestSecure(
         url,
         jsonEncode({
           "userId": event.userId,

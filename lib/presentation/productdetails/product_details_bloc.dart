@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/apiservice/post_method.dart' as api;
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/model/cart/cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_model.dart';
 import 'package:selorgweb_main/model/category/add_item_cart_response_model.dart';
@@ -191,7 +192,9 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     try {
       String url = "$cartUrl${event.userId}";
       debugPrint(url);
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url) , headers: {
+          "Authorization":"Bearer ${await TokenService.getToken()}"
+        });
       if (response.statusCode == 200) {
         var cartResponse = cartResponseFromJson(response.body);
         emit(CartCountLengthSuccessState(cartResponse: cartResponse));

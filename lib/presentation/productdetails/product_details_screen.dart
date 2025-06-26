@@ -2043,7 +2043,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 );
               }
               final isTablet = MediaQuery.of(context).size.width < 991;
-              final isMobile = MediaQuery.of(context).size.width < 600;
+              final isMobile = MediaQuery.of(context).size.width < 500;
               return Scaffold(
                 backgroundColor: appbackgroundColor,
                 body: SingleChildScrollView(
@@ -2077,147 +2077,154 @@ class ProductDetailsScreen extends StatelessWidget {
                                           ? Column(
                                             spacing: 20,
                                             children: [
-                                              Expanded(
-                                                child: SizedBox(
-                                                  //   color: greenColor,
-                                                  width:
-                                                      MediaQuery.of(
-                                                        context,
-                                                      ).size.width /
-                                                      2,
-                                                  // height: 400,
-                                                  child: ImageNetworkWidget(
-                                                    url:
-                                                        productDetailResponse
-                                                            .data!
-                                                            .product!
-                                                            .variants![0]
-                                                            .imageUrl ??
-                                                        "",
-                                                    fit: BoxFit.fill,
-                                                  ),
+                                              SizedBox(
+                                                //   color: greenColor,
+                                                width:
+                                                    MediaQuery.of(
+                                                      context,
+                                                    ).size.width /
+                                                    2,
+                                                // height: 400,
+                                                child: ImageNetworkWidget(
+                                                  url:
+                                                      productDetailResponse
+                                                          .data!
+                                                          .product!
+                                                          .variants![0]
+                                                          .imageUrl ??
+                                                      "",
+                                                  fit: BoxFit.fill,
                                                 ),
                                               ),
-                                              Expanded(
-                                                child: SizedBox(
-                                                  //  color: whiteColor,
-                                                  width: double.infinity,
-                                                  // height: 500,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        productDetailResponse
+                                              SizedBox(
+                                                //  color: whiteColor,
+                                                width: double.infinity,
+                                                // height: 500,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      productDetailResponse
+                                                              .data!
+                                                              .product!
+                                                              .skuName ??
+                                                          "",
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        color: blackColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      //  color: greenColor,
+                                                      width: double.infinity,
+                                                      child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount:
+                                                            productDetailResponse
                                                                 .data!
                                                                 .product!
-                                                                .skuName ??
-                                                            "",
-                                                        style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: blackColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: SizedBox(
-                                                          //  color: greenColor,
-                                                          width:
-                                                              double.infinity,
-                                                          child: ListView.builder(
-                                                            shrinkWrap: true,
-                                                            itemCount:
-                                                                productDetailResponse
-                                                                    .data!
-                                                                    .product!
-                                                                    .variants!
-                                                                    .length,
-                                                            itemBuilder: (
-                                                              context,
-                                                              i,
-                                                            ) {
-                                                              return InkWell(
-                                                                onTap: () {
-                                                                  // varientIndex =
-                                                                  //     i; // Update the selected variant index
-                                                                  // selectedVariant = productDetailResponse
-                                                                  //     .data!.product!.variants![i];
+                                                                .variants!
+                                                                .length,
+                                                        itemBuilder: (
+                                                          context,
+                                                          i,
+                                                        ) {
+                                                          return InkWell(
+                                                            onTap: () {
+                                                              // varientIndex =
+                                                              //     i; // Update the selected variant index
+                                                              // selectedVariant = productDetailResponse
+                                                              //     .data!.product!.variants![i];
 
-                                                                  Navigator.pop(
-                                                                    context,
-                                                                  );
-                                                                  context
-                                                                      .read<
-                                                                        ProductDetailBloc
-                                                                      >()
-                                                                      .add(
-                                                                        LabelVarientItemEvent(
-                                                                          productIndex:
-                                                                              0,
-                                                                          varientIndex:
-                                                                              i,
-                                                                        ),
-                                                                      );
-                                                                },
-                                                                child: Container(
-                                                                  margin:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            6,
-                                                                      ),
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            12,
-                                                                        vertical:
-                                                                            10,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        whiteColor,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          3,
-                                                                        ),
-                                                                    border: Border.all(
-                                                                      color:
-                                                                          appColor,
-                                                                      width:
-                                                                          0.5,
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                              context
+                                                                  .read<
+                                                                    ProductDetailBloc
+                                                                  >()
+                                                                  .add(
+                                                                    LabelVarientItemEvent(
+                                                                      productIndex:
+                                                                          0,
+                                                                      varientIndex:
+                                                                          i,
                                                                     ),
+                                                                  );
+                                                            },
+                                                            child: Container(
+                                                              margin:
+                                                                  const EdgeInsets.symmetric(
+                                                                    vertical: 6,
                                                                   ),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child: Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical:
+                                                                        10,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    whiteColor,
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      3,
+                                                                    ),
+                                                                border: Border.all(
+                                                                  color:
+                                                                      appColor,
+                                                                  width: 0.5,
+                                                                ),
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          productDetailResponse.data!.product!.variants![i].label ??
+                                                                              "",
+                                                                          style:
+                                                                              Theme.of(
+                                                                                context,
+                                                                              ).textTheme.bodySmall,
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          softWrap:
+                                                                              true,
+                                                                        ),
+                                                                        Row(
                                                                           children: [
-                                                                            Text(
-                                                                              productDetailResponse.data!.product!.variants![i].label ??
-                                                                                  "",
-                                                                              style:
-                                                                                  Theme.of(
-                                                                                    context,
-                                                                                  ).textTheme.bodySmall,
-                                                                              maxLines:
-                                                                                  1,
-                                                                              overflow:
-                                                                                  TextOverflow.ellipsis,
-                                                                              softWrap:
-                                                                                  true,
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                RichText(
-                                                                                  text: TextSpan(
+                                                                            RichText(
+                                                                              text: TextSpan(
+                                                                                text:
+                                                                                    '₹ ',
+                                                                                style: TextStyle(
+                                                                                  fontSize:
+                                                                                      16,
+                                                                                  fontWeight:
+                                                                                      FontWeight.bold,
+                                                                                  color:
+                                                                                      Colors.black,
+                                                                                ),
+                                                                                children: <
+                                                                                  TextSpan
+                                                                                >[
+                                                                                  TextSpan(
                                                                                     text:
-                                                                                        '₹ ',
+                                                                                        productDetailResponse.data!.product!.variants![i].discountPrice.toString(),
                                                                                     style: TextStyle(
                                                                                       fontSize:
                                                                                           16,
@@ -2226,33 +2233,33 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                       color:
                                                                                           Colors.black,
                                                                                     ),
-                                                                                    children: <
-                                                                                      TextSpan
-                                                                                    >[
-                                                                                      TextSpan(
-                                                                                        text:
-                                                                                            productDetailResponse.data!.product!.variants![i].discountPrice.toString(),
-                                                                                        style: TextStyle(
-                                                                                          fontSize:
-                                                                                              16,
-                                                                                          fontWeight:
-                                                                                              FontWeight.bold,
-                                                                                          color:
-                                                                                              Colors.black,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
                                                                                   ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              width:
+                                                                                  6,
+                                                                            ),
+                                                                            RichText(
+                                                                              text: TextSpan(
+                                                                                text:
+                                                                                    '₹ ',
+                                                                                style: GoogleFonts.inter(
+                                                                                  decoration:
+                                                                                      TextDecoration.lineThrough,
+                                                                                  fontSize:
+                                                                                      12,
+                                                                                  color:
+                                                                                      Colors.grey,
                                                                                 ),
-                                                                                const SizedBox(
-                                                                                  width:
-                                                                                      6,
-                                                                                ),
-                                                                                RichText(
-                                                                                  text: TextSpan(
+                                                                                children: <
+                                                                                  TextSpan
+                                                                                >[
+                                                                                  TextSpan(
                                                                                     text:
-                                                                                        '₹ ',
-                                                                                    style: GoogleFonts.inter(
+                                                                                        productDetailResponse.data!.product!.variants![i].price.toString(),
+                                                                                    style: TextStyle(
                                                                                       decoration:
                                                                                           TextDecoration.lineThrough,
                                                                                       fontSize:
@@ -2260,209 +2267,363 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                                       color:
                                                                                           Colors.grey,
                                                                                     ),
-                                                                                    children: <
-                                                                                      TextSpan
-                                                                                    >[
-                                                                                      TextSpan(
-                                                                                        text:
-                                                                                            productDetailResponse.data!.product!.variants![i].price.toString(),
-                                                                                        style: TextStyle(
-                                                                                          decoration:
-                                                                                              TextDecoration.lineThrough,
-                                                                                          fontSize:
-                                                                                              12,
-                                                                                          color:
-                                                                                              Colors.grey,
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  productDetailResponse
+                                                                              .data!
+                                                                              .product!
+                                                                              .variants![i]
+                                                                              .userCartQuantity ==
+                                                                          0
+                                                                      ? SizedBox(
+                                                                        width:
+                                                                            100,
+                                                                        height:
+                                                                            30,
+                                                                        child: ElevatedButton(
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                whiteColor,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              side: BorderSide(
+                                                                                color:
+                                                                                    appColor,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                20,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            context
+                                                                                .read<
+                                                                                  ProductDetailBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  AddButtonClikedEvent(
+                                                                                    type:
+                                                                                        "dialog",
+                                                                                    index:
+                                                                                        i,
+                                                                                    similarIndex:
+                                                                                        similarIndex,
+                                                                                    isButtonPressed:
+                                                                                        true,
+                                                                                  ),
+                                                                                );
+                                                                          },
+                                                                          child: Text(
+                                                                            "Add",
+                                                                            style: GoogleFonts.poppins(
+                                                                              color:
+                                                                                  appColor,
+                                                                              fontSize:
+                                                                                  14,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                      : Container(
+                                                                        width:
+                                                                            100,
+                                                                        height:
+                                                                            30,
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              1,
+                                                                        ),
+                                                                        decoration: BoxDecoration(
+                                                                          color:
+                                                                              appColor,
+                                                                          borderRadius: BorderRadius.circular(
+                                                                            20,
+                                                                          ),
+                                                                          border: Border.all(
+                                                                            color:
+                                                                                appColor,
+                                                                          ),
+                                                                        ),
+                                                                        child: Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: InkWell(
+                                                                                onTap: () {
+                                                                                  context
+                                                                                      .read<
+                                                                                        ProductDetailBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        RemoveItemButtonClikedEvent(
+                                                                                          type:
+                                                                                              "dialog",
+                                                                                          index:
+                                                                                              i,
+                                                                                          similarIndex:
+                                                                                              similarIndex,
+                                                                                          isButtonPressed:
+                                                                                              true,
                                                                                         ),
-                                                                                      ),
-                                                                                    ],
+                                                                                      );
+                                                                                },
+                                                                                child: SizedBox(
+                                                                                  height:
+                                                                                      30,
+                                                                                  child: const Icon(
+                                                                                    Icons.remove,
+                                                                                    color:
+                                                                                        Colors.white,
+                                                                                    size:
+                                                                                        16,
                                                                                   ),
                                                                                 ),
-                                                                              ],
+                                                                              ),
+                                                                            ),
+                                                                            Container(
+                                                                              height:
+                                                                                  35,
+                                                                              width:
+                                                                                  35,
+                                                                              decoration: BoxDecoration(
+                                                                                color:
+                                                                                    Colors.white,
+                                                                              ),
+                                                                              child: Center(
+                                                                                child: Text(
+                                                                                  productDetailResponse.data!.product!.variants![i].userCartQuantity.toString(),
+                                                                                  textAlign:
+                                                                                      TextAlign.center,
+                                                                                  style: GoogleFonts.poppins(
+                                                                                    color:
+                                                                                        appColor,
+                                                                                    fontSize:
+                                                                                        14,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: InkWell(
+                                                                                onTap: () {
+                                                                                  context
+                                                                                      .read<
+                                                                                        ProductDetailBloc
+                                                                                      >()
+                                                                                      .add(
+                                                                                        AddButtonClikedEvent(
+                                                                                          type:
+                                                                                              "dialog",
+                                                                                          index:
+                                                                                              i,
+                                                                                          similarIndex:
+                                                                                              similarIndex,
+                                                                                          isButtonPressed:
+                                                                                              true,
+                                                                                        ),
+                                                                                      );
+                                                                                },
+                                                                                child: SizedBox(
+                                                                                  height:
+                                                                                      30,
+                                                                                  child: Center(
+                                                                                    child: const Icon(
+                                                                                      Icons.add,
+                                                                                      color:
+                                                                                          Colors.white,
+                                                                                      size:
+                                                                                          16,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
                                                                             ),
                                                                           ],
                                                                         ),
                                                                       ),
-                                                                      productDetailResponse.data!.product!.variants![i].userCartQuantity ==
-                                                                              0
-                                                                          ? SizedBox(
-                                                                            width:
-                                                                                100,
-                                                                            height:
-                                                                                30,
-                                                                            child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                backgroundColor:
-                                                                                    whiteColor,
-                                                                                shape: RoundedRectangleBorder(
-                                                                                  side: BorderSide(
-                                                                                    color:
-                                                                                        appColor,
-                                                                                  ),
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    20,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              onPressed: () {
-                                                                                context
-                                                                                    .read<
-                                                                                      ProductDetailBloc
-                                                                                    >()
-                                                                                    .add(
-                                                                                      AddButtonClikedEvent(
-                                                                                        type:
-                                                                                            "dialog",
-                                                                                        index:
-                                                                                            i,
-                                                                                        similarIndex:
-                                                                                            similarIndex,
-                                                                                        isButtonPressed:
-                                                                                            true,
-                                                                                      ),
-                                                                                    );
-                                                                              },
-                                                                              child: Text(
-                                                                                "Add",
-                                                                                style: GoogleFonts.poppins(
-                                                                                  color:
-                                                                                      appColor,
-                                                                                  fontSize:
-                                                                                      14,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                          : Container(
-                                                                            width:
-                                                                                100,
-                                                                            height:
-                                                                                30,
-                                                                            padding: const EdgeInsets.symmetric(
-                                                                              vertical:
-                                                                                  1,
-                                                                            ),
-                                                                            decoration: BoxDecoration(
-                                                                              color:
-                                                                                  appColor,
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                20,
-                                                                              ),
-                                                                              border: Border.all(
-                                                                                color:
-                                                                                    appColor,
-                                                                              ),
-                                                                            ),
-                                                                            child: Row(
-                                                                              mainAxisAlignment:
-                                                                                  MainAxisAlignment.center,
-                                                                              children: [
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            ProductDetailBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            RemoveItemButtonClikedEvent(
-                                                                                              type:
-                                                                                                  "dialog",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              similarIndex:
-                                                                                                  similarIndex,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: SizedBox(
-                                                                                      height:
-                                                                                          30,
-                                                                                      child: const Icon(
-                                                                                        Icons.remove,
-                                                                                        color:
-                                                                                            Colors.white,
-                                                                                        size:
-                                                                                            16,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Container(
-                                                                                  height:
-                                                                                      35,
-                                                                                  width:
-                                                                                      35,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color:
-                                                                                        Colors.white,
-                                                                                  ),
-                                                                                  child: Center(
-                                                                                    child: Text(
-                                                                                      productDetailResponse.data!.product!.variants![i].userCartQuantity.toString(),
-                                                                                      textAlign:
-                                                                                          TextAlign.center,
-                                                                                      style: GoogleFonts.poppins(
-                                                                                        color:
-                                                                                            appColor,
-                                                                                        fontSize:
-                                                                                            14,
-                                                                                        fontWeight:
-                                                                                            FontWeight.w500,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    onTap: () {
-                                                                                      context
-                                                                                          .read<
-                                                                                            ProductDetailBloc
-                                                                                          >()
-                                                                                          .add(
-                                                                                            AddButtonClikedEvent(
-                                                                                              type:
-                                                                                                  "dialog",
-                                                                                              index:
-                                                                                                  i,
-                                                                                              similarIndex:
-                                                                                                  similarIndex,
-                                                                                              isButtonPressed:
-                                                                                                  true,
-                                                                                            ),
-                                                                                          );
-                                                                                    },
-                                                                                    child: SizedBox(
-                                                                                      height:
-                                                                                          30,
-                                                                                      child: Center(
-                                                                                        child: const Icon(
-                                                                                          Icons.add,
-                                                                                          color:
-                                                                                              Colors.white,
-                                                                                          size:
-                                                                                              16,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
                                                       ),
-                                                    ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                constraints: BoxConstraints(
+                                                  maxWidth: 1280,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                clipBehavior: Clip.hardEdge,
+                                                child: ExpansionTile(
+                                                  backgroundColor: whiteColor,
+                                                  collapsedBackgroundColor:
+                                                      whiteColor,
+                                                  shape: Border.all(
+                                                    color: whiteColor,
                                                   ),
+                                                  iconColor: appColor,
+                                                  collapsedIconColor: appColor,
+                                                  title: Text(
+                                                    'Product Information',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                  children: <Widget>[
+                                                    Column(
+                                                      spacing: 10,
+                                                      children: [
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              "     •     ",
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color:
+                                                                    Colors
+                                                                        .black87,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'About - ${productDetailResponse.data!.product!.description!.about}',
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  color:
+                                                                      Colors
+                                                                          .black87,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              "     •     ",
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color:
+                                                                    Colors
+                                                                        .black87,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'Health Benefits - ${productDetailResponse.data!.product!.description!.healthBenefits}',
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  color:
+                                                                      Colors
+                                                                          .black87,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              "     •     ",
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color:
+                                                                    Colors
+                                                                        .black87,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'Nutrition - ${productDetailResponse.data!.product!.description!.nutrition}',
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  color:
+                                                                      Colors
+                                                                          .black87,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              "     •     ",
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color:
+                                                                    Colors
+                                                                        .black87,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'Origin of Place - ${productDetailResponse.data!.product!.description!.origin}',
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  color:
+                                                                      Colors
+                                                                          .black87,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
