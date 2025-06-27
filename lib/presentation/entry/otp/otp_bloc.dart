@@ -23,10 +23,26 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     on<SaveDataEvent>(saveData);
     on<AddItemInCartApiEvent>(addItemToCart);
     on<AddMultipleItemtoCartEvent>(addMultipleItemToCart);
+    on<ClearCartDataEvent>(clearCart);
   }
   static const int initialDuration = 20 * 1; // 20 minutes in seconds
   late StreamSubscription<int> tickerSubscription;
+clearCart(ClearCartDataEvent event, Emitter<OtpState> emit) async {
+    String url = "$clearCartUrl${event.mobileNumber}";
+    debugPrint(url);
+    try {
+      api.Response res = await api.ApiService().postRequest(url, null);
 
+      if (res.statusCode == 200) {
+        // var body = jsonDecode(res.resBody);
+        // emit(OtpSuccessState(message: "${body["message"]}"));
+      } else {
+        // emit(OtpErrorState(errorMessage: "Request Failed!"));
+      }
+    } catch (e) {
+      // emit(OtpErrorState(errorMessage: e.toString()));
+    }
+  }
   saveData(SaveDataEvent event, Emitter<OtpState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('phone', event.phoneNo);
@@ -158,12 +174,14 @@ String url = addCartUrl;
           continue;
         } else {
           emit(OtpErrorState(errorMessage: response.resBody));
+          emit(CartDataSuccess());
           break;
         }
         }
         if(cartdata.isEmpty){
           emit(CartDataSuccess());
         }
+        emit(CartDataSuccess());
   }
   addItemToCart(AddItemInCartApiEvent event, Emitter<OtpState> emit) async {
     emit(OtpLoadingState());

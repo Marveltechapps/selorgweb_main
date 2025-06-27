@@ -51,12 +51,12 @@ class OtpScreen extends StatelessWidget {
 
               // widget.onOtpComplete(otp); // Call the function when all fields are filled
             }
-          } else if (state is CartDataSuccess){
+          } else if (state is CartDataSuccess) {
             context.push('/cart');
           } else if (state is SPsaveSucess) {
             context.read<OtpBloc>().add(
-                AddMultipleItemtoCartEvent(userId: userId)
-              );
+              AddMultipleItemtoCartEvent(userId: userId),
+            );
             // final prefs = await SharedPreferences.getInstance();
             // List<dynamic> cartdata = jsonDecode(
             //   prefs.getString('cartdata') ?? '[]',
@@ -83,8 +83,11 @@ class OtpScreen extends StatelessWidget {
             formatDuration(state.duration);
             // debugPrint(remainingTime);
           } else if (state is OtpSuccessState) {
-            userId = state.verifyOtpResponse.userId ?? "";
             await TokenService.saveToken(state.verifyOtpResponse.token ?? "");
+            context.read<OtpBloc>().add(
+              ClearCartDataEvent(mobileNumber: phoneNumber),
+            );
+            userId = state.verifyOtpResponse.userId ?? "";
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.verifyOtpResponse.message ?? "")),
             );

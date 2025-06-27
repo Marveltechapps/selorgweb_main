@@ -34,9 +34,7 @@ class LoginScreen extends StatelessWidget {
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
             phoneNumberController.clear();
-            context.read<LoginBloc>().add(
-              ClearCartDataEvent(mobileNumber: phoneNumber),
-            );
+            
           } else if (state is OtpErrorState) {
             ScaffoldMessenger.of(
               context,

@@ -958,6 +958,7 @@ class BannerScreen extends StatelessWidget {
                 );
               }
               return Scaffold(
+                backgroundColor: appbackgroundColor,
                 body: SingleChildScrollView(
                   child: Column(
                     children: [

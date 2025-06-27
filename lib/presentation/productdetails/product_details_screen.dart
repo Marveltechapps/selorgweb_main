@@ -3356,23 +3356,23 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                     // debugPrint(
                                                                     //     selectedProductIndexes
                                                                     //         .toString());
-                                                                    showVarientsDialog(
-                                                                      context,
-                                                                      similarProductResponse
-                                                                              .data![i]
-                                                                              .skuName ??
-                                                                          "",
-                                                                      true,
-                                                                      i,
-                                                                      similarProductResponse
-                                                                              .data![i]
-                                                                              .variants ??
-                                                                          [],
-                                                                      context
-                                                                          .read<
-                                                                            ProductDetailBloc
-                                                                          >(),
-                                                                    );
+                                                                    // showVarientsDialog(
+                                                                    //   context,
+                                                                    //   similarProductResponse
+                                                                    //           .data![i]
+                                                                    //           .skuName ??
+                                                                    //       "",
+                                                                    //   true,
+                                                                    //   i,
+                                                                    //   similarProductResponse
+                                                                    //           .data![i]
+                                                                    //           .variants ??
+                                                                    //       [],
+                                                                    //   context
+                                                                    //       .read<
+                                                                    //         ProductDetailBloc
+                                                                    //       >(),
+                                                                    // );
                                                                   },
                                                                   child: Container(
                                                                     padding: const EdgeInsets.symmetric(
@@ -3444,12 +3444,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                        Icon(
-                                                                          Icons
-                                                                              .keyboard_arrow_down_rounded,
-                                                                          size:
-                                                                              15,
-                                                                        ),
+                                                                        // Icon(
+                                                                        //   Icons
+                                                                        //       .keyboard_arrow_down_rounded,
+                                                                        //   size:
+                                                                        //       15,
+                                                                        // ),
                                                                       ],
                                                                     ),
                                                                   ),

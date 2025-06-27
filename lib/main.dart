@@ -27,6 +27,8 @@ import 'package:selorgweb_main/utils/constant.dart';
 import 'package:selorg/presentation/home/home_screen.dart';
 import 'package:selorg/presentation/category/categories_screen.dart';
 import 'package:selorg/presentation/coupon/screens/applying_coupon_screen.dart';
+import 'package:selorg/presentation/entry/login/login_screen.dart' as sa;
+import 'package:selorg/presentation/entry/otp/otp_screen.dart' as sa;
 // import 'package:selorg/presentation/entry/login/login_screen.dart';
 import 'package:selorg/presentation/entry/splash/splash_screen.dart';
 import 'package:selorg/presentation/payment/payment_screen.dart';
@@ -258,8 +260,8 @@ class _MyAppState extends State<MyApp> {
 
             initialRoute: '/',
             routes: {
-              '/login': (context) => LoginScreen(),
-              '/otp': (context) => OtpScreen(),
+              '/login': (context) => sa.LoginScreen(),
+              '/otp': (context) => sa.OtpScreen(),
               '/home': (context) => HomeScreen(),
               '/categories': (context) => CategoriesScreen(),
               '/payment': (context) => PaymentScreen(),

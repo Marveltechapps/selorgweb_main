@@ -1268,6 +1268,7 @@ class ProductListDesktopScreen extends StatelessWidget {
               final isTablet = MediaQuery.of(context).size.width < 991;
               final isMobile = MediaQuery.of(context).size.width < 600;
               return Scaffold(
+                backgroundColor: appbackgroundColor,
                 body: SingleChildScrollView(
                   child: Column(
                     children: [

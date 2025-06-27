@@ -12,6 +12,12 @@ class AddMultipleItemtoCartEvent extends OtpEvent {
   AddMultipleItemtoCartEvent({required this.userId});
 }
 
+class ClearCartDataEvent extends OtpEvent {
+  final String mobileNumber;
+
+  ClearCartDataEvent({required this.mobileNumber});
+}
+
 class OtpEnteredEvent extends OtpEvent {
   final bool isEntered;
   final int index;
