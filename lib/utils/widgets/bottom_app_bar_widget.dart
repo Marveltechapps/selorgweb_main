@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:web/web.dart' as html;
 
 import 'package:flutter/material.dart';
@@ -88,12 +89,7 @@ class BottomAppBarWidget extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => PrivacyPolicy(),
-                                          ),
-                                        );
+                                        context.push('/privacypolicy');
                                       },
                                       child: Text(
                                         "Privacy Policy",
@@ -102,12 +98,7 @@ class BottomAppBarWidget extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => TermsConditions(),
-                                          ),
-                                        );
+                                        context.push('/terms&conditions');
                                       },
                                       child: Text(
                                         "Terms & Conditions",
@@ -219,12 +210,7 @@ class BottomAppBarWidget extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => PrivacyPolicy(),
-                                          ),
-                                        );
+                                        context.push('/privacypolicy');
                                       },
                                       child: Text(
                                         "Privacy Policy",
@@ -233,12 +219,7 @@ class BottomAppBarWidget extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => TermsConditions(),
-                                          ),
-                                        );
+                                        context.push('/terms&conditions');
                                       },
                                       child: Text(
                                         "Terms & Conditions",
