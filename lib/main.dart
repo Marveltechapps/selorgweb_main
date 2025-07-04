@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
 import 'package:selorgweb_main/order/provider/navigationprovider.dart';
 import 'package:selorgweb_main/presentation/banner/banner_screen.dart';
 import 'package:selorgweb_main/presentation/cart/cart_screen.dart';
@@ -45,6 +46,7 @@ import 'package:selorg/presentation/settings/refunds/refunds_screen.dart';
 import 'package:selorg/presentation/settings/settings_screen.dart';
 import 'package:selorg/utils/constant.dart' as selorg_constants;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web/web.dart' as html;
 // import 'package:selorg/presentation/entry/otp/otp_screen.dart';
 
 void main() {
@@ -175,6 +177,18 @@ class _MyAppState extends State<MyApp> {
     userId = prefs.getString('userid') ?? '';
     isLoggedInvalue = prefs.getBool('isLoggedIn') ?? false;
     setState(() {});
+    final isExpired = await TokenService.isExpired();
+      if(isExpired && await TokenService.getToken() != null){
+        await TokenService.deleteToken();
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('phone', '');
+        await prefs.setString('userid', '');
+        await prefs.setBool('isLoggedIn', false);
+        isLoggedInvalue = false;
+        phoneNumber = '';
+        userId = '';
+        html.window.location.reload();
+      }
   }
 
   @override

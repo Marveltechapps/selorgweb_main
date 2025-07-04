@@ -57,6 +57,10 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   encrypt: ^5.0.3
   flutter_html: ^3.0.0
+  video_player: ^2.10.0
+  gif: ^2.3.0
+  jwt_decoder: ^2.0.1
+  web: ^1.1.1
   selorg:
     path: ./selorgapp
 

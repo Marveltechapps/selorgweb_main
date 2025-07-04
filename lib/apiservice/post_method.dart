@@ -5,6 +5,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:selorgweb_main/apiservice/secure_storage/secure_storage.dart';
+import 'package:selorgweb_main/utils/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web/web.dart' as html;
 
 class ApiService {
   ApiService._internal();
@@ -20,6 +23,18 @@ class ApiService {
     debugPrint(api);
     Response? res;
     try {
+       final isExpired = await TokenService.isExpired();
+      if(isExpired  && await TokenService.getToken() != null){
+        await TokenService.deleteToken();
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('phone', '');
+        await prefs.setString('userid', '');
+        await prefs.setBool('isLoggedIn', false);
+        isLoggedInvalue = false;
+        phoneNumber = '';
+        userId = '';
+        html.window.location.reload();
+      }
       var response = await http /* .Client() */ .post(
         url,
         body: object,

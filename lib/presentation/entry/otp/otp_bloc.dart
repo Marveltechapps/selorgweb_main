@@ -173,9 +173,7 @@ String url = addCartUrl;
 
           continue;
         } else {
-          emit(OtpErrorState(errorMessage: response.resBody));
-          emit(CartDataSuccess());
-          break;
+          continue;
         }
         }
         if(cartdata.isEmpty){
